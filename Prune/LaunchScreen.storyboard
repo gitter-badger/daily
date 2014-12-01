@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B23" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="sxB-Lv-0L4">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="FXc-Jd-Za7">
+            <objects>
+                <viewController id="sxB-Lv-0L4" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="kvj-yS-Zlt"/>
+                        <viewControllerLayoutGuide type="bottom" id="eVS-RA-b74"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9Pv-yV-0KE">
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zc3-2q-sTS">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="optimizelyId" value="_LaunchScreen-view-Zc3-2q-sTS"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Zc3-2q-sTS" secondAttribute="trailing" id="9jS-Mf-Ehj"/>
+                            <constraint firstItem="Zc3-2q-sTS" firstAttribute="top" secondItem="9Pv-yV-0KE" secondAttribute="top" id="D84-AM-sBH"/>
+                            <constraint firstItem="eVS-RA-b74" firstAttribute="top" secondItem="Zc3-2q-sTS" secondAttribute="bottom" id="m7l-qd-7Ai"/>
+                            <constraint firstItem="Zc3-2q-sTS" firstAttribute="leading" secondItem="9Pv-yV-0KE" secondAttribute="leading" id="udA-7g-hpI"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="optimizelyId" value="_LaunchScreen-view-9Pv-yV-0KE"/>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <navigationItem key="navigationItem" id="qOd-hX-OCe"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WIO-yj-eCZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1070" y="330"/>
+        </scene>
+    </scenes>
+</document>
