@@ -7,6 +7,7 @@
 //
 
 #import "SignupViewController.h"
+#import "NSUserDefaults+DLY.h"
 #import "DAYAnalytics.h"
 #import "SAMTextField.h"
 
@@ -33,11 +34,13 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     NSString *email = self.emailField.text;
+    NSDate *now = [NSDate date];
     
-    [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"userEmail"];
-    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:@"userHasOnboarded"];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"userOnboardedAt"];
-    [[DAYAnalytics sharedAnalytics] identify:email traits:nil];
+    // __________________Last enabled a calendar_______________________?
+    [[NSUserDefaults standardUserDefaults] setEmail:email];
+    [[NSUserDefaults standardUserDefaults] setCreated:now];
+    
+    [[DAYAnalytics sharedAnalytics] identify:email];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]];
     [self presentViewController:[storyboard instantiateInitialViewController] animated:YES completion:nil];
@@ -45,7 +48,7 @@
     return YES;
 }
 
--(UIStatusBarStyle)preferredStatusBarStyle
+- (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
 }

@@ -34,6 +34,8 @@
 		029B22E819A4E0F100CC5EDC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22E719A4E0F100CC5EDC /* CoreData.framework */; };
 		029B22F419A6261F00CC5EDC /* TodoStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 029B22F319A6261F00CC5EDC /* TodoStore.m */; };
 		029B22F619A63FC800CC5EDC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22F519A63FC800CC5EDC /* MessageUI.framework */; };
+		02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */; };
+		02ACDFC91A2CC67600793AE4 /* Todo in Resources */ = {isa = PBXBuildFile; fileRef = 02ACDFC81A2CC67600793AE4 /* Todo */; };
 		02AE446B1A0802AA00E796CD /* NSDateFormatter+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */; };
 		02CFB7BD19E415FC00E3A243 /* Onboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */; };
 		02CFB7C419E42F0600E3A243 /* HPReorderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02CFB7C319E42F0600E3A243 /* HPReorderTableView.m */; };
@@ -92,6 +94,9 @@
 		029B22F219A6261F00CC5EDC /* TodoStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoStore.h; sourceTree = "<group>"; };
 		029B22F319A6261F00CC5EDC /* TodoStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoStore.m; sourceTree = "<group>"; };
 		029B22F519A63FC800CC5EDC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		02ACDFB01A2CB65E00793AE4 /* NSUserDefaults+DLY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+DLY.h"; sourceTree = "<group>"; };
+		02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+DLY.m"; sourceTree = "<group>"; };
+		02ACDFC81A2CC67600793AE4 /* Todo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Todo; sourceTree = "<group>"; };
 		02AE44691A0802AA00E796CD /* NSDateFormatter+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+Extended.h"; sourceTree = "<group>"; };
 		02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+Extended.m"; sourceTree = "<group>"; };
 		02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboard_iPhone.storyboard; sourceTree = "<group>"; };
@@ -159,6 +164,8 @@
 				02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */,
 				02F702331A07BC6200C36FC9 /* NSManagedObject+Extended.h */,
 				02F702341A07BC6200C36FC9 /* NSManagedObject+Extended.m */,
+				02ACDFB01A2CB65E00793AE4 /* NSUserDefaults+DLY.h */,
+				02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -201,6 +208,7 @@
 		0230CC4C199DC6CF004D7713 = {
 			isa = PBXGroup;
 			children = (
+				02ACDFC81A2CC67600793AE4 /* Todo */,
 				02560F581A138BDE00310F76 /* Podfile */,
 				02F0B1A219ED4D4100CFC80A /* Complete.entitlements */,
 				0230CC5E199DC6CF004D7713 /* Prune */,
@@ -382,6 +390,7 @@
 				0289193819E2E65D00D51813 /* LaunchScreen.storyboard in Resources */,
 				0230CC6C199DC6CF004D7713 /* Main_iPhone.storyboard in Resources */,
 				0230CC63199DC6CF004D7713 /* InfoPlist.strings in Resources */,
+				02ACDFC91A2CC67600793AE4 /* Todo in Resources */,
 				02CFB7BD19E415FC00E3A243 /* Onboard_iPhone.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -457,6 +466,7 @@
 				029B22F419A6261F00CC5EDC /* TodoStore.m in Sources */,
 				02971E4A1A02961400107830 /* NSDate+Utilities.m in Sources */,
 				0204A0FD19C1DCDD00DA6F87 /* LSWeekView.m in Sources */,
+				02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */,
 				025260D01A1CE7EE00A1FBDE /* DAYAnalytics.m in Sources */,
 				02F702351A07BC6200C36FC9 /* NSManagedObject+Extended.m in Sources */,
 				023A65C2199E1B8D00CC9BA6 /* EventCell.m in Sources */,

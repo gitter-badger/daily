@@ -8,7 +8,6 @@
 
 #import "Todo.h"
 
-
 @implementation Todo
 
 @dynamic todoIdentifier;

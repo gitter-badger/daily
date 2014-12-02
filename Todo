@@ -1,0 +1,14 @@
+Dependency injection
+
+MVVM
+
+Move more code to storyboards? It's the next thing
+
+@implementation UIStoryboard (MyApp)
++ (UIStoryboard *)mainStoryboard {
+return [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+}
+@end
+
+
+Don't forget about XIBs

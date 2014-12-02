@@ -78,7 +78,7 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
     BOOL userHasOnboarded = [[NSUserDefaults standardUserDefaults] boolForKey:kUserHasOnboarded];
     NSString *email = [[NSUserDefaults standardUserDefaults] valueForKey:kUserEmail];
     if (userHasOnboarded) {
-        [[DAYAnalytics sharedAnalytics] identify:email traits:nil];
+        [[DAYAnalytics sharedAnalytics] identify:email];
     }
 }
 
