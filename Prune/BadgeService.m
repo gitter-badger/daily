@@ -7,7 +7,7 @@
 //
 
 #import "BadgeService.h"
-#import "TodoEventStore.h"
+#import "TodoEvent.h"
 
 @implementation BadgeService
 
@@ -49,7 +49,9 @@
 
 - (void)updateApplicationBadge:(UIApplication *)application
 {
-    NSArray *todoEvents = [[TodoEventStore sharedTodoEventStore] incompletedTodoEventsFromDate:[NSDate date]];
+    NSDate *startDate = [[NSDate date] dateAtStartOfDay];
+    NSDate *endDate = [[NSDate date] dateAtEndOfDay];
+    NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
     application.applicationIconBadgeNumber = todoEvents.count;
 }
 

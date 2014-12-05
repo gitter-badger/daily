@@ -10,11 +10,9 @@
 
 #import "NotificationService.h"
 
-#import "TodoEventStore.h"
-
 #import "TodoEvent.h"
 
-#import "NSDate+Utilities.h"
+#import "EKEventStore+VFDaily.h"
 
 @implementation NotificationService
 
@@ -33,7 +31,7 @@
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChangedNotification:) name:EKEventStoreChangedNotification object:[[TodoEventStore sharedTodoEventStore] eventStore]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChangedNotification:) name:EKEventStoreChangedNotification object:[EKEventStore sharedEventStore]];
     
     [application registerUserNotificationSettings:self.userNotificationSettings];
 
@@ -98,10 +96,12 @@
 - (void)scheduleTodoEventNotifications
 {
     if (![EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent]) { return; }
-    
-    NSArray *todoEvents = [[TodoEventStore sharedTodoEventStore] incompletedTodoEventsWithStartDate:[NSDate date] endDate:[NSDate dateWithDaysFromNow:7]];
+
+    NSDate *startDate = [NSDate date];
+    NSDate *endDate = [NSDate dateWithDaysFromNow:14];
+    NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
     TodoEvent *todoEvent;
-    
+
     for (todoEvent in todoEvents) {
         [self scheduleNotificationForTodoEvent:todoEvent];
     }

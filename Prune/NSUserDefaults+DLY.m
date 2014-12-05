@@ -18,7 +18,18 @@
 - (void)setEmail:(NSString *)email
 {
     [self setObject:email forKey:@"kUserEmail"];
-    [self synchronize];
+}
+
+- (BOOL)userHasOboarded
+{
+    if ([self created]) {
+        return YES;
+    }
+    else if ([self valueForKey:@"kUserHasOnboarded"]) {
+        NSNumber *userHasOboarded = [self valueForKey:@"kUserHasOnboarded"];
+        return userHasOboarded.boolValue;
+    }
+    return NO;
 }
 
 - (NSDate *)created
@@ -29,7 +40,6 @@
 - (void)setCreated:(NSDate *)date
 {
     [self setObject:date forKey:@"kUserCreated"];
-    [self synchronize];
 }
 
 - (NSDate *)lastSeen
@@ -40,7 +50,6 @@
 - (void)setLastSeen:(NSDate *)date
 {
     [self setObject:date forKey:@"kUserLastSeen"];
-    [self synchronize];
 }
 
 @end

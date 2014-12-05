@@ -10,6 +10,7 @@
 #import "NSUserDefaults+DLY.h"
 #import "DAYAnalytics.h"
 #import "SAMTextField.h"
+#import "EKCalendar+VFDaily.h"
 
 @interface SignupViewController () <UITextFieldDelegate>
 
@@ -36,7 +37,6 @@
     NSString *email = self.emailField.text;
     NSDate *now = [NSDate date];
     
-    // __________________Last enabled a calendar_______________________?
     [[NSUserDefaults standardUserDefaults] setEmail:email];
     [[NSUserDefaults standardUserDefaults] setCreated:now];
     

@@ -28,24 +28,28 @@
 		02560F591A138BDE00310F76 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 02560F581A138BDE00310F76 /* Podfile */; };
 		02560F5C1A13A72200310F76 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02560F5B1A13A72200310F76 /* SignupViewController.m */; };
 		02560F5F1A13ACBF00310F76 /* SAMTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 02560F5E1A13ACBF00310F76 /* SAMTextField.m */; };
-		0259C6911A1E4265002BC666 /* TodoEventStoreService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0259C6901A1E4265002BC666 /* TodoEventStoreService.m */; };
+		0265EC301A2F45EE00334388 /* EKCalendar+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC2F1A2F45EE00334388 /* EKCalendar+VFDaily.m */; };
+		0265EC331A3074C800334388 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0265EC321A3074C800334388 /* Crashlytics.framework */; };
+		0265EC391A3093C600334388 /* MigrationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC381A3093C600334388 /* MigrationService.m */; };
+		0265EC3C1A3097A500334388 /* UserDefaultsService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC3B1A3097A500334388 /* UserDefaultsService.m */; };
+		0265EC3F1A30C8FB00334388 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC3E1A30C8FB00334388 /* Calendar.m */; };
+		0265EC431A30CE4F00334388 /* MagicalRecordService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC421A30CE4F00334388 /* MagicalRecordService.m */; };
+		0265EC471A31D91500334388 /* EKEvent+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC461A31D91500334388 /* EKEvent+VFDaily.m */; };
+		0265EC4A1A31D96200334388 /* Todo+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC491A31D96200334388 /* Todo+VFDaily.m */; };
+		0265EC4D1A31D97600334388 /* Calendar+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC4C1A31D97600334388 /* Calendar+VFDaily.m */; };
+		0265EC501A31DC2300334388 /* EKEventStore+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC4F1A31DC2300334388 /* EKEventStore+VFDaily.m */; };
 		0289193819E2E65D00D51813 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0289193719E2E65D00D51813 /* LaunchScreen.storyboard */; };
 		02971E4A1A02961400107830 /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 02971E491A02961300107830 /* NSDate+Utilities.m */; };
 		029B22E819A4E0F100CC5EDC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22E719A4E0F100CC5EDC /* CoreData.framework */; };
-		029B22F419A6261F00CC5EDC /* TodoStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 029B22F319A6261F00CC5EDC /* TodoStore.m */; };
 		029B22F619A63FC800CC5EDC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22F519A63FC800CC5EDC /* MessageUI.framework */; };
 		02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */; };
 		02ACDFC91A2CC67600793AE4 /* Todo in Resources */ = {isa = PBXBuildFile; fileRef = 02ACDFC81A2CC67600793AE4 /* Todo */; };
 		02AE446B1A0802AA00E796CD /* NSDateFormatter+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */; };
 		02CFB7BD19E415FC00E3A243 /* Onboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */; };
 		02CFB7C419E42F0600E3A243 /* HPReorderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02CFB7C319E42F0600E3A243 /* HPReorderTableView.m */; };
-		02DA66341A07AAAE006CEB3B /* PersistentStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 02DA66331A07AAAE006CEB3B /* PersistentStack.m */; };
 		02F7022C1A07B71700C36FC9 /* TodoEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F7022B1A07B71700C36FC9 /* TodoEvent.m */; };
 		02F7022F1A07B78800C36FC9 /* Todo.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F7022E1A07B78800C36FC9 /* Todo.m */; };
-		02F702351A07BC6200C36FC9 /* NSManagedObject+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F702341A07BC6200C36FC9 /* NSManagedObject+Extended.m */; };
-		02F702381A07C61400C36FC9 /* TodoEventStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F702371A07C61400C36FC9 /* TodoEventStore.m */; };
 		02FA9C031A1F4E9000D054FF /* BadgeService.m in Sources */ = {isa = PBXBuildFile; fileRef = 02FA9C021A1F4E9000D054FF /* BadgeService.m */; };
-		02FA9C0B1A1F759300D054FF /* SettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 02FA9C0A1A1F759300D054FF /* SettingsStore.m */; };
 		02FA9C121A28DD9B00D054FF /* MissedEventsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02FA9C111A28DD9B00D054FF /* MissedEventsViewController.m */; };
 		5570820603D4AC8CDEC33ED5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B66A7B5565A6B90E230991 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -85,14 +89,30 @@
 		02560F5B1A13A72200310F76 /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
 		02560F5D1A13ACBF00310F76 /* SAMTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMTextField.h; sourceTree = "<group>"; };
 		02560F5E1A13ACBF00310F76 /* SAMTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextField.m; sourceTree = "<group>"; };
-		0259C68F1A1E4264002BC666 /* TodoEventStoreService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventStoreService.h; sourceTree = "<group>"; };
-		0259C6901A1E4265002BC666 /* TodoEventStoreService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventStoreService.m; sourceTree = "<group>"; };
+		0265EC2E1A2F45EE00334388 /* EKCalendar+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EKCalendar+VFDaily.h"; sourceTree = "<group>"; };
+		0265EC2F1A2F45EE00334388 /* EKCalendar+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EKCalendar+VFDaily.m"; sourceTree = "<group>"; };
+		0265EC321A3074C800334388 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		0265EC371A3093C600334388 /* MigrationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MigrationService.h; sourceTree = "<group>"; };
+		0265EC381A3093C600334388 /* MigrationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MigrationService.m; sourceTree = "<group>"; };
+		0265EC3A1A3097A500334388 /* UserDefaultsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDefaultsService.h; sourceTree = "<group>"; };
+		0265EC3B1A3097A500334388 /* UserDefaultsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDefaultsService.m; sourceTree = "<group>"; };
+		0265EC3D1A30C8FB00334388 /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calendar.h; sourceTree = "<group>"; };
+		0265EC3E1A30C8FB00334388 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calendar.m; sourceTree = "<group>"; };
+		0265EC411A30CE4F00334388 /* MagicalRecordService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalRecordService.h; sourceTree = "<group>"; };
+		0265EC421A30CE4F00334388 /* MagicalRecordService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagicalRecordService.m; sourceTree = "<group>"; };
+		0265EC441A3102A200334388 /* store 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "store 3.xcdatamodel"; sourceTree = "<group>"; };
+		0265EC451A31D91500334388 /* EKEvent+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EKEvent+VFDaily.h"; sourceTree = "<group>"; };
+		0265EC461A31D91500334388 /* EKEvent+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EKEvent+VFDaily.m"; sourceTree = "<group>"; };
+		0265EC481A31D96200334388 /* Todo+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Todo+VFDaily.h"; sourceTree = "<group>"; };
+		0265EC491A31D96200334388 /* Todo+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Todo+VFDaily.m"; sourceTree = "<group>"; };
+		0265EC4B1A31D97600334388 /* Calendar+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Calendar+VFDaily.h"; sourceTree = "<group>"; };
+		0265EC4C1A31D97600334388 /* Calendar+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Calendar+VFDaily.m"; sourceTree = "<group>"; };
+		0265EC4E1A31DC2300334388 /* EKEventStore+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EKEventStore+VFDaily.h"; sourceTree = "<group>"; };
+		0265EC4F1A31DC2300334388 /* EKEventStore+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EKEventStore+VFDaily.m"; sourceTree = "<group>"; };
 		0289193719E2E65D00D51813 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		02971E481A02961300107830 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
 		02971E491A02961300107830 /* NSDate+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Utilities.m"; sourceTree = "<group>"; };
 		029B22E719A4E0F100CC5EDC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		029B22F219A6261F00CC5EDC /* TodoStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoStore.h; sourceTree = "<group>"; };
-		029B22F319A6261F00CC5EDC /* TodoStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoStore.m; sourceTree = "<group>"; };
 		029B22F519A63FC800CC5EDC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		02ACDFB01A2CB65E00793AE4 /* NSUserDefaults+DLY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+DLY.h"; sourceTree = "<group>"; };
 		02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+DLY.m"; sourceTree = "<group>"; };
@@ -102,21 +122,13 @@
 		02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboard_iPhone.storyboard; sourceTree = "<group>"; };
 		02CFB7C219E42F0600E3A243 /* HPReorderTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HPReorderTableView.h; path = HPReorderTableView/HPReorderTableView.h; sourceTree = "<group>"; };
 		02CFB7C319E42F0600E3A243 /* HPReorderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HPReorderTableView.m; path = HPReorderTableView/HPReorderTableView.m; sourceTree = "<group>"; };
-		02DA66321A07AAAE006CEB3B /* PersistentStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersistentStack.h; sourceTree = "<group>"; };
-		02DA66331A07AAAE006CEB3B /* PersistentStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersistentStack.m; sourceTree = "<group>"; };
 		02F0B1A219ED4D4100CFC80A /* Complete.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Complete.entitlements; sourceTree = "<group>"; };
 		02F7022A1A07B71700C36FC9 /* TodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEvent.h; sourceTree = "<group>"; };
 		02F7022B1A07B71700C36FC9 /* TodoEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEvent.m; sourceTree = "<group>"; };
 		02F7022D1A07B78800C36FC9 /* Todo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Todo.h; sourceTree = "<group>"; };
 		02F7022E1A07B78800C36FC9 /* Todo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Todo.m; sourceTree = "<group>"; };
-		02F702331A07BC6200C36FC9 /* NSManagedObject+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Extended.h"; sourceTree = "<group>"; };
-		02F702341A07BC6200C36FC9 /* NSManagedObject+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Extended.m"; sourceTree = "<group>"; };
-		02F702361A07C61400C36FC9 /* TodoEventStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventStore.h; sourceTree = "<group>"; };
-		02F702371A07C61400C36FC9 /* TodoEventStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventStore.m; sourceTree = "<group>"; };
 		02FA9C011A1F4E9000D054FF /* BadgeService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadgeService.h; sourceTree = "<group>"; };
 		02FA9C021A1F4E9000D054FF /* BadgeService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadgeService.m; sourceTree = "<group>"; };
-		02FA9C091A1F759300D054FF /* SettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsStore.h; sourceTree = "<group>"; };
-		02FA9C0A1A1F759300D054FF /* SettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsStore.m; sourceTree = "<group>"; };
 		02FA9C0F1A278D7800D054FF /* store 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "store 2.xcdatamodel"; sourceTree = "<group>"; };
 		02FA9C101A28DD9B00D054FF /* MissedEventsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MissedEventsViewController.h; sourceTree = "<group>"; };
 		02FA9C111A28DD9B00D054FF /* MissedEventsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MissedEventsViewController.m; sourceTree = "<group>"; };
@@ -131,6 +143,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				029B22F619A63FC800CC5EDC /* MessageUI.framework in Frameworks */,
+				0265EC331A3074C800334388 /* Crashlytics.framework in Frameworks */,
 				029B22E819A4E0F100CC5EDC /* CoreData.framework in Frameworks */,
 				0230CC95199DC7BE004D7713 /* EventKit.framework in Frameworks */,
 				0230CC96199DC7BE004D7713 /* EventKitUI.framework in Frameworks */,
@@ -147,8 +160,15 @@
 		020DDB0B19ACB685004A5163 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				02F7022D1A07B78800C36FC9 /* Todo.h */,
-				02F7022E1A07B78800C36FC9 /* Todo.m */,
+				0265EC401A30C90E00334388 /* _Managed objects */,
+				0265EC4B1A31D97600334388 /* Calendar+VFDaily.h */,
+				0265EC4C1A31D97600334388 /* Calendar+VFDaily.m */,
+				0265EC2E1A2F45EE00334388 /* EKCalendar+VFDaily.h */,
+				0265EC2F1A2F45EE00334388 /* EKCalendar+VFDaily.m */,
+				0265EC451A31D91500334388 /* EKEvent+VFDaily.h */,
+				0265EC461A31D91500334388 /* EKEvent+VFDaily.m */,
+				0265EC481A31D96200334388 /* Todo+VFDaily.h */,
+				0265EC491A31D96200334388 /* Todo+VFDaily.m */,
 				02F7022A1A07B71700C36FC9 /* TodoEvent.h */,
 				02F7022B1A07B71700C36FC9 /* TodoEvent.m */,
 			);
@@ -158,12 +178,12 @@
 		020DDB0C19ACB696004A5163 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				0265EC4E1A31DC2300334388 /* EKEventStore+VFDaily.h */,
+				0265EC4F1A31DC2300334388 /* EKEventStore+VFDaily.m */,
 				02971E481A02961300107830 /* NSDate+Utilities.h */,
 				02971E491A02961300107830 /* NSDate+Utilities.m */,
 				02AE44691A0802AA00E796CD /* NSDateFormatter+Extended.h */,
 				02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */,
-				02F702331A07BC6200C36FC9 /* NSManagedObject+Extended.h */,
-				02F702341A07BC6200C36FC9 /* NSManagedObject+Extended.m */,
 				02ACDFB01A2CB65E00793AE4 /* NSUserDefaults+DLY.h */,
 				02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */,
 			);
@@ -177,10 +197,10 @@
 				0230CC68199DC6CF004D7713 /* AppDelegate.m */,
 				0230CC70199DC6CF004D7713 /* MasterViewController.h */,
 				0230CC71199DC6CF004D7713 /* MasterViewController.m */,
-				02560F5A1A13A72200310F76 /* SignupViewController.h */,
-				02560F5B1A13A72200310F76 /* SignupViewController.m */,
 				02FA9C101A28DD9B00D054FF /* MissedEventsViewController.h */,
 				02FA9C111A28DD9B00D054FF /* MissedEventsViewController.m */,
+				02560F5A1A13A72200310F76 /* SignupViewController.h */,
+				02560F5B1A13A72200310F76 /* SignupViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -229,6 +249,7 @@
 		0230CC57199DC6CF004D7713 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0265EC321A3074C800334388 /* Crashlytics.framework */,
 				029B22F519A63FC800CC5EDC /* MessageUI.framework */,
 				029B22E719A4E0F100CC5EDC /* CoreData.framework */,
 				0230CC93199DC7BE004D7713 /* EventKit.framework */,
@@ -246,12 +267,11 @@
 			children = (
 				020DDB0C19ACB696004A5163 /* Categories */,
 				02AE44671A07FD0F00E796CD /* Classes */,
-				02FA9C081A1F757E00D054FF /* Stores */,
+				020DDB0F19ACB6C4004A5163 /* Controllers */,
 				020DDB0B19ACB685004A5163 /* Models */,
 				02FA9C041A1F4E9700D054FF /* Services */,
-				020DDB0F19ACB6C4004A5163 /* Controllers */,
-				020DDB1019ACB6CC004A5163 /* Views */,
 				0230CC5F199DC6CF004D7713 /* Supporting Files */,
+				020DDB1019ACB6CC004A5163 /* Views */,
 			);
 			path = Prune;
 			sourceTree = "<group>";
@@ -269,6 +289,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0265EC401A30C90E00334388 /* _Managed objects */ = {
+			isa = PBXGroup;
+			children = (
+				0265EC3D1A30C8FB00334388 /* Calendar.h */,
+				0265EC3E1A30C8FB00334388 /* Calendar.m */,
+				02F7022D1A07B78800C36FC9 /* Todo.h */,
+				02F7022E1A07B78800C36FC9 /* Todo.m */,
+			);
+			name = "_Managed objects";
+			sourceTree = "<group>";
+		};
 		02AE44671A07FD0F00E796CD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -276,8 +307,6 @@
 				025260D31A1CF10200A1FBDE /* SOAppDelegate.m */,
 				025260CE1A1CE7EE00A1FBDE /* DAYAnalytics.h */,
 				025260CF1A1CE7EE00A1FBDE /* DAYAnalytics.m */,
-				02DA66321A07AAAE006CEB3B /* PersistentStack.h */,
-				02DA66331A07AAAE006CEB3B /* PersistentStack.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -287,25 +316,16 @@
 			children = (
 				02FA9C011A1F4E9000D054FF /* BadgeService.h */,
 				02FA9C021A1F4E9000D054FF /* BadgeService.m */,
+				0265EC411A30CE4F00334388 /* MagicalRecordService.h */,
+				0265EC421A30CE4F00334388 /* MagicalRecordService.m */,
+				0265EC371A3093C600334388 /* MigrationService.h */,
+				0265EC381A3093C600334388 /* MigrationService.m */,
 				025260D81A1CF18E00A1FBDE /* NotificationService.h */,
 				025260D91A1CF18E00A1FBDE /* NotificationService.m */,
-				0259C68F1A1E4264002BC666 /* TodoEventStoreService.h */,
-				0259C6901A1E4265002BC666 /* TodoEventStoreService.m */,
+				0265EC3A1A3097A500334388 /* UserDefaultsService.h */,
+				0265EC3B1A3097A500334388 /* UserDefaultsService.m */,
 			);
 			name = Services;
-			sourceTree = "<group>";
-		};
-		02FA9C081A1F757E00D054FF /* Stores */ = {
-			isa = PBXGroup;
-			children = (
-				02FA9C091A1F759300D054FF /* SettingsStore.h */,
-				02FA9C0A1A1F759300D054FF /* SettingsStore.m */,
-				02F702361A07C61400C36FC9 /* TodoEventStore.h */,
-				02F702371A07C61400C36FC9 /* TodoEventStore.m */,
-				029B22F219A6261F00CC5EDC /* TodoStore.h */,
-				029B22F319A6261F00CC5EDC /* TodoStore.m */,
-			);
-			name = Stores;
 			sourceTree = "<group>";
 		};
 		661C8ADA6E1D3927DFEB63B2 /* Pods */ = {
@@ -330,6 +350,7 @@
 				0230CC52199DC6CF004D7713 /* Frameworks */,
 				0230CC53199DC6CF004D7713 /* Resources */,
 				AEC59A074B2F3E71A8E8D924 /* Copy Pods Resources */,
+				0265EC311A30747100334388 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -398,6 +419,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0265EC311A30747100334388 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run fb76caedaff89b29a1a7205381ace5d25c832964 c9e5eadd9e6d92d95ecc87296e306296903fd43c0bc9a8575c167373196b022e";
+		};
 		5C643F9582A891EEFAAC81E5 /* Label Optimizely Views */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -450,31 +484,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				02F7022C1A07B71700C36FC9 /* TodoEvent.m in Sources */,
-				02DA66341A07AAAE006CEB3B /* PersistentStack.m in Sources */,
+				0265EC4D1A31D97600334388 /* Calendar+VFDaily.m in Sources */,
 				02560F5F1A13ACBF00310F76 /* SAMTextField.m in Sources */,
+				0265EC501A31DC2300334388 /* EKEventStore+VFDaily.m in Sources */,
 				02AE446B1A0802AA00E796CD /* NSDateFormatter+Extended.m in Sources */,
+				0265EC391A3093C600334388 /* MigrationService.m in Sources */,
 				02560F5C1A13A72200310F76 /* SignupViewController.m in Sources */,
 				02CFB7C419E42F0600E3A243 /* HPReorderTableView.m in Sources */,
 				025260D41A1CF10200A1FBDE /* SOAppDelegate.m in Sources */,
+				0265EC301A2F45EE00334388 /* EKCalendar+VFDaily.m in Sources */,
 				0233879719E537500082A7CF /* MCSwipeTableViewCell.m in Sources */,
 				025260DA1A1CF18E00A1FBDE /* NotificationService.m in Sources */,
 				0230CC69199DC6CF004D7713 /* AppDelegate.m in Sources */,
-				02FA9C0B1A1F759300D054FF /* SettingsStore.m in Sources */,
 				02FA9C121A28DD9B00D054FF /* MissedEventsViewController.m in Sources */,
 				020DDAF719ACA883004A5163 /* store.xcdatamodeld in Sources */,
-				02F702381A07C61400C36FC9 /* TodoEventStore.m in Sources */,
-				029B22F419A6261F00CC5EDC /* TodoStore.m in Sources */,
 				02971E4A1A02961400107830 /* NSDate+Utilities.m in Sources */,
 				0204A0FD19C1DCDD00DA6F87 /* LSWeekView.m in Sources */,
 				02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */,
+				0265EC431A30CE4F00334388 /* MagicalRecordService.m in Sources */,
 				025260D01A1CE7EE00A1FBDE /* DAYAnalytics.m in Sources */,
-				02F702351A07BC6200C36FC9 /* NSManagedObject+Extended.m in Sources */,
 				023A65C2199E1B8D00CC9BA6 /* EventCell.m in Sources */,
 				0230CC72199DC6CF004D7713 /* MasterViewController.m in Sources */,
-				0259C6911A1E4265002BC666 /* TodoEventStoreService.m in Sources */,
+				0265EC4A1A31D96200334388 /* Todo+VFDaily.m in Sources */,
 				02F7022F1A07B78800C36FC9 /* Todo.m in Sources */,
 				02FA9C031A1F4E9000D054FF /* BadgeService.m in Sources */,
+				0265EC3F1A30C8FB00334388 /* Calendar.m in Sources */,
 				0230CC65199DC6CF004D7713 /* main.m in Sources */,
+				0265EC471A31D91500334388 /* EKEvent+VFDaily.m in Sources */,
+				0265EC3C1A3097A500334388 /* UserDefaultsService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,6 +616,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Prune/Daily-Prefix.pch";
 				INFOPLIST_FILE = "Prune/Daily-Info.plist";
@@ -597,6 +638,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Prune/Daily-Prefix.pch";
 				INFOPLIST_FILE = "Prune/Daily-Info.plist";
@@ -635,10 +680,11 @@
 		020DDAF519ACA883004A5163 /* store.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				0265EC441A3102A200334388 /* store 3.xcdatamodel */,
 				02FA9C0F1A278D7800D054FF /* store 2.xcdatamodel */,
 				020DDAF619ACA883004A5163 /* store.xcdatamodel */,
 			);
-			currentVersion = 02FA9C0F1A278D7800D054FF /* store 2.xcdatamodel */;
+			currentVersion = 0265EC441A3102A200334388 /* store 3.xcdatamodel */;
 			name = store.xcdatamodeld;
 			path = ../store.xcdatamodeld;
 			sourceTree = "<group>";

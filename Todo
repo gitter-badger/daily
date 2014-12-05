@@ -1,8 +1,14 @@
-Dependency injection
+- Last enabled a calendar when filtering missed events
+- No storyboard for missed events view
+- Update badge when data updates or enabling/disabling calendars
+
+
+Dependency injection (property injection...)
 
 MVVM
 
-Move more code to storyboards? It's the next thing
+Move more code to storyboards? It's the next thing, can't use DI
+I'm not going to use Storyboard, learn code first...
 
 @implementation UIStoryboard (MyApp)
 + (UIStoryboard *)mainStoryboard {

@@ -8,31 +8,37 @@
 
 #import <Foundation/Foundation.h>
 
-@class EKEvent, Todo;
+@class EKCalendar, EKEvent;
 
 @interface TodoEvent : NSObject
 
-@property (nonatomic, strong, readonly) EKEvent *event;
-@property (nonatomic, strong, readonly) Todo *todo;
+@property(nonatomic, strong, readonly) EKEvent *event;
 
-- (instancetype)initWithEvent:(EKEvent *)event todo:(Todo *)todo;
+@property(nonatomic, strong, readonly) NSString *title;
+@property(nonatomic, strong, readonly) NSDate *startDate;
+@property(nonatomic, strong, readonly) NSDate *endDate;
+@property(nonatomic, strong, readonly) NSString *location;
+@property(nonatomic, strong, readonly) NSArray *recurrenceRules;
+@property(nonatomic, strong, readonly) EKCalendar *calendar;
 
-- (NSDate *)startDate;
-- (NSDate *)endDate;
-- (NSString *)location;
+@property(nonatomic, strong) NSNumber *position;
+@property(nonatomic, strong) NSNumber *completed;
+
 - (BOOL)allDay;
-
-- (NSNumber *)position;
-- (void)setPosition:(NSNumber *)position;
-
-- (NSNumber *)completed;
-- (void)setCompleted:(NSNumber *)completed;
+- (BOOL)allowsContentModifications;
+- (BOOL)deleteThisTodoEvent;
+- (BOOL)deleteFutureTodoEvents;
 - (BOOL)isCompleted;
 
+// Notifications (Cateogory?)
+- (NSArray *)localNotifications;
+
+// Helpers (View model?)
 - (NSString *)humanReadableStartTime;
 - (NSString *)humanReadableEndTime;
-- (NSString *)title;
 
-- (NSArray *)localNotifications;
+// Class methods
++ (NSArray *)findAllWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
++ (NSArray *)findAllIncompleteWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 
 @end

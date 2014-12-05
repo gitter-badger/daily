@@ -6,22 +6,23 @@
 //  Copyright (c) 2014 ___FULLUSERNAME___. All rights reserved.
 //
 
-#import <EventKit/EventKit.h>
+// Frameworks
+#import <Crashlytics/Crashlytics.h>
 
-#import "DAYAnalytics.h"
-#import "AppDelegate.h"
-
+// Services
 #import "BadgeService.h"
 #import "NotificationService.h"
-#import "TodoEventStoreService.h"
+#import "MigrationService.h"
+#import "UserDefaultsService.h"
+#import "MagicalRecordService.h"
 
+// Controllers
 #import "MasterViewController.h"
+#import "AppDelegate.h"
 
-#import "NSDate+Utilities.h"
+// Categories
+#import "NSUserDefaults+DLY.h"
 
-static NSString * const kUserHasOnboarded = @"userHasOnboarded";
-static NSString * const kUserOnboardedAt = @"userOnboardedAt";
-static NSString * const kUserEmail = @"userEmail";
 static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotification";
 static NSString * const kLastClosedDate = @"lastClosedDate";
 
@@ -40,7 +41,11 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
     static NSArray * _services;
     static dispatch_once_t _onceTokenServices;
     dispatch_once(&_onceTokenServices, ^{
-        _services = @[[BadgeService sharedInstance], [NotificationService sharedInstance], [TodoEventStoreService sharedInstance]];
+        _services = @[[MagicalRecordService sharedInstance],
+                      [BadgeService sharedInstance],
+                      [NotificationService sharedInstance],
+                      [MigrationService sharedInstance],
+                      [UserDefaultsService sharedInstance]];
     });
     return _services;
 }
@@ -51,6 +56,8 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
 {
     [super application:application didFinishLaunchingWithOptions:launchOptions];
     
+    [Crashlytics startWithAPIKey:@"fb76caedaff89b29a1a7205381ace5d25c832964"];
+    
     [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTintColor:[UIColor redColor]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor blackColor]}];
@@ -58,7 +65,7 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     
-    BOOL userHasOnboarded = [[NSUserDefaults standardUserDefaults] boolForKey:kUserHasOnboarded];
+    BOOL userHasOnboarded = [[NSUserDefaults standardUserDefaults] userHasOboarded];
     if (userHasOnboarded) {
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]];
         self.window.rootViewController = [storyboard instantiateInitialViewController];
@@ -75,8 +82,8 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    BOOL userHasOnboarded = [[NSUserDefaults standardUserDefaults] boolForKey:kUserHasOnboarded];
-    NSString *email = [[NSUserDefaults standardUserDefaults] valueForKey:kUserEmail];
+    BOOL userHasOnboarded = [[NSUserDefaults standardUserDefaults] userHasOboarded];
+    NSString *email = [[NSUserDefaults standardUserDefaults] email];
     if (userHasOnboarded) {
         [[DAYAnalytics sharedAnalytics] identify:email];
     }
@@ -85,18 +92,21 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     [super applicationWillResignActive:application];
+    
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastClosedDate];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [super applicationDidEnterBackground:application];
+
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastClosedDate];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [super applicationWillTerminate:application];
+    
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastClosedDate];
 }
 

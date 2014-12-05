@@ -22,10 +22,6 @@
 #import "HPReorderTableView.h"
 #import "EventCell.h"
 
-// Stores
-#import "SettingsStore.h"
-#import "TodoEventStore.h"
-
 // Service
 #import "NotificationService.h"
 
@@ -35,6 +31,8 @@
 // Categories
 #import "NSDate+Utilities.h"
 #import "NSDateFormatter+Extended.h"
+#import "EKCalendar+VFDaily.h"
+#import "EKEventStore+VFDaily.h"
 
 static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotification";
 static NSString * const kLastClosedDate = @"lastClosedDate";
@@ -43,7 +41,7 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
 static NSInteger const kIncompletedSection = 0;
 static NSInteger const kCompletedSection = 1;
 
-@interface MasterViewController () <EKEventEditViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, HPReorderTableViewDelegate, EKCalendarChooserDelegate>
+@interface MasterViewController () <EKEventEditViewDelegate, EKEventViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, HPReorderTableViewDelegate, EKCalendarChooserDelegate>
 
 @property (nonatomic, weak) IBOutlet HPReorderTableView *tableView;
 
@@ -95,7 +93,6 @@ static NSInteger const kCompletedSection = 1;
 - (void)setCurrentDate:(NSDate *)currentDate
 {
     [[NSUserDefaults standardUserDefaults] setObject:currentDate forKey:@"currentDate"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)applicationDidBecomeActive:(id)sender
@@ -228,19 +225,14 @@ static NSInteger const kCompletedSection = 1;
 
 - (void)fetchMissedEvents
 {
-    [[TodoEventStore sharedTodoEventStore].eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+    // TODO: Run when content change
+    // TODO: Run on start up IE. from background to active
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         if (granted) {
-            NSDate *dateMonthAgo = [NSDate dateWithDaysBeforeNow:30];
-            NSDate *firstLaunch = [NSDate dateWithDaysBeforeNow:2];
-            if ([dateMonthAgo isEarlierThanDate:firstLaunch]) {
-                dateMonthAgo = firstLaunch;
-            }
-            NSDate *dateOfToday = [NSDate date];
-            NSLog(@"%@", dateOfToday);
-            
-            NSArray *todoEvents = [[TodoEventStore sharedTodoEventStore] incompletedTodoEventsWithStartDate:dateMonthAgo endDate:dateOfToday];
-            
             dispatch_async(dispatch_get_main_queue(), ^{
+                NSDate *startDate = [[NSDate dateWithDaysBeforeNow:30] dateAtStartOfDay];
+                NSDate *endDate = [[NSDate date] dateAtStartOfDay];
+                NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
                 self.missedEvents = [todoEvents mutableCopy];
                 [self.missedEventsButton setTitle:[NSString stringWithFormat:@"%lu", (unsigned long)todoEvents.count] forState:UIControlStateNormal];
             });
@@ -318,14 +310,14 @@ static NSInteger const kCompletedSection = 1;
         self.todayButton.hidden = YES;
     }
     
-    [[TodoEventStore sharedTodoEventStore].eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         if (granted) {
-            self.incompletedEvents = [NSMutableArray array];
-            self.completedEvents = [NSMutableArray array];
-            
-            NSArray *calendars = [[SettingsStore sharedSettingsStore] calendars];
-            if (calendars.count) {
-                NSArray *events = [[TodoEventStore sharedTodoEventStore] todoEventsFromDate:date calendars:calendars];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSDate *startDate = [self.currentDate dateAtStartOfDay];
+                NSDate *endDate = [self.currentDate dateAtEndOfDay];
+                
+                NSArray *events = [TodoEvent findAllWithStartDate:startDate endDate:endDate];
                 
                 [[DAYAnalytics sharedAnalytics] track:@"Changed Day" properties:@{ @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:date]], @"Number Of Events": [NSNumber numberWithInteger:events.count] }];
                 
@@ -334,9 +326,6 @@ static NSInteger const kCompletedSection = 1;
                 
                 NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"completed = %@", @YES];
                 self.completedEvents = [[events filteredArrayUsingPredicate:completedPredicate] mutableCopy];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [self.tableView reloadData];
                 
@@ -363,7 +352,7 @@ static NSInteger const kCompletedSection = 1;
     NSIndexPath *newIndexPath;
     if (indexPath.section == kIncompletedSection) {
         todoEvent = [self.incompletedEvents objectAtIndex:indexPath.row];
-        [todoEvent setCompleted:@YES];
+        todoEvent.completed = @YES;
         [[DAYAnalytics sharedAnalytics] track:@"Completed Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
         [eventCell completeCell];
         [self.incompletedEvents removeObjectAtIndex:indexPath.row];
@@ -378,9 +367,10 @@ static NSInteger const kCompletedSection = 1;
         [self.completedEvents removeObjectAtIndex:indexPath.row];
         [self.incompletedEvents addObject:todoEvent];
         newIndexPath = [NSIndexPath indexPathForRow:[self.incompletedEvents indexOfObject:todoEvent] inSection:kIncompletedSection];
-        [todoEvent setCompleted:@NO];
+        todoEvent.completed = @NO;
         [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
     }
+    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
     
     [self persistEventPositions];
 }
@@ -388,11 +378,12 @@ static NSInteger const kCompletedSection = 1;
 - (void)persistEventPositions
 {
     [self.incompletedEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-        [todoEvent setPosition:[NSNumber numberWithInteger:index]];
+        todoEvent.position = [NSNumber numberWithInteger:index];
     }];
     [self.completedEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-        [todoEvent setPosition:[NSNumber numberWithInteger:index]];
+        todoEvent.position = [NSNumber numberWithInteger:index];
     }];
+    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
 }
 
 - (void)missedEventsButtonPressed:(id)sender
@@ -424,32 +415,13 @@ static NSInteger const kCompletedSection = 1;
     [self presentAddEventControllerWithStartDate:self.currentDate];
 }
 
-- (void)presentCalendarChooser
-{
-    [[TodoEventStore sharedTodoEventStore].eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                EKCalendarChooser *calendarChooser = [[EKCalendarChooser alloc] initWithSelectionStyle:EKCalendarChooserSelectionStyleMultiple displayStyle:EKCalendarChooserDisplayAllCalendars entityType:EKEntityTypeEvent eventStore:[TodoEventStore sharedTodoEventStore].eventStore];
-                calendarChooser.showsDoneButton = YES;
-                calendarChooser.showsCancelButton = YES;
-                calendarChooser.delegate = self;
-                calendarChooser.selectedCalendars = [NSSet setWithArray:[[SettingsStore sharedSettingsStore] calendars]];
-                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:calendarChooser];
-                [self presentViewController:navigationController animated:YES completion:nil];
-            });
-        } else {
-            NSLog(@"Access denied from Calendar");
-        }
-    }];
-}
-
 - (void)presentAddEventControllerWithStartDate:(NSDate *)startDate
 {
-    [[TodoEventStore sharedTodoEventStore].eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         if (granted) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 EKEventEditViewController *addViewController = [[EKEventEditViewController alloc] init];
-                addViewController.eventStore = [TodoEventStore sharedTodoEventStore].eventStore;
+                addViewController.eventStore = [EKEventStore sharedEventStore];
                 addViewController.editViewDelegate = self;
                 addViewController.event.timeZone = [NSTimeZone defaultTimeZone];
                 addViewController.event.allDay = YES;
@@ -474,9 +446,13 @@ static NSInteger const kCompletedSection = 1;
         case EKEventEditViewActionSaved:
             if (self.editingTodoEvent) {
                 [[DAYAnalytics sharedAnalytics] track:@"Updated Event" properties:@{ @"Days Moved": [NSNumber numberWithInteger:[self.currentDate distanceInDaysToDate:controller.event.startDate]], @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
-                TodoEvent *todoEvent = [[TodoEventStore sharedTodoEventStore] todoEventFromEvent:controller.event day:self.currentDate];
-                todoEvent.completed = self.editingTodoEvent.completed;
-                todoEvent.position = self.editingTodoEvent.position;
+#warning FIX ME
+// TODO: There's a bug here somewhere...
+//                NSArray *todoEvents = [[TodoEventStore sharedTodoEventStore] todoEventsFromEvent:controller.event];
+//                [todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger idx, BOOL *stop) {
+//                    todoEvent.completed = self.editingTodoEvent.completed;
+//                    todoEvent.position = self.editingTodoEvent.position;
+//                }];
             } else {
                 [[DAYAnalytics sharedAnalytics] track:@"Created Event" properties:@{ @"All Day": [NSNumber numberWithBool:controller.event.allDay], @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
             }
@@ -576,39 +552,45 @@ static NSInteger const kCompletedSection = 1;
         else if (indexPath.section == kCompletedSection) {
             todoEvent = [self.completedEvents objectAtIndex:indexPath.row];
         }
-        if (todoEvent.event.recurrenceRules.count) {
+        if (todoEvent.recurrenceRules.count) {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"This is a repeating event." preferredStyle:UIAlertControllerStyleActionSheet];
             [alertController addAction:[UIAlertAction actionWithTitle:@"Delete This Event Only" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [[TodoEventStore sharedTodoEventStore].eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+                [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        [[TodoEventStore sharedTodoEventStore].eventStore removeEvent:todoEvent.event span:EKSpanThisEvent commit:YES error:nil];
-                        [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                        if ([todoEvent deleteThisTodoEvent]) {
+                            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                            if (indexPath.section == kIncompletedSection) {
+                                [self.incompletedEvents removeObject:todoEvent];
+                            } else if (indexPath.section == kCompletedSection) {
+                                [self.completedEvents removeObject:todoEvent];
+                            }
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            });
+                        }
                     } else {
                         NSLog(@"Could't delete the event, access denied from the Calendar");
                     }
                 }];
-                if (indexPath.section == kIncompletedSection) {
-                    [self.incompletedEvents removeObject:todoEvent];
-                } else if (indexPath.section == kCompletedSection) {
-                    [self.completedEvents removeObject:todoEvent];
-                }
-                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }]];
             [alertController addAction:[UIAlertAction actionWithTitle:@"Delete All Future Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [[TodoEventStore sharedTodoEventStore].eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+                [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        [[TodoEventStore sharedTodoEventStore].eventStore removeEvent:todoEvent.event span:EKSpanFutureEvents commit:YES error:nil];
-                        [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES , @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                        if ([todoEvent deleteFutureTodoEvents]) {
+                            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES , @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                            if (indexPath.section == kIncompletedSection) {
+                                [self.incompletedEvents removeObject:todoEvent];
+                            } else if (indexPath.section == kCompletedSection) {
+                                [self.completedEvents removeObject:todoEvent];
+                            }
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            });
+                        }
                     } else {
                         NSLog(@"Couldn't delete the event, access denied from the Calendar");
                     }
                 }];
-                if (indexPath.section == kIncompletedSection) {
-                    [self.incompletedEvents removeObject:todoEvent];
-                } else if (indexPath.section == kCompletedSection) {
-                    [self.completedEvents removeObject:todoEvent];
-                }
-                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }]];
             [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
             }]];
@@ -616,14 +598,23 @@ static NSInteger const kCompletedSection = 1;
         } else {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             [alertController addAction:[UIAlertAction actionWithTitle:@"Delete Event" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-                [[TodoEventStore sharedTodoEventStore].eventStore removeEvent:todoEvent.event span:EKSpanThisEvent commit:YES error:nil];
-                [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
-                if (indexPath.section == kIncompletedSection) {
-                    [self.incompletedEvents removeObject:todoEvent];
-                } else if (indexPath.section == kCompletedSection) {
-                    [self.completedEvents removeObject:todoEvent];
-                }
-                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+                    if (granted) {
+                        if ([todoEvent deleteThisTodoEvent]) {
+                            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                            if (indexPath.section == kIncompletedSection) {
+                                [self.incompletedEvents removeObject:todoEvent];
+                            } else if (indexPath.section == kCompletedSection) {
+                                [self.completedEvents removeObject:todoEvent];
+                            }
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                            });
+                        }
+                    } else {
+                        NSLog(@"Couldn't delete the event, access denied from the Calendar");
+                    }
+                }];
             }]];
             [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
             }]];
@@ -712,8 +703,6 @@ static NSInteger const kCompletedSection = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    EKEventEditViewController *editViewController = [[EKEventEditViewController alloc] init];
-    editViewController.eventStore = [TodoEventStore sharedTodoEventStore].eventStore;
     TodoEvent *todoEvent;
     if (indexPath.section == kIncompletedSection) {
         todoEvent = [self.incompletedEvents objectAtIndex:indexPath.row];
@@ -721,10 +710,27 @@ static NSInteger const kCompletedSection = 1;
     else if (indexPath.section == kCompletedSection) {
         todoEvent = [self.completedEvents objectAtIndex:indexPath.row];
     }
-    editViewController.event = todoEvent.event;
-    self.editingTodoEvent = todoEvent;
-    editViewController.editViewDelegate = self;
-    [self presentViewController:editViewController animated:YES completion:nil];
+    
+    if (todoEvent.allowsContentModifications) {
+        EKEventEditViewController *editViewController = [[EKEventEditViewController alloc] init];
+        editViewController.eventStore = [EKEventStore sharedEventStore];
+        editViewController.event = todoEvent.event;
+        self.editingTodoEvent = todoEvent;
+        editViewController.editViewDelegate = self;
+        [self presentViewController:editViewController animated:YES completion:nil];
+    }
+    else {
+        EKEventViewController *viewController = [[EKEventViewController alloc] init];
+        viewController.event = todoEvent.event;
+        viewController.delegate = self;
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    }
+}
+
+- (void)eventViewController:(EKEventViewController *)controller didCompleteWithAction:(EKEventViewAction)action
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Status Bar
@@ -750,7 +756,28 @@ static NSInteger const kCompletedSection = 1;
     self.dayPicker.frame = dayPickerFrame;
 }
 
-#pragma mark - Calendar Picker
+#pragma mark - Calendar Chooser
+
+- (void)presentCalendarChooser
+{
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            EKEventStore *eventStore = [EKEventStore sharedEventStore];
+            NSArray *selectedCalendars = [EKCalendar selectedCalendarForEntityType:EKEntityTypeEvent];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                EKCalendarChooser *calendarChooser = [[EKCalendarChooser alloc] initWithSelectionStyle:EKCalendarChooserSelectionStyleMultiple displayStyle:EKCalendarChooserDisplayAllCalendars entityType:EKEntityTypeEvent eventStore:eventStore];
+                calendarChooser.showsDoneButton = YES;
+                calendarChooser.showsCancelButton = YES;
+                calendarChooser.delegate = self;
+                calendarChooser.selectedCalendars = [NSSet setWithArray:selectedCalendars];
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:calendarChooser];
+                [self presentViewController:navigationController animated:YES completion:nil];
+            });
+        } else {
+            NSLog(@"Access denied from Calendar");
+        }
+    }];
+}
 
 -(void)calendarChooserDidCancel:(EKCalendarChooser *)calendarChooser
 {
@@ -760,12 +787,19 @@ static NSInteger const kCompletedSection = 1;
 -(void)calendarChooserDidFinish:(EKCalendarChooser *)calendarChooser
 {
     [[DAYAnalytics sharedAnalytics] track:@"Changed Visible Calendars"];
-    NSSet *calendars = calendarChooser.selectedCalendars;
-    if (calendars && calendars.count) {
-        [[SettingsStore sharedSettingsStore] setCalendars:[calendars allObjects]];
-    } else {
-        [[SettingsStore sharedSettingsStore] setCalendars:[NSArray array]];
-    }
+    NSArray *calendars = [[EKEventStore sharedEventStore] calendarsForEntityType:EKEntityTypeEvent];
+    NSArray *selectedCalendars = [calendarChooser.selectedCalendars allObjects];
+    [calendars enumerateObjectsUsingBlock:^(EKCalendar *calendar, NSUInteger idx, BOOL *stop) {
+        if ([selectedCalendars containsObject:calendar]) {
+            if (!calendar.enabledDate) {
+                calendar.enabledDate = [NSDate date];
+            }
+        }
+        else {
+            calendar.enabledDate = nil;
+        }
+    }];
+    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
     [self dismissViewControllerAnimated:YES completion:^{
         [self fetchEvents];
     }];

@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-#import "NSManagedObject+Extended.h"
-
-
 @interface Todo : NSManagedObject
 
 @property (nonatomic, retain) NSString * todoIdentifier;

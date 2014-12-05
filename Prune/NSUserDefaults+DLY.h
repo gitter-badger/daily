@@ -13,6 +13,7 @@
 - (NSString *)email;
 - (void)setEmail:(NSString *)email;
 
+- (BOOL)userHasOboarded;
 - (NSDate *)created;
 - (void)setCreated:(NSDate *)date;
 
