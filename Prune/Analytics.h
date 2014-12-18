@@ -8,16 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DAYAnalytics : NSObject
+@interface Analytics : NSObject
 
 + (instancetype)sharedAnalytics;
 
 - (void)identify:(NSString *)email;
-- (void)identify:(NSString *)email traits:(NSDictionary *)traits;
 
 - (void)track:(NSString *)event;
 - (void)track:(NSString *)event properties:(NSDictionary *)properties;
 
-- (void)screen:(NSString *)screen;
+- (void)presentMessageView;
 
 @end

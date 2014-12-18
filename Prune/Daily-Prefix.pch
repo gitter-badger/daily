@@ -13,8 +13,9 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
-//    #define MR_SHORTHAND
+    #define MR_SHORTHAND 1
     #import <MagicalRecord/CoreData+MagicalRecord.h>
-    #import "NSDate+Utilities.h"
-    #import "DAYAnalytics.h"
+    #import "VIKKit.h"
+    #import "VIKKit+MagicalRecord.h"
+    #import "Analytics.h"
 #endif

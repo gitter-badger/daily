@@ -8,8 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@class MissedEventsViewController, TodoEventsCache;
+
+@protocol MissedEventsViewControllerDelegate <NSObject>
+
+@optional
+- (void)missedEventsViewControllerDidFinish:(MissedEventsViewController *)missedEventsViewController;
+
+@end
+
 @interface MissedEventsViewController : UITableViewController
 
-@property (nonatomic, strong) NSArray *events;
+@property (nonatomic, weak) id <MissedEventsViewControllerDelegate> delegate;
+
+- (void)setTodoEventsCache:(TodoEventsCache *)todoEventsCache;
 
 @end

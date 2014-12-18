@@ -8,10 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class SAMTextField;
-
 @interface SignupViewController : UIViewController
-
-@property (nonatomic, weak) IBOutlet SAMTextField *emailField;
 
 @end

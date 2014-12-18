@@ -25,9 +25,9 @@
     if ([self created]) {
         return YES;
     }
-    else if ([self valueForKey:@"kUserHasOnboarded"]) {
-        NSNumber *userHasOboarded = [self valueForKey:@"kUserHasOnboarded"];
-        return userHasOboarded.boolValue;
+    else if ([self boolForKey:@"userHasOnboarded"]) {
+        [self setCreated:[NSDate date]];
+        return YES;
     }
     return NO;
 }

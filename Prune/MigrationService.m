@@ -1,12 +1,4 @@
-//
-//  MigrationService.m
-//  Daily
-//
-//  Created by Viktor Fröberg on 04/12/14.
-//  Copyright (c) 2014 Viktor Fröberg. All rights reserved.
-//
-
-#import <MTMigration/MTMigration.h>
+#import "MTMigration.h"
 #import "MigrationService.h"
 #import "Calendar.h"
 #import "EKCalendar+VFDaily.h"
@@ -27,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [MTMigration migrateToVersion:@"1.0" block:^{
+    [MTMigration migrateToBuild:@"1.0.6" block:^{
         [self migrateSelectedCalendarsFromUserDefaults];
         [Todo migrateFromTodoIdentifiers];
     }];
@@ -38,16 +30,15 @@
 
 - (void)migrateSelectedCalendarsFromUserDefaults
 {
-//    TodoEventStore *todoEventStore = [TodoEventStore sharedTodoEventStore];
-//    NSArray *selectedCalendarIdentifiers = [[NSUserDefaults standardUserDefaults] objectForKey:@"calendarIdentifier"];
-//    NSArray *calendars = [todoEventStore calendars];
-//    [calendars enumerateObjectsUsingBlock:^(EKCalendar *calendar, NSUInteger idx, BOOL *stop) {
-//        if ([selectedCalendarIdentifiers containsObject:calendar.calendarIdentifier]) {
-//            calendar.enabledDate = [NSDate date];
-//        } else {
-//            calendar.enabledDate = nil;
-//        }
-//    }];
+    NSArray *selectedCalendarIdentifiers = [[NSUserDefaults standardUserDefaults] objectForKey:@"calendarIdentifiers"];
+    NSArray *calendars = [EKCalendar calendarForEntityType:EKEntityTypeEvent];
+    [calendars enumerateObjectsUsingBlock:^(EKCalendar *calendar, NSUInteger idx, BOOL *stop) {
+        if ([selectedCalendarIdentifiers containsObject:calendar.calendarIdentifier]) {
+            calendar.enabledDate = [NSDate date];
+        } else {
+            calendar.enabledDate = nil;
+        }
+    }];
 }
 
 @end

@@ -10,7 +10,7 @@
 
 #import "EKCalendar+VFDaily.h"
 #import "NSDate+Utilities.h"
-#import "Calendar.h"
+#import "Calendar+VFDaily.h"
 #import "EKEventStore+VFDaily.h"
 
 @implementation EKCalendar (VFDaily)
@@ -26,13 +26,7 @@
 {
     Calendar *calendar = objc_getAssociatedObject(self, @selector(calendar));
     if (!calendar) {
-        calendar = [Calendar MR_findFirstByAttribute:@"calendarIdentifier" withValue:self.calendarIdentifier];
-        if (!calendar) {
-            calendar = [Calendar MR_createEntity];
-            calendar.calendarIdentifier = self.calendarIdentifier;
-            calendar.enabledDate = [NSDate date];
-            [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
-        }
+        calendar = [Calendar findOrCreateByAttribute:@"calendarIdentifier" withValue:self.calendarIdentifier];
         self.calendar = calendar;
     }
     return calendar;

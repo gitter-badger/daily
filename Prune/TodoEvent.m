@@ -14,8 +14,11 @@
 #import "EKEventStore+VFDaily.h"
 #import "EKCalendar+VFDaily.h"
 
+#import "VIKKit.h"
+
 @interface TodoEvent()
 
+@property (nonatomic, strong) EKCalendar *calendar;
 @property (nonatomic, strong) EKEvent *event;
 @property (nonatomic, strong) Todo *todo;
 
@@ -25,7 +28,7 @@
 
 @implementation TodoEvent
 
-@dynamic startDate, endDate, calendar, location, title, recurrenceRules;
+@dynamic startDate, endDate, calendar, location, title, eventIdentifier;
 
 - (instancetype)initWithEvent:(EKEvent *)event todo:(Todo *)todo
 {
@@ -39,7 +42,17 @@
     return self;
 }
 
+- (NSString *)timeAgo
+{
+    return [self.date timeAgo];
+}
+
 #pragma mark - Event delegation
+
+- (NSString *)eventIdentifier
+{
+    return self.event.eventIdentifier;
+}
 
 - (NSString *)title
 {
@@ -56,6 +69,21 @@
     return self.event.endDate;
 }
 
+- (NSString *)location
+{
+    return self.event.location;
+}
+
+- (NSArray *)recurrenceRules
+{
+    return self.event.recurrenceRules;
+}
+
+- (EKCalendar *)calendar
+{
+    return self.event.calendar;
+}
+
 - (BOOL)allDay
 {
     return self.event.allDay;
@@ -66,12 +94,7 @@
     return self.event.calendar.allowsContentModifications;
 }
 
-- (NSString *)location
-{
-    return self.event.location;
-}
-
-- (BOOL)deleteThisTodoEvent
+- (BOOL)deleteThisEvent
 {
     NSError* error;
     [[EKEventStore sharedEventStore] removeEvent:self.event span:EKSpanThisEvent error:&error];
@@ -83,7 +106,7 @@
     }
 }
 
-- (BOOL)deleteFutureTodoEvents
+- (BOOL)deleteFutureEvents
 {
     NSError* error;
     [[EKEventStore sharedEventStore] removeEvent:self.event span:EKSpanFutureEvents error:&error];
@@ -95,7 +118,26 @@
     }
 }
 
+// TODO: Make smarter! What if last event?
+- (BOOL)hasFutureEvents
+{
+    if (self.recurrenceRules.count) {
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark - Todo delegation
+
+- (NSDate *)date
+{
+    return self.todo.date;
+}
+
+- (void)setDate:(NSDate *)date
+{
+    self.todo.date = date;
+}
 
 - (NSNumber *)position
 {
@@ -115,11 +157,39 @@
 - (void)setCompleted:(NSNumber *)completed
 {
     self.todo.completed = completed;
+    if (completed.boolValue) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TodoEventCompleted" object:self];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TodoEventUncompleted" object:self];
+    }
 }
 
 - (BOOL)isCompleted
 {
     return self.completed.boolValue;
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+    
+    if (![object isKindOfClass:[TodoEvent class]]) {
+        return NO;
+    }
+    
+    return [self isEqualToTodoEvent:(TodoEvent *)object];
+}
+
+- (BOOL)isEqualToTodoEvent:(TodoEvent *)object
+{
+    BOOL equalEventIdentifier = [self.event.eventIdentifier isEqualToString:object.event.eventIdentifier];
+    BOOL equalDate = [self.date isEqualToDate:object.date];
+    if (equalEventIdentifier && equalDate) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 + (NSArray *)findAllWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
@@ -130,13 +200,11 @@
     if (selectedCalendars.count) {
         NSPredicate *predicate = [eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:selectedCalendars];
         NSArray *events = [eventStore eventsMatchingPredicate:predicate];
-        [events enumerateObjectsUsingBlock:^(EKEvent *event, NSUInteger idx, BOOL *stop) {
-            [todoEvents addObjectsFromArray:[self todoEventsFromEvent:event]];
-        }];
+        [todoEvents addObjectsFromArray:[self todosEventsFromEvents:events withStartDate:startDate endDate:endDate]];
+        
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES];
         [todoEvents sortUsingDescriptors:@[sortDescriptor]];
     }
-    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
     return todoEvents;
 }
 
@@ -147,30 +215,70 @@
     return [todoEvents filteredArrayUsingPredicate:predicate];
 }
 
++ (NSArray *)todosEventsFromEvents:(NSArray *)events withStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
+{
+    NSMutableArray *todoEvents = [NSMutableArray array];
+    [events enumerateObjectsUsingBlock:^(EKEvent *event, NSUInteger idx, BOOL *stop) {
+        NSInteger days = [event.startDate daysBeforeDate:event.endDate] + 1;
+        for (int i = 0; i < days; i++) {
+            NSDate *date = [event.startDate dateByAddingDays:i];
+            if ([date isAfterDate:[startDate yesterday]] && [date isBeforeDate:[endDate tomorrow]]) {
+                
+                NSPredicate *todoPredicate = [NSPredicate predicateWithFormat:@"eventIdentifier = %@ AND date = %@", event.eventIdentifier, date];
+                Todo *todo = [Todo findFirstWithPredicate:todoPredicate];
+                
+                if (!todo) {
+                    todo = [Todo createEntity];
+                    todo.eventIdentifier = event.eventIdentifier;
+                    todo.date = date;
+                    todo.position = @-1;
+                    
+                    NSDate *eventDate = [date midnight];
+                    NSDate *eventModifiedDate = [event.lastModifiedDate midnight];
+                    NSDate *calendarEnabledDate = [event.calendar.enabledDate yesterday];
+                    if ([eventDate isAfterDate:calendarEnabledDate] || [eventModifiedDate isAfterDate:calendarEnabledDate]) {
+                        todo.completed = @NO;
+                    } else {
+                        todo.completed = @YES;
+                    }
+                }
+                
+                [todoEvents addObject:[[TodoEvent alloc] initWithEvent:event todo:todo]];
+            }
+        }
+    }];
+    [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
+    return todoEvents;
+    
+}
+
 + (NSArray *)todoEventsFromEvent:(EKEvent *)event
 {
+    EKCalendar *calendar = event.calendar;
     NSMutableArray *todoEvents = [[NSMutableArray alloc] init];
     
     NSInteger days = [event.startDate daysBeforeDate:event.endDate] + 1;
     for (int i = 0; i < days; i++) {
+        NSString *eventIdentifier = event.eventIdentifier;
         NSDate *date = [event.startDate dateByAddingDays:i];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"eventIdentifier = %@ AND date = %@", event.eventIdentifier, date];
-        NSArray *todos = [Todo MR_findAllWithPredicate:predicate];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"eventIdentifier = %@ AND date = %@", eventIdentifier, date];
         
-        Todo *todo = [todos lastObject];
+        Todo *todo = [Todo findFirstWithPredicate:predicate];
         if (!todo) {
-            todo = [Todo MR_createEntity];
+            todo = [Todo createEntity];
             todo.eventIdentifier = event.eventIdentifier;
             todo.date = date;
             todo.position = @-1;
-            
-            NSDate *oneDayBeforeCalendarWasEnabled = [[event.calendar.enabledDate dateBySubtractingDays:1] dateAtEndOfDay];
-            BOOL eventWasCreatedAfterCalendarWasEnabled = [oneDayBeforeCalendarWasEnabled isEarlierThanDate:date];
-            if (eventWasCreatedAfterCalendarWasEnabled) {
+
+            NSDate *eventDate = [date midnight];
+            NSDate *eventModifiedDate = [event.lastModifiedDate midnight];
+            NSDate *calendarEnabledDate = [calendar.enabledDate yesterday];
+            if ([eventDate isAfterDate:calendarEnabledDate] || [eventModifiedDate isAfterDate:calendarEnabledDate]) {
                 todo.completed = @NO;
             } else {
                 todo.completed = @YES;
             }
+            [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
         }
         
         TodoEvent *todoEvent = [[TodoEvent alloc] initWithEvent:event todo:todo];
@@ -186,10 +294,8 @@
 {
     NSMutableArray *localNotifications = [NSMutableArray array];
     
-    UILocalNotification *localNotification;
-    
     if (!self.allDay) {
-        localNotification = [[UILocalNotification alloc] init];
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
         localNotification.alertBody = [NSString stringWithFormat:@"%@, %@", self.title, self.relativeStartTime];
         localNotification.fireDate = self.startDate;
         localNotification.soundName = UILocalNotificationDefaultSoundName;
@@ -197,17 +303,17 @@
     }
     
     for (EKAlarm *alarm in self.event.alarms) {
-        localNotification = [[UILocalNotification alloc] init];
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
         localNotification.alertBody = [NSString stringWithFormat:@"%@, %@", self.title, self.relativeStartTime];
+        localNotification.soundName = UILocalNotificationDefaultSoundName;
         if (alarm.absoluteDate) {
             localNotification.fireDate = alarm.absoluteDate;
         } else {
             localNotification.fireDate = [self.startDate dateByAddingTimeInterval:alarm.relativeOffset];
         }
         
-        if ([localNotification.fireDate isEqualToDate:self.startDate]) { continue; }
+        if (!self.allDay && [localNotification.fireDate isEqualToDate:self.startDate]) { continue; }
         
-        localNotification.soundName = UILocalNotificationDefaultSoundName;
         [localNotifications addObject:localNotification];
     }
     return localNotifications;
@@ -215,6 +321,8 @@
 
 
 #pragma mark - View helpers (move to view model)
+
+// TODO: View model?
 
 - (NSString *)humanReadableStartTime
 {
@@ -234,7 +342,6 @@
     }
     return humanReadableTime;
 }
-
 
 #pragma mark - Private
 

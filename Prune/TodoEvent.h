@@ -12,23 +12,29 @@
 
 @interface TodoEvent : NSObject
 
-@property(nonatomic, strong, readonly) EKEvent *event;
+// TODO: These two should be private...
+@property (nonatomic, strong, readonly) EKEvent *event;
+@property (nonatomic, strong, readonly) EKCalendar *calendar;
 
-@property(nonatomic, strong, readonly) NSString *title;
-@property(nonatomic, strong, readonly) NSDate *startDate;
-@property(nonatomic, strong, readonly) NSDate *endDate;
-@property(nonatomic, strong, readonly) NSString *location;
-@property(nonatomic, strong, readonly) NSArray *recurrenceRules;
-@property(nonatomic, strong, readonly) EKCalendar *calendar;
+@property (nonatomic, strong, readonly) NSString *eventIdentifier;
+@property (nonatomic, strong, readonly) NSString *title;
+@property (nonatomic, strong, readonly) NSDate *startDate;
+@property (nonatomic, strong, readonly) NSDate *endDate;
+@property (nonatomic, strong, readonly) NSString *location;
 
-@property(nonatomic, strong) NSNumber *position;
-@property(nonatomic, strong) NSNumber *completed;
+@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) NSNumber *position;
+@property (nonatomic, strong) NSNumber *completed;
+
+- (NSString *)timeAgo;
 
 - (BOOL)allDay;
 - (BOOL)allowsContentModifications;
-- (BOOL)deleteThisTodoEvent;
-- (BOOL)deleteFutureTodoEvents;
+- (BOOL)deleteThisEvent;
+- (BOOL)deleteFutureEvents;
 - (BOOL)isCompleted;
+
+- (BOOL)hasFutureEvents;
 
 // Notifications (Cateogory?)
 - (NSArray *)localNotifications;
@@ -40,5 +46,6 @@
 // Class methods
 + (NSArray *)findAllWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 + (NSArray *)findAllIncompleteWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
++ (NSArray *)todoEventsFromEvent:(EKEvent *)event;
 
 @end

@@ -7,21 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MCSwipeTableViewCell.h"
 
-@class TodoEvent;
+#import "MCSwipeTableViewCell.h"
 
 @interface EventCell : MCSwipeTableViewCell
 
-@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
-@property (nonatomic, weak) IBOutlet UILabel *timeLabel;
-@property (nonatomic, weak) IBOutlet UILabel *locationLabel;
-
 - (instancetype)setTitle:(NSString *)title time:(NSString *)time location:(NSString *)location;
-- (instancetype)eventCellFromTodoEvent:(TodoEvent *)todoEvent;
 
-- (void)missedCell;
-- (void)incompleteCell;
-- (void)completeCell;
+- (instancetype)incompleteCell;
+- (instancetype)completeCell;
 
 @end

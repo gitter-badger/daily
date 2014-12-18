@@ -10,4 +10,9 @@
 
 @implementation Calendar (VFDaily)
 
+- (void)awakeFromInsert
+{
+    self.enabledDate = [NSDate date];
+}
+
 @end

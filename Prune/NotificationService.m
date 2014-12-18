@@ -1,18 +1,10 @@
-//
-//  PushNotificationService.m
-//  ServiceOrientedAppDelegate
-//
-//  Created by Nico Hämäläinen on 09/02/14.
-//  Copyright (c) 2014 Nico Hämäläinen. All rights reserved.
-//
-
 #import <EventKit/EventKit.h>
 
 #import "NotificationService.h"
 
-#import "TodoEvent.h"
-
 #import "EKEventStore+VFDaily.h"
+
+#import "TodoEvent.h"
 
 @implementation NotificationService
 
@@ -31,6 +23,8 @@
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
+    [self scheduleTodoEventNotifications];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChangedNotification:) name:EKEventStoreChangedNotification object:[EKEventStore sharedEventStore]];
     
     [application registerUserNotificationSettings:self.userNotificationSettings];
@@ -38,31 +32,20 @@
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    [self scheduleNotifications];
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    [self scheduleNotifications];
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    [self scheduleNotifications];
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+        UIAlertController *alertNotificationController = [UIAlertController alertControllerWithTitle:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"] message:notification.alertBody preferredStyle:UIAlertControllerStyleAlert];
+        [alertNotificationController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        [rootViewController presentViewController:alertNotificationController animated:YES completion:nil];
+    }
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+    [self scheduleTodoEventNotifications];
     completionHandler(UIBackgroundFetchResultNewData);
-}
-
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Daily" message:notification.alertBody preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
-    [application.delegate.window.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler
@@ -89,7 +72,6 @@
 - (void)scheduleNotifications
 {
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    
     [self scheduleTodoEventNotifications];
 }
 
@@ -98,7 +80,7 @@
     if (![EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent]) { return; }
 
     NSDate *startDate = [NSDate date];
-    NSDate *endDate = [NSDate dateWithDaysFromNow:14];
+    NSDate *endDate = [[NSDate date] dateByAddingDays:7];
     NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
     TodoEvent *todoEvent;
 
@@ -123,7 +105,7 @@
 - (UIUserNotificationSettings *)userNotificationSettings
 {
     NSSet *userNotificationCategories = [NSSet setWithArray:@[self.snoozableUserNotificationCategory]];
-    UIUserNotificationType userNotificationTypes = UIUserNotificationTypeAlert|UIUserNotificationTypeSound|UIUserNotificationTypeBadge;
+    UIUserNotificationType userNotificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeSound |UIUserNotificationTypeBadge;
     
     UIUserNotificationSettings *userNotificationSettings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:userNotificationCategories];
     
@@ -136,7 +118,6 @@
     snoozable.identifier = @"SNOOZE_CATEGORY";
     [snoozable setActions:@[self.snoozeUserNotificationAction] forContext:UIUserNotificationActionContextDefault];
     [snoozable setActions:@[self.snoozeUserNotificationAction] forContext:UIUserNotificationActionContextMinimal];
-    
     return snoozable;
 }
 
@@ -148,7 +129,6 @@
     snoozeAction.destructive = NO;
     snoozeAction.authenticationRequired = NO;
     snoozeAction.activationMode = UIUserNotificationActivationModeBackground;
-    
     return snoozeAction;
 }
 

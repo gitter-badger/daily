@@ -10,9 +10,6 @@
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
 
-// Analytics
-#import "DAYAnalytics.h"
-
 // Controllers
 #import "MasterViewController.h"
 #import "MissedEventsViewController.h"
@@ -22,8 +19,8 @@
 #import "HPReorderTableView.h"
 #import "EventCell.h"
 
-// Service
-#import "NotificationService.h"
+// Classes
+#import "TodoEventsCache.h"
 
 // Models
 #import "TodoEvent.h"
@@ -33,21 +30,20 @@
 #import "NSDateFormatter+Extended.h"
 #import "EKCalendar+VFDaily.h"
 #import "EKEventStore+VFDaily.h"
+#import "NSUserDefaults+DLY.h"
 
 static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotification";
-static NSString * const kLastClosedDate = @"lastClosedDate";
 
 // Struct...
 static NSInteger const kIncompletedSection = 0;
 static NSInteger const kCompletedSection = 1;
 
-@interface MasterViewController () <EKEventEditViewDelegate, EKEventViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, HPReorderTableViewDelegate, EKCalendarChooserDelegate>
+@interface MasterViewController () <EKEventEditViewDelegate, EKEventViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, HPReorderTableViewDelegate, EKCalendarChooserDelegate, MissedEventsViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet HPReorderTableView *tableView;
 
 @property (nonatomic, weak) IBOutlet UIButton *addButton;
 
-@property (nonatomic, strong) UIButton *todayButton;
 @property (nonatomic, strong) UIButton *settingsButton;
 @property (nonatomic, strong) UIButton *missedEventsButton;
 
@@ -62,7 +58,6 @@ static NSInteger const kCompletedSection = 1;
 
 @property (nonatomic, strong) NSMutableArray *incompletedEvents;
 @property (nonatomic, strong) NSMutableArray *completedEvents;
-@property (nonatomic, strong) NSMutableArray *missedEvents;
 
 @property (nonatomic, strong) TodoEvent *editingTodoEvent;
 
@@ -77,9 +72,13 @@ static NSInteger const kCompletedSection = 1;
 @property (nonatomic, strong) UIView *whiteBackgroundView;
 @property (nonatomic, strong) UIView *shadowBottomView;
 
+@property (nonatomic, strong) TodoEventsCache *todoEventsCache;
+
 @end
 
 @implementation MasterViewController
+
+#pragma mark - Properties
 
 - (NSDate *)currentDate
 {
@@ -95,24 +94,20 @@ static NSInteger const kCompletedSection = 1;
     [[NSUserDefaults standardUserDefaults] setObject:currentDate forKey:@"currentDate"];
 }
 
-- (void)applicationDidBecomeActive:(id)sender
-{
-    [self setCurrentDateToTodayIfNeeded];
-    [self fetchEvents];
-}
+#pragma mark - Life cycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(statusBarTappedAction:)
                                                  name:kStatusBarTappedNotification
                                                object:nil];
     
-    self.checkImageView = [self viewWithImageName:@"check"];
-    self.crossImageView = [self viewWithImageName:@"cross"];
+    self.checkImageView = [UIImageView imageViewWithImageName:@"check"];
+    self.crossImageView = [UIImageView imageViewWithImageName:@"cross"];
     
     self.addButton.layer.cornerRadius = 25;
     self.addButton.backgroundColor = [UIColor redColor];
@@ -147,7 +142,7 @@ static NSInteger const kCompletedSection = 1;
         weakSelf.tableView.contentOffset = CGPointMake(0, 0);
         weakSelf.currentDate = selectedDate;
         NSInteger weeksFromNow = ceil([[NSDate date] distanceInDaysToDate:selectedDate] / 7);
-        [[DAYAnalytics sharedAnalytics] track:@"Changed Week" properties:@{ @"Weeks From Now": [NSNumber numberWithInteger:weeksFromNow] }];
+        [[Analytics sharedAnalytics] track:@"Changed Week" properties:@{ @"Weeks From Now": [NSNumber numberWithInteger:weeksFromNow] }];
         [weakSelf fetchEvents];
     };
     self.dayPicker.didTapDateBlock = ^(NSDate *selectedDate)
@@ -174,13 +169,8 @@ static NSInteger const kCompletedSection = 1;
     self.currentDateLabel.textAlignment = NSTextAlignmentCenter;
     [self.titleView addSubview:self.currentDateLabel];
     
-    self.todayButton = [[UIButton alloc] init];
-    [self.todayButton setImage:[UIImage imageNamed:@"back-button"] forState:UIControlStateNormal];
-    [self.todayButton addTarget:self action:@selector(todayButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.titleView addSubview:self.todayButton];
-    
     self.missedEventsButton = [[UIButton alloc] init];
-    self.missedEventsButton.backgroundColor = [UIColor redColor];
+    self.missedEventsButton.backgroundColor = [UIColor colorWithRed:0.867 green:0.867 blue:0.867 alpha:1];
     self.missedEventsButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
     [self.missedEventsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.missedEventsButton addTarget:self action:@selector(missedEventsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -208,7 +198,6 @@ static NSInteger const kCompletedSection = 1;
     [self.tableView sendSubviewToBack:self.dayPicker];
     [self.tableView sendSubviewToBack:self.dayPickerBackgroundView];
     
-    
     UIView *headerView = [[UIView alloc] init];
     headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, 205);
     headerView.backgroundColor = [UIColor clearColor];
@@ -216,44 +205,34 @@ static NSInteger const kCompletedSection = 1;
 
     self.tableView.tableHeaderView = headerView;
     
+    [self setNeedsStatusBarAppearanceUpdate];
+    
+    self.todoEventsCache = [[TodoEventsCache alloc] init];
+    [self.todoEventsCache addObserver:self forKeyPath:NSStringFromSelector(@selector(todoEvents)) options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    
     [self setCurrentDateToTodayIfNeeded];
     [self fetchEvents];
-    [self fetchMissedEvents];
-    
-    [self setNeedsStatusBarAppearanceUpdate];
 }
 
-- (void)fetchMissedEvents
+- (void)applicationWillEnterForeground:(id)sender
 {
-    // TODO: Run when content change
-    // TODO: Run on start up IE. from background to active
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSDate *startDate = [[NSDate dateWithDaysBeforeNow:30] dateAtStartOfDay];
-                NSDate *endDate = [[NSDate date] dateAtStartOfDay];
-                NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
-                self.missedEvents = [todoEvents mutableCopy];
-                [self.missedEventsButton setTitle:[NSString stringWithFormat:@"%lu", (unsigned long)todoEvents.count] forState:UIControlStateNormal];
-            });
-        } else {
-            NSLog(@"Access denied from Calendar");
-        }
-    }];
+    [self setCurrentDateToTodayIfNeeded];
+    [self fetchEvents];
 }
 
-- (void)setCurrentDateToTodayIfNeeded
+- (void)dealloc
 {
-    NSDate *lastClosed = [[NSUserDefaults standardUserDefaults] objectForKey:kLastClosedDate];
-    CGFloat timeSinceClosed = -[lastClosed timeIntervalSinceNow];
-    CGFloat minutes = 60.0;
-    if (![self.currentDate isToday] && timeSinceClosed > (5 * minutes)) {
-        self.currentDate = [NSDate date];
-        [self.dayPicker setSelectedDate:self.currentDate animated:YES];
-    }
+    [self.todoEventsCache removeObserver:self forKeyPath:NSStringFromSelector(@selector(todoEvents))];
 }
 
--(void)viewDidLayoutSubviews
+#pragma mark - UIViewController
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+- (void)viewDidLayoutSubviews
 {
     self.dayPickerBackgroundView.frame = CGRectMake(0, 125-self.view.bounds.size.height, self.view.bounds.size.width, self.tableView.bounds.size.height);
     self.dayPicker.frame = CGRectMake(0, 0, self.view.frame.size.width, 80);
@@ -262,10 +241,9 @@ static NSInteger const kCompletedSection = 1;
     self.whiteBackgroundView.frame = CGRectMake(0, 80, self.view.frame.size.width, self.view.frame.size.height);
     self.titleLabel.frame = CGRectMake(0, 25, self.titleView.frame.size.width, 40);
     self.currentDateLabel.frame = CGRectMake(0, 60, self.titleView.frame.size.width, 40);
-//    self.todayButton.frame = CGRectMake(0, 0, 40, 50);
     
-    self.missedEventsButton.frame = CGRectMake(15, 15, 26, 26);
-    self.missedEventsButton.layer.cornerRadius = 13;
+    self.missedEventsButton.frame = CGRectMake(15, 15, 28, 24);
+    self.missedEventsButton.layer.cornerRadius = 5;
     
     self.settingsButton.frame = CGRectMake(self.titleView.frame.size.width-50, 0, 50, 50);
     self.shadowBottomView.frame = CGRectMake(self.tableViewEdgeInsets.left, self.titleView.frame.size.height - .5, self.titleView.frame.size.width - self.tableViewEdgeInsets.left - self.tableViewEdgeInsets.right, .5);
@@ -279,163 +257,63 @@ static NSInteger const kCompletedSection = 1;
     }
 }
 
--(UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
+#pragma mark - KVO
 
-- (UIView *)viewWithImageName:(NSString *)imageName
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    UIImage *image = [UIImage imageNamed:imageName];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.contentMode = UIViewContentModeCenter;
-    return imageView;
-}
-
-- (void)fetchEvents
-{
-    NSDate *date = self.currentDate;
-    self.titleLabel.text = [[[NSDateFormatter relativeWeekDayFormatterFromDate:date] stringFromDate:date]capitalizedString];
-    self.currentDateLabel.text = [[[NSDateFormatter fullDateFormatter] stringFromDate:date] uppercaseString];
-    
-    if ([self.currentDate isLaterThanDate:[NSDate date]]) {
-        [self.todayButton setImage:[UIImage imageNamed:@"back-button"] forState:UIControlStateNormal];
-        self.todayButton.hidden = NO;
-    }
-    else if ([[self.currentDate dateAtEndOfDay] isEarlierThanDate:[NSDate date]]) {
-        [self.todayButton setImage:[UIImage imageNamed:@"forward-button"] forState:UIControlStateNormal];
-        self.todayButton.hidden = NO;
-    }
-    else {
-        self.todayButton.hidden = YES;
-    }
-    
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                NSDate *startDate = [self.currentDate dateAtStartOfDay];
-                NSDate *endDate = [self.currentDate dateAtEndOfDay];
-                
-                NSArray *events = [TodoEvent findAllWithStartDate:startDate endDate:endDate];
-                
-                [[DAYAnalytics sharedAnalytics] track:@"Changed Day" properties:@{ @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:date]], @"Number Of Events": [NSNumber numberWithInteger:events.count] }];
-                
-                NSPredicate *incompletedPredicate = [NSPredicate predicateWithFormat:@"completed = %@", @NO];
-                self.incompletedEvents = [[events filteredArrayUsingPredicate:incompletedPredicate] mutableCopy];
-                
-                NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"completed = %@", @YES];
-                self.completedEvents = [[events filteredArrayUsingPredicate:completedPredicate] mutableCopy];
-                
-                [self.tableView reloadData];
-                
-                CGRect whiteBackgroundFrame = self.whiteBackgroundView.frame;
-                whiteBackgroundFrame.size.height = self.tableView.bounds.size.height;
-                self.whiteBackgroundView.frame = whiteBackgroundFrame;
-                
-                [self persistEventPositions];
-            
-                self.titleLabel.text = [[NSDateFormatter relativeWeekDayFormatterFromDate:date] stringFromDate:date];
-                self.currentDateLabel.text = [[[NSDateFormatter fullDateFormatter] stringFromDate:date] uppercaseString];
-            });
+    if ([keyPath isEqualToString:NSStringFromSelector(@selector(todoEvents))]) {
+        if (self.todoEventsCache.countOfTodoEvents > 0) {
+            [self.missedEventsButton setBackgroundColor:[UIColor redColor]];
         } else {
-            NSLog(@"Access denied from Calendar");
+            [self.missedEventsButton setBackgroundColor:[UIColor colorWithRed:0.867 green:0.867 blue:0.867 alpha:1]];
         }
-    }];
+        [self.missedEventsButton setTitle:[NSString stringWithFormat:@"%lu", (unsigned long)self.todoEventsCache.countOfTodoEvents] forState:UIControlStateNormal];
+    }
 }
 
-- (void)toggleCompletionForCell:(UITableViewCell *)cell
-{
-    EventCell *eventCell = (EventCell *)cell;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    TodoEvent *todoEvent;
-    NSIndexPath *newIndexPath;
-    if (indexPath.section == kIncompletedSection) {
-        todoEvent = [self.incompletedEvents objectAtIndex:indexPath.row];
-        todoEvent.completed = @YES;
-        [[DAYAnalytics sharedAnalytics] track:@"Completed Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
-        [eventCell completeCell];
-        [self.incompletedEvents removeObjectAtIndex:indexPath.row];
-        [self.completedEvents insertObject:todoEvent atIndex:0];
-        newIndexPath = [NSIndexPath indexPathForRow:[self.completedEvents indexOfObject:todoEvent] inSection:kCompletedSection];
-        [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
-    }
-    else if (indexPath.section == kCompletedSection) {
-        [eventCell incompleteCell];
-        todoEvent = [self.completedEvents objectAtIndex:indexPath.row];
-        [[DAYAnalytics sharedAnalytics] track:@"Uncompleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
-        [self.completedEvents removeObjectAtIndex:indexPath.row];
-        [self.incompletedEvents addObject:todoEvent];
-        newIndexPath = [NSIndexPath indexPathForRow:[self.incompletedEvents indexOfObject:todoEvent] inSection:kIncompletedSection];
-        todoEvent.completed = @NO;
-        [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
-    }
-    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
-    
-    [self persistEventPositions];
-}
-
-- (void)persistEventPositions
-{
-    [self.incompletedEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-        todoEvent.position = [NSNumber numberWithInteger:index];
-    }];
-    [self.completedEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-        todoEvent.position = [NSNumber numberWithInteger:index];
-    }];
-    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
-}
+#pragma mark - Actions
 
 - (void)missedEventsButtonPressed:(id)sender
 {
     MissedEventsViewController *vc = [[MissedEventsViewController alloc] init];
+    vc.todoEventsCache = self.todoEventsCache;
+    vc.delegate = self;
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
-    vc.events = self.missedEvents;
     [self presentViewController:nc animated:YES completion:nil];
-    // Proceed to an other view controller.
-}
-
-- (void)todayButtonPressed:(id)sender
-{
-    [[DAYAnalytics sharedAnalytics] track:@"Pressed Today Button"];
-    self.currentDate = [NSDate date];
-    [self.dayPicker setSelectedDate:self.currentDate animated:YES];
-    [self fetchEvents];
 }
 
 - (void)settingsButtonPressed:(id)sender
 {
-    [[DAYAnalytics sharedAnalytics] track:@"Pressed Settings Button"];
+    [[Analytics sharedAnalytics] track:@"Pressed Settings Button"];
     [self presentCalendarChooser];
 }
 
 - (void)addButtonPressed:(id)sender
 {
-    [[DAYAnalytics sharedAnalytics] track:@"Pressed Add Button"];
+    [[Analytics sharedAnalytics] track:@"Pressed Add Button"];
     [self presentAddEventControllerWithStartDate:self.currentDate];
 }
 
-- (void)presentAddEventControllerWithStartDate:(NSDate *)startDate
+- (void)statusBarTappedAction:(NSNotification *)notification
 {
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                EKEventEditViewController *addViewController = [[EKEventEditViewController alloc] init];
-                addViewController.eventStore = [EKEventStore sharedEventStore];
-                addViewController.editViewDelegate = self;
-                addViewController.event.timeZone = [NSTimeZone defaultTimeZone];
-                addViewController.event.allDay = YES;
-                addViewController.event.startDate = startDate;
-                addViewController.event.endDate = self.currentDate;
-                [self presentViewController:addViewController animated:YES completion:nil];
-            });
-        } else {
-            NSLog(@"Access denied from Calendar");
-        }
-    }];
+    if (self.tableView.contentOffset.y <= 0) {
+        [[Analytics sharedAnalytics] track:@"Tapped Status Bar" properties:@{ @"top": @YES }];
+        self.currentDate = [NSDate date];
+        [self.dayPicker setSelectedDate:self.currentDate animated:YES];
+        [self fetchEvents];
+    } else {
+        [[Analytics sharedAnalytics] track:@"Tapped Status Bar" properties:@{ @"top": @NO }];
+    }
 }
 
 #pragma mark - EKEventViewControllerDelegate
+
+- (void)eventViewController:(EKEventViewController *)controller didCompleteWithAction:(EKEventViewAction)action
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - EKEventEditViewControllerDelegate
 
 - (void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
 {
@@ -445,27 +323,30 @@ static NSInteger const kCompletedSection = 1;
             
         case EKEventEditViewActionSaved:
             if (self.editingTodoEvent) {
-                [[DAYAnalytics sharedAnalytics] track:@"Updated Event" properties:@{ @"Days Moved": [NSNumber numberWithInteger:[self.currentDate distanceInDaysToDate:controller.event.startDate]], @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
-#warning FIX ME
-// TODO: There's a bug here somewhere...
-//                NSArray *todoEvents = [[TodoEventStore sharedTodoEventStore] todoEventsFromEvent:controller.event];
-//                [todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger idx, BOOL *stop) {
-//                    todoEvent.completed = self.editingTodoEvent.completed;
-//                    todoEvent.position = self.editingTodoEvent.position;
-//                }];
+                [[Analytics sharedAnalytics] track:@"Updated Event" properties:@{ @"Days Moved": [NSNumber numberWithInteger:[self.currentDate distanceInDaysToDate:controller.event.startDate]], @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
+                
+                NSArray *todoEvents = [TodoEvent todoEventsFromEvent:controller.event];
+                [todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger idx, BOOL *stop) {
+                    if ([self.editingTodoEvent.date isEqualToDate:todoEvent.date]) {
+                        todoEvent.completed = self.editingTodoEvent.completed;
+                        todoEvent.position = self.editingTodoEvent.position;
+                    }
+                }];
             } else {
-                [[DAYAnalytics sharedAnalytics] track:@"Created Event" properties:@{ @"All Day": [NSNumber numberWithBool:controller.event.allDay], @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
+                [[Analytics sharedAnalytics] track:@"Created Event" properties:@{ @"All Day": [NSNumber numberWithBool:controller.event.allDay], @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
             }
             break;
             
         case EKEventEditViewActionDeleted:
-            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @NO, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
+            [[Analytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @NO, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:controller.event.startDate]] }];
             break;
             
         default:
             break;
     }
     self.editingTodoEvent = nil;
+    // Make sure it only run once. Apple bug.
+    controller.editViewDelegate = nil;
     [self dismissViewControllerAnimated:YES completion:^{
         if (action == EKEventEditViewActionSaved || action == EKEventEditViewActionDeleted) {
             [self fetchEvents];
@@ -517,11 +398,7 @@ static NSInteger const kCompletedSection = 1;
     cell = [cell setTitle:todoEvent.title time:time location:todoEvent.location];
     
     if (section == kIncompletedSection) {
-        if ([todoEvent.endDate isEarlierThanDate:[self.currentDate dateAtStartOfDay]]) {
-            [cell missedCell];
-        } else {
-            [cell incompleteCell];
-        }
+        [cell incompleteCell];
     } else if (section == kCompletedSection) {
         [cell completeCell];
     }
@@ -552,13 +429,13 @@ static NSInteger const kCompletedSection = 1;
         else if (indexPath.section == kCompletedSection) {
             todoEvent = [self.completedEvents objectAtIndex:indexPath.row];
         }
-        if (todoEvent.recurrenceRules.count) {
+        if (todoEvent.hasFutureEvents) {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"This is a repeating event." preferredStyle:UIAlertControllerStyleActionSheet];
             [alertController addAction:[UIAlertAction actionWithTitle:@"Delete This Event Only" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        if ([todoEvent deleteThisTodoEvent]) {
-                            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                        if ([todoEvent deleteThisEvent]) {
+                            [[Analytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
                             if (indexPath.section == kIncompletedSection) {
                                 [self.incompletedEvents removeObject:todoEvent];
                             } else if (indexPath.section == kCompletedSection) {
@@ -576,8 +453,8 @@ static NSInteger const kCompletedSection = 1;
             [alertController addAction:[UIAlertAction actionWithTitle:@"Delete All Future Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        if ([todoEvent deleteFutureTodoEvents]) {
-                            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES , @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                        if ([todoEvent deleteFutureEvents]) {
+                            [[Analytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES , @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
                             if (indexPath.section == kIncompletedSection) {
                                 [self.incompletedEvents removeObject:todoEvent];
                             } else if (indexPath.section == kCompletedSection) {
@@ -600,8 +477,8 @@ static NSInteger const kCompletedSection = 1;
             [alertController addAction:[UIAlertAction actionWithTitle:@"Delete Event" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        if ([todoEvent deleteThisTodoEvent]) {
-                            [[DAYAnalytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+                        if ([todoEvent deleteThisEvent]) {
+                            [[Analytics sharedAnalytics] track:@"Deleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
                             if (indexPath.section == kIncompletedSection) {
                                 [self.incompletedEvents removeObject:todoEvent];
                             } else if (indexPath.section == kCompletedSection) {
@@ -645,7 +522,7 @@ static NSInteger const kCompletedSection = 1;
         [self.completedEvents insertObject:todoEvent atIndex:toIndexPath.row];
         [self persistEventPositions];
     }
-    [[DAYAnalytics sharedAnalytics] track:@"Reordered Event" properties:@{ @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+    [[Analytics sharedAnalytics] track:@"Reordered Event" properties:@{ @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
 }
 
 #pragma mark - UITableViewDelegate
@@ -728,26 +605,7 @@ static NSInteger const kCompletedSection = 1;
     }
 }
 
-- (void)eventViewController:(EKEventViewController *)controller didCompleteWithAction:(EKEventViewAction)action
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - Status Bar
-
-- (void)statusBarTappedAction:(NSNotification *)notification
-{
-    if (self.tableView.contentOffset.y <= 0) {
-        [[DAYAnalytics sharedAnalytics] track:@"Tapped Status Bar" properties:@{ @"top": @YES }];
-        self.currentDate = [NSDate date];
-        [self.dayPicker setSelectedDate:self.currentDate animated:YES];
-        [self fetchEvents];
-    } else {
-        [[DAYAnalytics sharedAnalytics] track:@"Tapped Status Bar" properties:@{ @"top": @NO }];
-    }
-}
-
-#pragma mark - Scroll View
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -756,7 +614,64 @@ static NSInteger const kCompletedSection = 1;
     self.dayPicker.frame = dayPickerFrame;
 }
 
-#pragma mark - Calendar Chooser
+#pragma mark - EKCalendarChooserDelegate
+
+-(void)calendarChooserDidCancel:(EKCalendarChooser *)calendarChooser
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)calendarChooserDidFinish:(EKCalendarChooser *)calendarChooser
+{
+    [[Analytics sharedAnalytics] track:@"Changed Visible Calendars"];
+    NSArray *calendars = [[EKEventStore sharedEventStore] calendarsForEntityType:EKEntityTypeEvent];
+    NSArray *selectedCalendars = [calendarChooser.selectedCalendars allObjects];
+    [calendars enumerateObjectsUsingBlock:^(EKCalendar *calendar, NSUInteger idx, BOOL *stop) {
+        if ([selectedCalendars containsObject:calendar]) {
+            if (!calendar.enabledDate) {
+                calendar.enabledDate = [NSDate date];
+            }
+        }
+        else {
+            calendar.enabledDate = nil;
+        }
+    }];
+    [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self fetchEvents];
+    }];
+}
+
+#pragma mark - MissedEventsViewControllerDelegate
+
+- (void)missedEventsViewControllerDidFinish:(MissedEventsViewController *)missedEventsViewController
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self fetchEvents];
+    }];
+}
+
+#pragma mark - Private
+
+- (void)presentAddEventControllerWithStartDate:(NSDate *)startDate
+{
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                EKEventEditViewController *addViewController = [[EKEventEditViewController alloc] init];
+                addViewController.eventStore = [EKEventStore sharedEventStore];
+                addViewController.editViewDelegate = self;
+                addViewController.event.timeZone = [NSTimeZone defaultTimeZone];
+                addViewController.event.allDay = YES;
+                addViewController.event.startDate = startDate;
+                addViewController.event.endDate = self.currentDate;
+                [self presentViewController:addViewController animated:YES completion:nil];
+            });
+        } else {
+            NSLog(@"Access denied from Calendar");
+        }
+    }];
+}
 
 - (void)presentCalendarChooser
 {
@@ -779,30 +694,99 @@ static NSInteger const kCompletedSection = 1;
     }];
 }
 
--(void)calendarChooserDidCancel:(EKCalendarChooser *)calendarChooser
+- (void)setCurrentDateToTodayIfNeeded
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    NSDate *lastSeen = [[NSUserDefaults standardUserDefaults] lastSeen];
+    CGFloat timeSinceClosed = -[lastSeen timeIntervalSinceNow];
+    CGFloat minutes = 30.0;
+    if (![self.currentDate isToday] && timeSinceClosed > (5 * minutes)) {
+        self.currentDate = [NSDate date];
+        [self.dayPicker setSelectedDate:self.currentDate animated:YES];
+    }
 }
 
--(void)calendarChooserDidFinish:(EKCalendarChooser *)calendarChooser
+- (void)fetchEvents
 {
-    [[DAYAnalytics sharedAnalytics] track:@"Changed Visible Calendars"];
-    NSArray *calendars = [[EKEventStore sharedEventStore] calendarsForEntityType:EKEntityTypeEvent];
-    NSArray *selectedCalendars = [calendarChooser.selectedCalendars allObjects];
-    [calendars enumerateObjectsUsingBlock:^(EKCalendar *calendar, NSUInteger idx, BOOL *stop) {
-        if ([selectedCalendars containsObject:calendar]) {
-            if (!calendar.enabledDate) {
-                calendar.enabledDate = [NSDate date];
-            }
-        }
-        else {
-            calendar.enabledDate = nil;
+    NSDate *date = self.currentDate;
+    self.titleLabel.text = [[[NSDateFormatter relativeWeekDayFormatterFromDate:date] stringFromDate:date] capitalizedString];
+    self.currentDateLabel.text = [[[NSDateFormatter fullDateFormatter] stringFromDate:date] uppercaseString];
+    
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSDate *startDate = [self.currentDate midnight];
+                NSDate *endDate = [self.currentDate tomorrow];
+                
+                NSArray *events = [TodoEvent findAllWithStartDate:startDate endDate:endDate];
+                
+                [[Analytics sharedAnalytics] track:@"Changed Day" properties:@{ @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:date]], @"Number Of Events": [NSNumber numberWithInteger:events.count] }];
+                
+                NSPredicate *incompletedPredicate = [NSPredicate predicateWithFormat:@"completed = %@", @NO];
+                self.incompletedEvents = [[events filteredArrayUsingPredicate:incompletedPredicate] mutableCopy];
+                
+                NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"completed = %@", @YES];
+                self.completedEvents = [[events filteredArrayUsingPredicate:completedPredicate] mutableCopy];
+                
+                [self.tableView reloadData];
+                
+                [self persistEventPositions];
+                
+                CGRect whiteBackgroundFrame = self.whiteBackgroundView.frame;
+                whiteBackgroundFrame.size.height = self.tableView.bounds.size.height;
+                self.whiteBackgroundView.frame = whiteBackgroundFrame;
+                
+                self.titleLabel.text = [[NSDateFormatter relativeWeekDayFormatterFromDate:date] stringFromDate:date];
+                self.currentDateLabel.text = [[[NSDateFormatter fullDateFormatter] stringFromDate:date] uppercaseString];
+            });
+        } else {
+            NSLog(@"Access denied from Calendar");
         }
     }];
-    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreAndWait];
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self fetchEvents];
+}
+
+- (void)toggleCompletionForCell:(UITableViewCell *)cell
+{
+    EventCell *eventCell = (EventCell *)cell;
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    TodoEvent *todoEvent;
+    NSIndexPath *newIndexPath;
+    if (indexPath.section == kIncompletedSection) {
+        todoEvent = [self.incompletedEvents objectAtIndex:indexPath.row];
+        todoEvent.completed = @YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TodoEventWasCompleted" object:todoEvent];
+        [[Analytics sharedAnalytics] track:@"Completed Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+        [eventCell completeCell];
+        [self.incompletedEvents removeObjectAtIndex:indexPath.row];
+        [self.completedEvents insertObject:todoEvent atIndex:0];
+        newIndexPath = [NSIndexPath indexPathForRow:[self.completedEvents indexOfObject:todoEvent] inSection:kCompletedSection];
+        [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+    }
+    else if (indexPath.section == kCompletedSection) {
+        [eventCell incompleteCell];
+        todoEvent = [self.completedEvents objectAtIndex:indexPath.row];
+        [[Analytics sharedAnalytics] track:@"Uncompleted Event" properties:@{ @"swipe": @YES, @"Days From Now": [NSNumber numberWithInteger:[[NSDate new] distanceInDaysToDate:todoEvent.startDate]] }];
+        [self.completedEvents removeObjectAtIndex:indexPath.row];
+        [self.incompletedEvents addObject:todoEvent];
+        newIndexPath = [NSIndexPath indexPathForRow:[self.incompletedEvents indexOfObject:todoEvent] inSection:kIncompletedSection];
+        todoEvent.completed = @NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TodoEventWasUncompleted" object:todoEvent];
+        [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+    }
+    [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
+    
+    [self persistEventPositions];
+}
+
+- (void)persistEventPositions
+{
+    [self.incompletedEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+        todoEvent.position = [NSNumber numberWithInteger:index];
     }];
+    [self.completedEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+        todoEvent.position = [NSNumber numberWithInteger:index];
+    }];
+    [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
 }
 
 @end

@@ -10,6 +10,9 @@
 
 @interface EventCell ()
 
+@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
+@property (nonatomic, weak) IBOutlet UILabel *timeLabel;
+
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *time;
 @property (nonatomic, strong) NSString *location;
@@ -44,33 +47,7 @@
     return self;
 }
 
-- (instancetype)eventCellFromTodoEvent:(TodoEvent *)todoEvent
-{
-    return self;
-}
-
-- (void)missedCell
-{
-    [self applyMissedStyle];
-}
-
-- (void)incompleteCell
-{
-    [self applyIncompleteStyle];
-}
-
-- (void)completeCell
-{
-    [self applyCompleteStyle];
-}
-
-- (void)applyMissedStyle
-{
-    [self applyIncompleteStyle];
-    self.titleLabel.textColor = [UIColor greenColor];
-}
-
-- (void)applyIncompleteStyle
+- (instancetype)incompleteCell
 {
     self.titleLabel.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
     self.titleLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:19];
@@ -81,9 +58,11 @@
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.timeLabel.text];
     [attributedString addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(0, self.time.length)];
     self.timeLabel.attributedText = attributedString;
+    
+    return self;
 }
 
-- (void)applyCompleteStyle
+- (instancetype)completeCell
 {
     self.titleLabel.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
     self.titleLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:19];
@@ -92,6 +71,8 @@
     self.timeLabel.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
     self.timeLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:16];
     self.timeLabel.attributedText = [[NSAttributedString alloc] initWithString:self.timeLabel.text attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
+    
+    return self;
 }
 
 @end

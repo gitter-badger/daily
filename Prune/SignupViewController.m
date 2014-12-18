@@ -7,12 +7,14 @@
 //
 
 #import "SignupViewController.h"
+
 #import "NSUserDefaults+DLY.h"
-#import "DAYAnalytics.h"
+
 #import "SAMTextField.h"
-#import "EKCalendar+VFDaily.h"
 
 @interface SignupViewController () <UITextFieldDelegate>
+
+@property (nonatomic, weak) IBOutlet SAMTextField *emailField;
 
 @end
 
@@ -40,7 +42,7 @@
     [[NSUserDefaults standardUserDefaults] setEmail:email];
     [[NSUserDefaults standardUserDefaults] setCreated:now];
     
-    [[DAYAnalytics sharedAnalytics] identify:email];
+    [[Analytics sharedAnalytics] identify:email];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]];
     [self presentViewController:[storyboard instantiateInitialViewController] animated:YES completion:nil];

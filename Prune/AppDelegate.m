@@ -24,7 +24,6 @@
 #import "NSUserDefaults+DLY.h"
 
 static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotification";
-static NSString * const kLastClosedDate = @"lastClosedDate";
 
 @interface AppDelegate ()
 
@@ -82,10 +81,9 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    BOOL userHasOnboarded = [[NSUserDefaults standardUserDefaults] userHasOboarded];
     NSString *email = [[NSUserDefaults standardUserDefaults] email];
-    if (userHasOnboarded) {
-        [[DAYAnalytics sharedAnalytics] identify:email];
+    if (email) {
+        [[Analytics sharedAnalytics] identify:email];
     }
 }
 
@@ -93,21 +91,21 @@ static NSString * const kLastClosedDate = @"lastClosedDate";
 {
     [super applicationWillResignActive:application];
     
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastClosedDate];
+    [[NSUserDefaults standardUserDefaults] setLastSeen:[NSDate date]];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [super applicationDidEnterBackground:application];
 
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastClosedDate];
+    [[NSUserDefaults standardUserDefaults] setLastSeen:[NSDate date]];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [super applicationWillTerminate:application];
     
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastClosedDate];
+    [[NSUserDefaults standardUserDefaults] setLastSeen:[NSDate date]];
 }
 
 #pragma mark - Broadcasting

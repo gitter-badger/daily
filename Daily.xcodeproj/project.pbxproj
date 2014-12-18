@@ -21,8 +21,17 @@
 		0230CC95199DC7BE004D7713 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC93199DC7BE004D7713 /* EventKit.framework */; };
 		0230CC96199DC7BE004D7713 /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC94199DC7BE004D7713 /* EventKitUI.framework */; };
 		0233879719E537500082A7CF /* MCSwipeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0233879619E537500082A7CF /* MCSwipeTableViewCell.m */; };
+		0238715B1A3727CD0095D959 /* NSDate+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0238715A1A3727CD0095D959 /* NSDate+VIKKit.m */; };
+		023871601A372AFE0095D959 /* NSArray+VIKFunctional.m in Sources */ = {isa = PBXBuildFile; fileRef = 0238715F1A372AFE0095D959 /* NSArray+VIKFunctional.m */; };
+		023871631A372BA50095D959 /* NSString+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 023871621A372BA50095D959 /* NSString+VIKKit.m */; };
+		0238716A1A372BEB0095D959 /* UIColor+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 023871651A372BEB0095D959 /* UIColor+VIKKit.m */; };
+		0238716C1A372BEB0095D959 /* UIView+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 023871691A372BEB0095D959 /* UIView+Frame.m */; };
+		0238716F1A3758CA0095D959 /* NSManagedObject+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0238716E1A3758CA0095D959 /* NSManagedObject+VIKKit.m */; };
+		023871731A3895C00095D959 /* VIKTodoEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 023871721A3895C00095D959 /* VIKTodoEventCell.m */; };
 		023A65C2199E1B8D00CC9BA6 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 023A65C1199E1B8D00CC9BA6 /* EventCell.m */; };
-		025260D01A1CE7EE00A1FBDE /* DAYAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260CF1A1CE7EE00A1FBDE /* DAYAnalytics.m */; };
+		025007661A403EF0004510F5 /* TodoEventsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 025007651A403EF0004510F5 /* TodoEventsCache.m */; };
+		0250076F1A42D982004510F5 /* MTMigration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0250076E1A42D982004510F5 /* MTMigration.m */; };
+		025260D01A1CE7EE00A1FBDE /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260CF1A1CE7EE00A1FBDE /* Analytics.m */; };
 		025260D41A1CF10200A1FBDE /* SOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260D31A1CF10200A1FBDE /* SOAppDelegate.m */; };
 		025260DA1A1CF18E00A1FBDE /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260D91A1CF18E00A1FBDE /* NotificationService.m */; };
 		02560F591A138BDE00310F76 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 02560F581A138BDE00310F76 /* Podfile */; };
@@ -34,7 +43,6 @@
 		0265EC3C1A3097A500334388 /* UserDefaultsService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC3B1A3097A500334388 /* UserDefaultsService.m */; };
 		0265EC3F1A30C8FB00334388 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC3E1A30C8FB00334388 /* Calendar.m */; };
 		0265EC431A30CE4F00334388 /* MagicalRecordService.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC421A30CE4F00334388 /* MagicalRecordService.m */; };
-		0265EC471A31D91500334388 /* EKEvent+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC461A31D91500334388 /* EKEvent+VFDaily.m */; };
 		0265EC4A1A31D96200334388 /* Todo+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC491A31D96200334388 /* Todo+VFDaily.m */; };
 		0265EC4D1A31D97600334388 /* Calendar+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC4C1A31D97600334388 /* Calendar+VFDaily.m */; };
 		0265EC501A31DC2300334388 /* EKEventStore+VFDaily.m in Sources */ = {isa = PBXBuildFile; fileRef = 0265EC4F1A31DC2300334388 /* EKEventStore+VFDaily.m */; };
@@ -45,8 +53,10 @@
 		02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */; };
 		02ACDFC91A2CC67600793AE4 /* Todo in Resources */ = {isa = PBXBuildFile; fileRef = 02ACDFC81A2CC67600793AE4 /* Todo */; };
 		02AE446B1A0802AA00E796CD /* NSDateFormatter+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */; };
+		02B3294B1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B3294A1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m */; };
 		02CFB7BD19E415FC00E3A243 /* Onboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */; };
 		02CFB7C419E42F0600E3A243 /* HPReorderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02CFB7C319E42F0600E3A243 /* HPReorderTableView.m */; };
+		02F6BDF81A3B25EC00CD81F1 /* DeleteTodoEventAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F6BDF71A3B25EC00CD81F1 /* DeleteTodoEventAlert.m */; };
 		02F7022C1A07B71700C36FC9 /* TodoEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F7022B1A07B71700C36FC9 /* TodoEvent.m */; };
 		02F7022F1A07B78800C36FC9 /* Todo.m in Sources */ = {isa = PBXBuildFile; fileRef = 02F7022E1A07B78800C36FC9 /* Todo.m */; };
 		02FA9C031A1F4E9000D054FF /* BadgeService.m in Sources */ = {isa = PBXBuildFile; fileRef = 02FA9C021A1F4E9000D054FF /* BadgeService.m */; };
@@ -76,10 +86,30 @@
 		0230CC94199DC7BE004D7713 /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
 		0233879519E537500082A7CF /* MCSwipeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MCSwipeTableViewCell.h; path = MCSwipeTableViewCell/MCSwipeTableViewCell.h; sourceTree = "<group>"; };
 		0233879619E537500082A7CF /* MCSwipeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MCSwipeTableViewCell.m; path = MCSwipeTableViewCell/MCSwipeTableViewCell.m; sourceTree = "<group>"; };
+		023871591A3727CD0095D959 /* NSDate+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+VIKKit.h"; sourceTree = "<group>"; };
+		0238715A1A3727CD0095D959 /* NSDate+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+VIKKit.m"; sourceTree = "<group>"; };
+		0238715D1A3729780095D959 /* VIKKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VIKKit.h; sourceTree = "<group>"; };
+		0238715E1A372AFE0095D959 /* NSArray+VIKFunctional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+VIKFunctional.h"; sourceTree = "<group>"; };
+		0238715F1A372AFE0095D959 /* NSArray+VIKFunctional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+VIKFunctional.m"; sourceTree = "<group>"; };
+		023871611A372BA50095D959 /* NSString+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+VIKKit.h"; sourceTree = "<group>"; };
+		023871621A372BA50095D959 /* NSString+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+VIKKit.m"; sourceTree = "<group>"; };
+		023871641A372BEB0095D959 /* UIColor+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+VIKKit.h"; sourceTree = "<group>"; };
+		023871651A372BEB0095D959 /* UIColor+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+VIKKit.m"; sourceTree = "<group>"; };
+		023871681A372BEB0095D959 /* UIView+Frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Frame.h"; sourceTree = "<group>"; };
+		023871691A372BEB0095D959 /* UIView+Frame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Frame.m"; sourceTree = "<group>"; };
+		0238716D1A3758CA0095D959 /* NSManagedObject+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+VIKKit.h"; sourceTree = "<group>"; };
+		0238716E1A3758CA0095D959 /* NSManagedObject+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+VIKKit.m"; sourceTree = "<group>"; };
+		023871701A37597A0095D959 /* VIKKit+MagicalRecord.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VIKKit+MagicalRecord.h"; sourceTree = "<group>"; };
+		023871711A3895C00095D959 /* VIKTodoEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIKTodoEventCell.h; sourceTree = "<group>"; };
+		023871721A3895C00095D959 /* VIKTodoEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIKTodoEventCell.m; sourceTree = "<group>"; };
 		023A65C0199E1B8D00CC9BA6 /* EventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventCell.h; sourceTree = "<group>"; };
 		023A65C1199E1B8D00CC9BA6 /* EventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCell.m; sourceTree = "<group>"; };
-		025260CE1A1CE7EE00A1FBDE /* DAYAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAYAnalytics.h; sourceTree = "<group>"; };
-		025260CF1A1CE7EE00A1FBDE /* DAYAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAYAnalytics.m; sourceTree = "<group>"; };
+		025007641A403EF0004510F5 /* TodoEventsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventsCache.h; sourceTree = "<group>"; };
+		025007651A403EF0004510F5 /* TodoEventsCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventsCache.m; sourceTree = "<group>"; };
+		0250076D1A42D982004510F5 /* MTMigration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTMigration.h; sourceTree = "<group>"; };
+		0250076E1A42D982004510F5 /* MTMigration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTMigration.m; sourceTree = "<group>"; };
+		025260CE1A1CE7EE00A1FBDE /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
+		025260CF1A1CE7EE00A1FBDE /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		025260D21A1CF10200A1FBDE /* SOAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOAppDelegate.h; sourceTree = "<group>"; };
 		025260D31A1CF10200A1FBDE /* SOAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOAppDelegate.m; sourceTree = "<group>"; };
 		025260D81A1CF18E00A1FBDE /* NotificationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
@@ -101,8 +131,6 @@
 		0265EC411A30CE4F00334388 /* MagicalRecordService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalRecordService.h; sourceTree = "<group>"; };
 		0265EC421A30CE4F00334388 /* MagicalRecordService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagicalRecordService.m; sourceTree = "<group>"; };
 		0265EC441A3102A200334388 /* store 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "store 3.xcdatamodel"; sourceTree = "<group>"; };
-		0265EC451A31D91500334388 /* EKEvent+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EKEvent+VFDaily.h"; sourceTree = "<group>"; };
-		0265EC461A31D91500334388 /* EKEvent+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EKEvent+VFDaily.m"; sourceTree = "<group>"; };
 		0265EC481A31D96200334388 /* Todo+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Todo+VFDaily.h"; sourceTree = "<group>"; };
 		0265EC491A31D96200334388 /* Todo+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Todo+VFDaily.m"; sourceTree = "<group>"; };
 		0265EC4B1A31D97600334388 /* Calendar+VFDaily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Calendar+VFDaily.h"; sourceTree = "<group>"; };
@@ -119,10 +147,14 @@
 		02ACDFC81A2CC67600793AE4 /* Todo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Todo; sourceTree = "<group>"; };
 		02AE44691A0802AA00E796CD /* NSDateFormatter+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+Extended.h"; sourceTree = "<group>"; };
 		02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+Extended.m"; sourceTree = "<group>"; };
+		02B329491A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+VIKAdditionals.h"; sourceTree = "<group>"; };
+		02B3294A1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+VIKAdditionals.m"; sourceTree = "<group>"; };
 		02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboard_iPhone.storyboard; sourceTree = "<group>"; };
 		02CFB7C219E42F0600E3A243 /* HPReorderTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HPReorderTableView.h; path = HPReorderTableView/HPReorderTableView.h; sourceTree = "<group>"; };
 		02CFB7C319E42F0600E3A243 /* HPReorderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HPReorderTableView.m; path = HPReorderTableView/HPReorderTableView.m; sourceTree = "<group>"; };
-		02F0B1A219ED4D4100CFC80A /* Complete.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Complete.entitlements; sourceTree = "<group>"; };
+		02F0B1A219ED4D4100CFC80A /* Complete.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Complete.entitlements; path = ../Complete.entitlements; sourceTree = "<group>"; };
+		02F6BDF61A3B25EC00CD81F1 /* DeleteTodoEventAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteTodoEventAlert.h; sourceTree = "<group>"; };
+		02F6BDF71A3B25EC00CD81F1 /* DeleteTodoEventAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteTodoEventAlert.m; sourceTree = "<group>"; };
 		02F7022A1A07B71700C36FC9 /* TodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEvent.h; sourceTree = "<group>"; };
 		02F7022B1A07B71700C36FC9 /* TodoEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEvent.m; sourceTree = "<group>"; };
 		02F7022D1A07B78800C36FC9 /* Todo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Todo.h; sourceTree = "<group>"; };
@@ -161,14 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				0265EC401A30C90E00334388 /* _Managed objects */,
-				0265EC4B1A31D97600334388 /* Calendar+VFDaily.h */,
-				0265EC4C1A31D97600334388 /* Calendar+VFDaily.m */,
-				0265EC2E1A2F45EE00334388 /* EKCalendar+VFDaily.h */,
-				0265EC2F1A2F45EE00334388 /* EKCalendar+VFDaily.m */,
-				0265EC451A31D91500334388 /* EKEvent+VFDaily.h */,
-				0265EC461A31D91500334388 /* EKEvent+VFDaily.m */,
-				0265EC481A31D96200334388 /* Todo+VFDaily.h */,
-				0265EC491A31D96200334388 /* Todo+VFDaily.m */,
+				023871581A35C55A0095D959 /* _Categories */,
 				02F7022A1A07B71700C36FC9 /* TodoEvent.h */,
 				02F7022B1A07B71700C36FC9 /* TodoEvent.m */,
 			);
@@ -208,9 +233,8 @@
 		020DDB1019ACB6CC004A5163 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0289193719E2E65D00D51813 /* LaunchScreen.storyboard */,
-				0230CC6A199DC6CF004D7713 /* Main_iPhone.storyboard */,
-				02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */,
+				023871711A3895C00095D959 /* VIKTodoEventCell.h */,
+				023871721A3895C00095D959 /* VIKTodoEventCell.m */,
 				023A65C0199E1B8D00CC9BA6 /* EventCell.h */,
 				023A65C1199E1B8D00CC9BA6 /* EventCell.m */,
 				02CFB7C219E42F0600E3A243 /* HPReorderTableView.h */,
@@ -230,7 +254,6 @@
 			children = (
 				02ACDFC81A2CC67600793AE4 /* Todo */,
 				02560F581A138BDE00310F76 /* Podfile */,
-				02F0B1A219ED4D4100CFC80A /* Complete.entitlements */,
 				0230CC5E199DC6CF004D7713 /* Prune */,
 				0230CC57199DC6CF004D7713 /* Frameworks */,
 				0230CC56199DC6CF004D7713 /* Products */,
@@ -265,13 +288,14 @@
 		0230CC5E199DC6CF004D7713 /* Prune */ = {
 			isa = PBXGroup;
 			children = (
+				0238715C1A3729640095D959 /* VIKKit */,
 				020DDB0C19ACB696004A5163 /* Categories */,
 				02AE44671A07FD0F00E796CD /* Classes */,
-				020DDB0F19ACB6C4004A5163 /* Controllers */,
 				020DDB0B19ACB685004A5163 /* Models */,
+				020DDB1019ACB6CC004A5163 /* Views */,
+				020DDB0F19ACB6C4004A5163 /* Controllers */,
 				02FA9C041A1F4E9700D054FF /* Services */,
 				0230CC5F199DC6CF004D7713 /* Supporting Files */,
-				020DDB1019ACB6CC004A5163 /* Views */,
 			);
 			path = Prune;
 			sourceTree = "<group>";
@@ -279,14 +303,54 @@
 		0230CC5F199DC6CF004D7713 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				0230CC64199DC6CF004D7713 /* main.m */,
-				0230CC66199DC6CF004D7713 /* Daily-Prefix.pch */,
+				0289193719E2E65D00D51813 /* LaunchScreen.storyboard */,
+				0230CC6A199DC6CF004D7713 /* Main_iPhone.storyboard */,
+				02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */,
+				02F0B1A219ED4D4100CFC80A /* Complete.entitlements */,
 				0230CC60199DC6CF004D7713 /* Daily-Info.plist */,
+				0230CC66199DC6CF004D7713 /* Daily-Prefix.pch */,
 				0230CC76199DC6CF004D7713 /* Images.xcassets */,
 				0230CC61199DC6CF004D7713 /* InfoPlist.strings */,
+				0230CC64199DC6CF004D7713 /* main.m */,
 				020DDAF519ACA883004A5163 /* store.xcdatamodeld */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		023871581A35C55A0095D959 /* _Categories */ = {
+			isa = PBXGroup;
+			children = (
+				0265EC4B1A31D97600334388 /* Calendar+VFDaily.h */,
+				0265EC4C1A31D97600334388 /* Calendar+VFDaily.m */,
+				0265EC2E1A2F45EE00334388 /* EKCalendar+VFDaily.h */,
+				0265EC2F1A2F45EE00334388 /* EKCalendar+VFDaily.m */,
+				0265EC481A31D96200334388 /* Todo+VFDaily.h */,
+				0265EC491A31D96200334388 /* Todo+VFDaily.m */,
+			);
+			name = _Categories;
+			sourceTree = "<group>";
+		};
+		0238715C1A3729640095D959 /* VIKKit */ = {
+			isa = PBXGroup;
+			children = (
+				0238715D1A3729780095D959 /* VIKKit.h */,
+				023871701A37597A0095D959 /* VIKKit+MagicalRecord.h */,
+				023871591A3727CD0095D959 /* NSDate+VIKKit.h */,
+				0238715A1A3727CD0095D959 /* NSDate+VIKKit.m */,
+				0238715E1A372AFE0095D959 /* NSArray+VIKFunctional.h */,
+				0238715F1A372AFE0095D959 /* NSArray+VIKFunctional.m */,
+				023871611A372BA50095D959 /* NSString+VIKKit.h */,
+				023871621A372BA50095D959 /* NSString+VIKKit.m */,
+				023871641A372BEB0095D959 /* UIColor+VIKKit.h */,
+				023871651A372BEB0095D959 /* UIColor+VIKKit.m */,
+				023871681A372BEB0095D959 /* UIView+Frame.h */,
+				023871691A372BEB0095D959 /* UIView+Frame.m */,
+				0238716D1A3758CA0095D959 /* NSManagedObject+VIKKit.h */,
+				0238716E1A3758CA0095D959 /* NSManagedObject+VIKKit.m */,
+				02B329491A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.h */,
+				02B3294A1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m */,
+			);
+			name = VIKKit;
 			sourceTree = "<group>";
 		};
 		0265EC401A30C90E00334388 /* _Managed objects */ = {
@@ -303,10 +367,16 @@
 		02AE44671A07FD0F00E796CD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				025260CE1A1CE7EE00A1FBDE /* Analytics.h */,
+				025260CF1A1CE7EE00A1FBDE /* Analytics.m */,
+				02F6BDF61A3B25EC00CD81F1 /* DeleteTodoEventAlert.h */,
+				02F6BDF71A3B25EC00CD81F1 /* DeleteTodoEventAlert.m */,
+				0250076D1A42D982004510F5 /* MTMigration.h */,
+				0250076E1A42D982004510F5 /* MTMigration.m */,
 				025260D21A1CF10200A1FBDE /* SOAppDelegate.h */,
 				025260D31A1CF10200A1FBDE /* SOAppDelegate.m */,
-				025260CE1A1CE7EE00A1FBDE /* DAYAnalytics.h */,
-				025260CF1A1CE7EE00A1FBDE /* DAYAnalytics.m */,
+				025007641A403EF0004510F5 /* TodoEventsCache.h */,
+				025007651A403EF0004510F5 /* TodoEventsCache.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -345,12 +415,12 @@
 			buildConfigurationList = 0230CC8D199DC6D0004D7713 /* Build configuration list for PBXNativeTarget "Daily" */;
 			buildPhases = (
 				F37932552F5C2417410D68E6 /* Check Pods Manifest.lock */,
-				5C643F9582A891EEFAAC81E5 /* Label Optimizely Views */,
 				0230CC51199DC6CF004D7713 /* Sources */,
 				0230CC52199DC6CF004D7713 /* Frameworks */,
 				0230CC53199DC6CF004D7713 /* Resources */,
 				AEC59A074B2F3E71A8E8D924 /* Copy Pods Resources */,
 				0265EC311A30747100334388 /* ShellScript */,
+				025007671A418DDC004510F5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -367,6 +437,7 @@
 		0230CC4D199DC6CF004D7713 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = VIK;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "___FULLUSERNAME___";
 				TargetAttributes = {
@@ -419,6 +490,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		025007671A418DDC004510F5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "KEYWORDS=\"TODO:|FIXME:|\\?\\?\\?:|\\!\\!\\!:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($KEYWORDS).*\\$\" | perl -p -e \"s/($KEYWORDS)/ warning: \\$1/\"";
+		};
 		0265EC311A30747100334388 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -431,20 +515,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "./Crashlytics.framework/run fb76caedaff89b29a1a7205381ace5d25c832964 c9e5eadd9e6d92d95ecc87296e306296903fd43c0bc9a8575c167373196b022e";
-		};
-		5C643F9582A891EEFAAC81E5 /* Label Optimizely Views */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Label Optimizely Views";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "ruby \"$PODS_ROOT/Optimizely-iOS-SDK/scripts/OptimizelyPrepareNibs.rb\"";
 		};
 		AEC59A074B2F3E71A8E8D924 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -484,34 +554,44 @@
 			buildActionMask = 2147483647;
 			files = (
 				02F7022C1A07B71700C36FC9 /* TodoEvent.m in Sources */,
+				023871631A372BA50095D959 /* NSString+VIKKit.m in Sources */,
+				0238716A1A372BEB0095D959 /* UIColor+VIKKit.m in Sources */,
+				0238716C1A372BEB0095D959 /* UIView+Frame.m in Sources */,
 				0265EC4D1A31D97600334388 /* Calendar+VFDaily.m in Sources */,
+				023871731A3895C00095D959 /* VIKTodoEventCell.m in Sources */,
 				02560F5F1A13ACBF00310F76 /* SAMTextField.m in Sources */,
 				0265EC501A31DC2300334388 /* EKEventStore+VFDaily.m in Sources */,
 				02AE446B1A0802AA00E796CD /* NSDateFormatter+Extended.m in Sources */,
 				0265EC391A3093C600334388 /* MigrationService.m in Sources */,
 				02560F5C1A13A72200310F76 /* SignupViewController.m in Sources */,
 				02CFB7C419E42F0600E3A243 /* HPReorderTableView.m in Sources */,
+				023871601A372AFE0095D959 /* NSArray+VIKFunctional.m in Sources */,
 				025260D41A1CF10200A1FBDE /* SOAppDelegate.m in Sources */,
 				0265EC301A2F45EE00334388 /* EKCalendar+VFDaily.m in Sources */,
 				0233879719E537500082A7CF /* MCSwipeTableViewCell.m in Sources */,
 				025260DA1A1CF18E00A1FBDE /* NotificationService.m in Sources */,
 				0230CC69199DC6CF004D7713 /* AppDelegate.m in Sources */,
+				025007661A403EF0004510F5 /* TodoEventsCache.m in Sources */,
 				02FA9C121A28DD9B00D054FF /* MissedEventsViewController.m in Sources */,
 				020DDAF719ACA883004A5163 /* store.xcdatamodeld in Sources */,
 				02971E4A1A02961400107830 /* NSDate+Utilities.m in Sources */,
 				0204A0FD19C1DCDD00DA6F87 /* LSWeekView.m in Sources */,
 				02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */,
 				0265EC431A30CE4F00334388 /* MagicalRecordService.m in Sources */,
-				025260D01A1CE7EE00A1FBDE /* DAYAnalytics.m in Sources */,
+				025260D01A1CE7EE00A1FBDE /* Analytics.m in Sources */,
 				023A65C2199E1B8D00CC9BA6 /* EventCell.m in Sources */,
+				0238716F1A3758CA0095D959 /* NSManagedObject+VIKKit.m in Sources */,
 				0230CC72199DC6CF004D7713 /* MasterViewController.m in Sources */,
+				0238715B1A3727CD0095D959 /* NSDate+VIKKit.m in Sources */,
 				0265EC4A1A31D96200334388 /* Todo+VFDaily.m in Sources */,
 				02F7022F1A07B78800C36FC9 /* Todo.m in Sources */,
 				02FA9C031A1F4E9000D054FF /* BadgeService.m in Sources */,
+				02F6BDF81A3B25EC00CD81F1 /* DeleteTodoEventAlert.m in Sources */,
+				02B3294B1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m in Sources */,
 				0265EC3F1A30C8FB00334388 /* Calendar.m in Sources */,
 				0230CC65199DC6CF004D7713 /* main.m in Sources */,
-				0265EC471A31D91500334388 /* EKEvent+VFDaily.m in Sources */,
 				0265EC3C1A3097A500334388 /* UserDefaultsService.m in Sources */,
+				0250076F1A42D982004510F5 /* MTMigration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

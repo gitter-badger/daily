@@ -13,7 +13,7 @@
 
 + (void)migrateFromTodoIdentifiers
 {
-    NSArray *todos = [self MR_findAll];
+    NSArray *todos = [self findAll];
     for (Todo *todo in todos) {
         if (todo.todoIdentifier && todo.todoIdentifier.length) {
             NSString *dateString = [todo.todoIdentifier substringFromIndex:todo.todoIdentifier.length - 8];
@@ -23,6 +23,7 @@
             todo.eventIdentifier = eventIdentifier;
         }
     }
+    [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
 }
 
 @end

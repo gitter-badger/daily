@@ -1,3 +1,3 @@
-pod "Analytics"
-pod "MTMigration"
+pod "Intercom"
 pod "MagicalRecord/Shorthand"
+pod "NSDate+TimeAgo"

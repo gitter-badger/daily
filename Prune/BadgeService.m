@@ -1,11 +1,3 @@
-//
-//  BadgeService.m
-//  Daily
-//
-//  Created by Viktor Fröberg on 21/11/14.
-//  Copyright (c) 2014 Viktor Fröberg. All rights reserved.
-//
-
 #import "BadgeService.h"
 #import "TodoEvent.h"
 
@@ -49,8 +41,8 @@
 
 - (void)updateApplicationBadge:(UIApplication *)application
 {
-    NSDate *startDate = [[NSDate date] dateAtStartOfDay];
-    NSDate *endDate = [[NSDate date] dateAtEndOfDay];
+    NSDate *startDate = [[NSDate date] midnight];
+    NSDate *endDate = [[NSDate date] tomorrow];
     NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
     application.applicationIconBadgeNumber = todoEvents.count;
 }
