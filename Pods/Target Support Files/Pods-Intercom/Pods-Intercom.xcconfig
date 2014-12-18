@@ -1,0 +1,2 @@
+PODS_INTERCOM_LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/Intercom/Intercom"
+PODS_INTERCOM_OTHER_LDFLAGS = -l"Intercom" -framework "AVFoundation" -framework "CoreGraphics" -framework "Foundation" -framework "ImageIO" -framework "MobileCoreServices" -framework "QuartzCore" -framework "Security" -framework "SystemConfiguration" -framework "UIKit"
