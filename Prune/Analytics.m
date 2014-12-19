@@ -25,8 +25,6 @@
     dispatch_once(&onceToken, ^{
         sharedAnalytics = [[Analytics alloc] init];
         [Intercom setApiKey:@"ios_sdk-d68ee30c837ece89ec811d139e24926c3706e4c5" forAppId:@"g48d527q"];
-        [Intercom setPresentationMode:ICMPresentationModeBottomRight];
-        [Intercom setPresentationInsetOverScreen:UIEdgeInsetsMake(20, 16, 80, 8)];
     });
     return sharedAnalytics;
 }
