@@ -32,7 +32,6 @@
 #import "EKEventStore+VFDaily.h"
 #import "NSUserDefaults+DLY.h"
 
-static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotification";
 
 // Struct...
 static NSInteger const kIncompletedSection = 0;
@@ -103,7 +102,7 @@ static NSInteger const kCompletedSection = 1;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(statusBarTappedAction:)
-                                                 name:kStatusBarTappedNotification
+                                                 name:@"statusBarTappedNotification"
                                                object:nil];
     
     self.checkImageView = [UIImageView imageViewWithImageName:@"check"];
