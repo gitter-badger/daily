@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-#import "SOAppDelegate.h"
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@interface AppDelegate : SOAppDelegate
+@property (nonatomic, strong) UIWindow *window;
 
 @end

@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 ___FULLUSERNAME___. All rights reserved.
 //
 
-// Frameworks
-#import <Crashlytics/Crashlytics.h>
+// Classes
+#import "AppDelegate.h"
 
 // Services
 #import "BadgeService.h"
@@ -15,20 +15,20 @@
 #import "MigrationService.h"
 #import "UserDefaultsService.h"
 #import "MagicalRecordService.h"
-
-// Controllers
-#import "MasterViewController.h"
-#import "AppDelegate.h"
+#import "CrashlyticsService.h"
 
 // Categories
 #import "NSUserDefaults+DLY.h"
-
-static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotification";
+#import "EKEventStore+VFDaily.h"
 
 @interface AppDelegate ()
 
-@property (nonatomic, strong) NSArray *calendarIdentifiers;
-@property (nonatomic, strong) NSArray *selectedCalendars;
+@property (nonatomic, strong) BadgeService *badgeService;
+@property (nonatomic, strong) MagicalRecordService *magicalRecordService;
+@property (nonatomic, strong) MigrationService *migrationService;
+@property (nonatomic, strong) NotificationService *notificationService;
+@property (nonatomic, strong) UserDefaultsService *userDefaultsService;
+@property (nonatomic, strong) CrashlyticsService *crashlyticsService;
 
 @end
 
@@ -36,26 +36,66 @@ static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotifica
 
 #pragma mark - Services
 
-- (NSArray *)services {
-    static NSArray * _services;
-    static dispatch_once_t _onceTokenServices;
-    dispatch_once(&_onceTokenServices, ^{
-        _services = @[[MagicalRecordService sharedInstance],
-                      [BadgeService sharedInstance],
-                      [NotificationService sharedInstance],
-                      [MigrationService sharedInstance],
-                      [UserDefaultsService sharedInstance]];
-    });
-    return _services;
+- (BadgeService *)badgeService
+{
+    if (!_badgeService) {
+        _badgeService = [[BadgeService alloc] init];
+    }
+    return _badgeService;
+}
+
+- (MagicalRecordService *)magicalRecordService
+{
+    if (!_magicalRecordService) {
+        _magicalRecordService = [[MagicalRecordService alloc] init];
+    }
+    return _magicalRecordService;
+}
+
+- (MigrationService *)migrationService
+{
+    if (!_migrationService) {
+        _migrationService = [[MigrationService alloc] init];
+    }
+    return _migrationService;
+}
+
+- (NotificationService *)notificationService
+{
+    if (!_notificationService) {
+        _notificationService = [[NotificationService alloc] init];
+    }
+    return _notificationService;
+}
+
+- (UserDefaultsService *)userDefaultsService
+{
+    if (!_userDefaultsService) {
+        _userDefaultsService = [[UserDefaultsService alloc] init];
+    }
+    return _userDefaultsService;
+}
+
+- (CrashlyticsService *)crashlyticsService
+{
+    if (!_crashlyticsService) {
+        _crashlyticsService = [[CrashlyticsService alloc] init];
+    }
+    return _crashlyticsService;
 }
 
 #pragma mark - Life Cycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
-    [Crashlytics startWithAPIKey:@"fb76caedaff89b29a1a7205381ace5d25c832964"];
+    // TODO: Could be init instead?
+    [self.crashlyticsService startLogging];
+    [self.magicalRecordService setup];
+    [self.migrationService run];
+    [self.notificationService setup];
+    [self.notificationService scheduleNotifications];
     
     [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTintColor:[UIColor redColor]];
@@ -79,6 +119,11 @@ static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotifica
     return YES;
 }
 
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    [self.notificationService presentNotification:notification];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     NSString *email = [[NSUserDefaults standardUserDefaults] email];
@@ -89,26 +134,68 @@ static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotifica
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    [super applicationWillResignActive:application];
-    
-    [[NSUserDefaults standardUserDefaults] setLastSeen:[NSDate date]];
+    [self.userDefaultsService save];
+    [self setLastSeen];
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            [self.badgeService updateBadge:application];
+            [self.magicalRecordService clean];
+        }
+    }];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [super applicationDidEnterBackground:application];
-
-    [[NSUserDefaults standardUserDefaults] setLastSeen:[NSDate date]];
+    [self.userDefaultsService save];
+    [self setLastSeen];
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            [self.badgeService updateBadge:application];
+            [self.magicalRecordService clean];
+        }
+    }];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    [super applicationWillTerminate:application];
-    
+    [self.userDefaultsService save];
+    [self setLastSeen];
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            [self.badgeService updateBadge:application];
+            [self.magicalRecordService clean];
+        }
+    }];
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    [self.crashlyticsService startLogging];
+    [self.magicalRecordService setup];
+    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            [self.badgeService updateBadge:application];
+            [self.notificationService scheduleNotifications];
+            [self.magicalRecordService clean];
+            completionHandler(UIBackgroundFetchResultNewData);
+        } else {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }];
+}
+
+#pragma mark - Private
+
+// Todo extract...
+
+- (void)setLastSeen
+{
     [[NSUserDefaults standardUserDefaults] setLastSeen:[NSDate date]];
 }
 
 #pragma mark - Broadcasting
+
+// Todo extract...
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -124,7 +211,7 @@ static NSString * const kStatusBarTappedNotification = @"statusBarTappedNotifica
 
 - (void)statusBarTappedAction
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kStatusBarTappedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"statusBarTappedNotification" object:nil];
 }
 
 @end

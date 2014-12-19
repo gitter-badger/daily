@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
-@interface UserDefaultsService : NSObject <UIApplicationDelegate>
+@interface UserDefaultsService : NSObject
 
-+ (instancetype)sharedInstance;
+- (void)save;
 
 @end

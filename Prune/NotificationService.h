@@ -1,7 +1,9 @@
 #import <Foundation/Foundation.h>
 
-@interface NotificationService : NSObject <UIApplicationDelegate>
+@interface NotificationService : NSObject
 
-+ (instancetype)sharedInstance;
+- (void)setup;
+- (void)scheduleNotifications;
+- (void)presentNotification:(UILocalNotification *)notification;
 
 @end

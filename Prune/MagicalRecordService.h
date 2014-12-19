@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 
-@interface MagicalRecordService : NSObject <UIApplicationDelegate>
+@interface MagicalRecordService : NSObject
 
-+ (instancetype)sharedInstance;
+- (void)setup;
+- (void)clean;
 
 @end

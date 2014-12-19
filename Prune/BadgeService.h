@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
-@interface BadgeService : NSObject <UIApplicationDelegate>
+@interface BadgeService : NSObject
 
-+ (instancetype)sharedInstance;
+- (void)updateBadge:(UIApplication *)application;
 
 @end

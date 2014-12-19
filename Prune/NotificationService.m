@@ -8,31 +8,19 @@
 
 @implementation NotificationService
 
-+ (instancetype)sharedInstance {
-    static id _sharedInstance = nil;
-    static dispatch_once_t _onceToken;
-    dispatch_once(&_onceToken, ^{
-        _sharedInstance = [[[self class] alloc] init];
-    });
-    return _sharedInstance;
-}
-
-#pragma mark - Application Delegate
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    
-    [self scheduleTodoEventNotifications];
-    
+- (void)setup
+{
+    [[UIApplication sharedApplication] registerUserNotificationSettings:self.userNotificationSettings];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChangedNotification:) name:EKEventStoreChangedNotification object:[EKEventStore sharedEventStore]];
-    
-    [application registerUserNotificationSettings:self.userNotificationSettings];
-
-    return YES;
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+- (void)scheduleNotifications
+{
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [self scheduleTodoEventNotifications];
+}
+
+- (void)presentNotification:(UILocalNotification *)notification
 {
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
         UIAlertController *alertNotificationController = [UIAlertController alertControllerWithTitle:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"] message:notification.alertBody preferredStyle:UIAlertControllerStyleAlert];
@@ -42,19 +30,13 @@
     }
 }
 
-- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-    [self scheduleTodoEventNotifications];
-    completionHandler(UIBackgroundFetchResultNewData);
-}
-
-- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler
-{
-    if ([identifier isEqualToString:@"SNOOZE_ACTION"]) {
-        [application scheduleLocalNotification:[self snoozedNotification:notification]];
-    }
-    completionHandler();
-}
+//- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler
+//{
+//    if ([identifier isEqualToString:@"SNOOZE_ACTION"]) {
+//        [application scheduleLocalNotification:[self snoozedNotification:notification]];
+//    }
+//    completionHandler();
+//}
 
 # pragma mark - Private
 
@@ -67,12 +49,6 @@
     NSInteger minute = 60;
     notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5 * minute];
     return notification;
-}
-
-- (void)scheduleNotifications
-{
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
-    [self scheduleTodoEventNotifications];
 }
 
 - (void)scheduleTodoEventNotifications

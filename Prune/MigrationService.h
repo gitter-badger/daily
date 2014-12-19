@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
-@interface MigrationService : NSObject <UIApplicationDelegate>
+@interface MigrationService : NSObject
 
-+ (instancetype)sharedInstance;
+- (void)run;
 
 @end
