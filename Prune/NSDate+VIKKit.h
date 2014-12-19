@@ -10,11 +10,9 @@
 
 @interface NSDate (VIKKit)
 
-+ (NSDate *)today;
-+ (NSDate *)tomorrow;
-+ (NSDate *)yesterday;
+- (NSDate *)morning;
+- (NSDate *)night;
 
-- (NSDate *)midnight;
 - (NSDate *)yesterday;
 - (NSDate *)tomorrow;
 

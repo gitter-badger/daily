@@ -715,8 +715,8 @@ static NSInteger const kCompletedSection = 1;
         if (granted) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                NSDate *startDate = [self.currentDate midnight];
-                NSDate *endDate = [self.currentDate tomorrow];
+                NSDate *startDate = self.currentDate;
+                NSDate *endDate = self.currentDate;
                 
                 NSArray *events = [TodoEvent findAllWithStartDate:startDate endDate:endDate];
                 

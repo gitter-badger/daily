@@ -16,19 +16,34 @@
 
 @implementation NSDate (VIKKit)
 
-+ (NSDate *)today
-{
-    return [[NSDate date] midnight];
-}
-
 + (NSDate *)tomorrow
 {
-    return [[NSDate dateThatIsNumberOfDaysFromToday:1] midnight];
+    return [NSDate dateThatIsNumberOfDaysFromToday:1];
 }
 
 + (NSDate *)yesterday
 {
-    return [[NSDate dateThatIsNumberOfDaysFromToday:-1] midnight];
+    return [NSDate dateThatIsNumberOfDaysFromToday:-1];
+}
+
+- (NSDate *)morning
+{
+    NSDateComponents *components = [self dateComponents];
+    components.hour = 0;
+    components.minute = 0;
+    components.second = 0;
+    
+    return [[NSCalendar autoupdatingCurrentCalendar] dateFromComponents:components];
+}
+
+- (NSDate *)night
+{
+    NSDateComponents *components = [self dateComponents];
+    components.hour = 23;
+    components.minute = 59;
+    components.second = 59;
+    
+    return [[NSCalendar autoupdatingCurrentCalendar] dateFromComponents:components];
 }
 
 - (NSDate *)midnight
@@ -46,7 +61,7 @@
     NSDateComponents *components = [self dateComponents];
     components.day -= 1;
     NSDate *date = [[NSCalendar autoupdatingCurrentCalendar] dateFromComponents:components];
-    return [date midnight];
+    return date;
 }
 
 - (NSDate *)tomorrow
@@ -54,7 +69,7 @@
     NSDateComponents *components = [self dateComponents];
     components.day += 1;
     NSDate *date = [[NSCalendar autoupdatingCurrentCalendar] dateFromComponents:components];
-    return [date midnight];
+    return date;
 }
 
 - (BOOL)isToday
@@ -77,7 +92,7 @@
 
 - (BOOL)isBeforeDate:(NSDate *)date
 {
-    if ([self compare:date] == NSOrderedAscending)
+    if ([self compare:date] == NSOrderedAscending || [self compare:date] == NSOrderedSame)
         return YES;
     
     return NO;
@@ -85,7 +100,7 @@
 
 - (BOOL)isAfterDate:(NSDate *)date
 {
-    if ([self compare:date] == NSOrderedDescending)
+    if ([self compare:date] == NSOrderedDescending || [self compare:date] == NSOrderedSame)
         return YES;
     
     return NO;

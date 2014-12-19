@@ -94,7 +94,7 @@
     [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         if (granted) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSDate *endDate = [NSDate yesterday];
+                NSDate *endDate = [[[NSDate date ] yesterday] night];
                 NSDate *startDate = [endDate dateBySubtractingDays:14];
                 NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
                 self.todoEvents = [[self sortedTodoEvents:todoEvents] mutableCopy];

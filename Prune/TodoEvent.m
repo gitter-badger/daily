@@ -194,6 +194,8 @@
 
 + (NSArray *)findAllWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
 {
+    startDate = [startDate morning];
+    endDate = [endDate night];
     EKEventStore *eventStore = [EKEventStore sharedEventStore];
     NSMutableArray *todoEvents = [[NSMutableArray alloc] init];
     NSArray *selectedCalendars = [EKCalendar selectedCalendarForEntityType:EKEntityTypeEvent];
@@ -222,7 +224,7 @@
         NSInteger days = [event.startDate daysBeforeDate:event.endDate] + 1;
         for (int i = 0; i < days; i++) {
             NSDate *date = [event.startDate dateByAddingDays:i];
-            if ([date isAfterDate:[startDate yesterday]] && [date isBeforeDate:[endDate tomorrow]]) {
+            if ([date isAfterDate:startDate] && [date isBeforeDate:endDate]) {
                 
                 NSPredicate *todoPredicate = [NSPredicate predicateWithFormat:@"eventIdentifier = %@ AND date = %@", event.eventIdentifier, date];
                 Todo *todo = [Todo findFirstWithPredicate:todoPredicate];
@@ -233,17 +235,17 @@
                     todo.date = date;
                     todo.position = @-1;
                     
-                    NSDate *eventDate = [date midnight];
-                    NSDate *eventModifiedDate = [event.lastModifiedDate midnight];
-                    NSDate *calendarEnabledDate = [event.calendar.enabledDate yesterday];
-                    if ([eventDate isAfterDate:calendarEnabledDate] || [eventModifiedDate isAfterDate:calendarEnabledDate]) {
+                    NSDate *eventModifiedDate = [event.lastModifiedDate morning];
+                    NSDate *calendarEnabledDate = [[event.calendar.enabledDate yesterday] morning];
+                    if ([date isAfterDate:calendarEnabledDate] || [eventModifiedDate isAfterDate:calendarEnabledDate]) {
                         todo.completed = @NO;
                     } else {
                         todo.completed = @YES;
                     }
                 }
                 
-                [todoEvents addObject:[[TodoEvent alloc] initWithEvent:event todo:todo]];
+                TodoEvent *todoEvent = [[TodoEvent alloc] initWithEvent:event todo:todo];
+                [todoEvents addObject:todoEvent];
             }
         }
     }];
@@ -270,10 +272,9 @@
             todo.date = date;
             todo.position = @-1;
 
-            NSDate *eventDate = [date midnight];
-            NSDate *eventModifiedDate = [event.lastModifiedDate midnight];
-            NSDate *calendarEnabledDate = [calendar.enabledDate yesterday];
-            if ([eventDate isAfterDate:calendarEnabledDate] || [eventModifiedDate isAfterDate:calendarEnabledDate]) {
+            NSDate *eventModifiedDate = [event.lastModifiedDate morning];
+            NSDate *calendarEnabledDate = [[calendar.enabledDate yesterday] morning];
+            if ([date isAfterDate:calendarEnabledDate] || [eventModifiedDate isAfterDate:calendarEnabledDate]) {
                 todo.completed = @NO;
             } else {
                 todo.completed = @YES;

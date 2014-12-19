@@ -5,8 +5,8 @@
 
 - (void)updateBadge:(UIApplication *)application
 {
-    NSDate *startDate = [[NSDate date] morning];
-    NSDate *endDate = [[NSDate date] night];
+    NSDate *startDate = [NSDate date];
+    NSDate *endDate = [NSDate date];
     NSArray *todoEvents = [TodoEvent findAllIncompleteWithStartDate:startDate endDate:endDate];
     application.applicationIconBadgeNumber = todoEvents.count;
 }
