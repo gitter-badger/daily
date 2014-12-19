@@ -31,6 +31,7 @@
 		023A65C2199E1B8D00CC9BA6 /* EventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 023A65C1199E1B8D00CC9BA6 /* EventCell.m */; };
 		025007661A403EF0004510F5 /* TodoEventsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 025007651A403EF0004510F5 /* TodoEventsCache.m */; };
 		0250076F1A42D982004510F5 /* MTMigration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0250076E1A42D982004510F5 /* MTMigration.m */; };
+		025007721A445BB7004510F5 /* CrashlyticsService.m in Sources */ = {isa = PBXBuildFile; fileRef = 025007711A445BB7004510F5 /* CrashlyticsService.m */; };
 		025260D01A1CE7EE00A1FBDE /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260CF1A1CE7EE00A1FBDE /* Analytics.m */; };
 		025260D41A1CF10200A1FBDE /* SOAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260D31A1CF10200A1FBDE /* SOAppDelegate.m */; };
 		025260DA1A1CF18E00A1FBDE /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 025260D91A1CF18E00A1FBDE /* NotificationService.m */; };
@@ -51,7 +52,6 @@
 		029B22E819A4E0F100CC5EDC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22E719A4E0F100CC5EDC /* CoreData.framework */; };
 		029B22F619A63FC800CC5EDC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22F519A63FC800CC5EDC /* MessageUI.framework */; };
 		02ACDFB21A2CB65E00793AE4 /* NSUserDefaults+DLY.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */; };
-		02ACDFC91A2CC67600793AE4 /* Todo in Resources */ = {isa = PBXBuildFile; fileRef = 02ACDFC81A2CC67600793AE4 /* Todo */; };
 		02AE446B1A0802AA00E796CD /* NSDateFormatter+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */; };
 		02B3294B1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B3294A1A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.m */; };
 		02CFB7BD19E415FC00E3A243 /* Onboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */; };
@@ -108,6 +108,8 @@
 		025007651A403EF0004510F5 /* TodoEventsCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventsCache.m; sourceTree = "<group>"; };
 		0250076D1A42D982004510F5 /* MTMigration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTMigration.h; sourceTree = "<group>"; };
 		0250076E1A42D982004510F5 /* MTMigration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTMigration.m; sourceTree = "<group>"; };
+		025007701A445BB7004510F5 /* CrashlyticsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashlyticsService.h; sourceTree = "<group>"; };
+		025007711A445BB7004510F5 /* CrashlyticsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashlyticsService.m; sourceTree = "<group>"; };
 		025260CE1A1CE7EE00A1FBDE /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		025260CF1A1CE7EE00A1FBDE /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		025260D21A1CF10200A1FBDE /* SOAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOAppDelegate.h; sourceTree = "<group>"; };
@@ -144,7 +146,6 @@
 		029B22F519A63FC800CC5EDC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		02ACDFB01A2CB65E00793AE4 /* NSUserDefaults+DLY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+DLY.h"; sourceTree = "<group>"; };
 		02ACDFB11A2CB65E00793AE4 /* NSUserDefaults+DLY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+DLY.m"; sourceTree = "<group>"; };
-		02ACDFC81A2CC67600793AE4 /* Todo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Todo; sourceTree = "<group>"; };
 		02AE44691A0802AA00E796CD /* NSDateFormatter+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+Extended.h"; sourceTree = "<group>"; };
 		02AE446A1A0802AA00E796CD /* NSDateFormatter+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+Extended.m"; sourceTree = "<group>"; };
 		02B329491A3AF6EC00D8FE62 /* UIImageView+VIKAdditionals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+VIKAdditionals.h"; sourceTree = "<group>"; };
@@ -152,7 +153,6 @@
 		02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Onboard_iPhone.storyboard; sourceTree = "<group>"; };
 		02CFB7C219E42F0600E3A243 /* HPReorderTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HPReorderTableView.h; path = HPReorderTableView/HPReorderTableView.h; sourceTree = "<group>"; };
 		02CFB7C319E42F0600E3A243 /* HPReorderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HPReorderTableView.m; path = HPReorderTableView/HPReorderTableView.m; sourceTree = "<group>"; };
-		02F0B1A219ED4D4100CFC80A /* Complete.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Complete.entitlements; path = ../Complete.entitlements; sourceTree = "<group>"; };
 		02F6BDF61A3B25EC00CD81F1 /* DeleteTodoEventAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteTodoEventAlert.h; sourceTree = "<group>"; };
 		02F6BDF71A3B25EC00CD81F1 /* DeleteTodoEventAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteTodoEventAlert.m; sourceTree = "<group>"; };
 		02F7022A1A07B71700C36FC9 /* TodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEvent.h; sourceTree = "<group>"; };
@@ -252,7 +252,6 @@
 		0230CC4C199DC6CF004D7713 = {
 			isa = PBXGroup;
 			children = (
-				02ACDFC81A2CC67600793AE4 /* Todo */,
 				02560F581A138BDE00310F76 /* Podfile */,
 				0230CC5E199DC6CF004D7713 /* Prune */,
 				0230CC57199DC6CF004D7713 /* Frameworks */,
@@ -306,7 +305,6 @@
 				0289193719E2E65D00D51813 /* LaunchScreen.storyboard */,
 				0230CC6A199DC6CF004D7713 /* Main_iPhone.storyboard */,
 				02CFB7BC19E415FC00E3A243 /* Onboard_iPhone.storyboard */,
-				02F0B1A219ED4D4100CFC80A /* Complete.entitlements */,
 				0230CC60199DC6CF004D7713 /* Daily-Info.plist */,
 				0230CC66199DC6CF004D7713 /* Daily-Prefix.pch */,
 				0230CC76199DC6CF004D7713 /* Images.xcassets */,
@@ -394,6 +392,8 @@
 				025260D91A1CF18E00A1FBDE /* NotificationService.m */,
 				0265EC3A1A3097A500334388 /* UserDefaultsService.h */,
 				0265EC3B1A3097A500334388 /* UserDefaultsService.m */,
+				025007701A445BB7004510F5 /* CrashlyticsService.h */,
+				025007711A445BB7004510F5 /* CrashlyticsService.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -482,7 +482,6 @@
 				0289193819E2E65D00D51813 /* LaunchScreen.storyboard in Resources */,
 				0230CC6C199DC6CF004D7713 /* Main_iPhone.storyboard in Resources */,
 				0230CC63199DC6CF004D7713 /* InfoPlist.strings in Resources */,
-				02ACDFC91A2CC67600793AE4 /* Todo in Resources */,
 				02CFB7BD19E415FC00E3A243 /* Onboard_iPhone.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -554,6 +553,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				02F7022C1A07B71700C36FC9 /* TodoEvent.m in Sources */,
+				025007721A445BB7004510F5 /* CrashlyticsService.m in Sources */,
 				023871631A372BA50095D959 /* NSString+VIKKit.m in Sources */,
 				0238716A1A372BEB0095D959 /* UIColor+VIKKit.m in Sources */,
 				0238716C1A372BEB0095D959 /* UIView+Frame.m in Sources */,
