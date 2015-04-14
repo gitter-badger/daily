@@ -2,7 +2,7 @@
 #import "MigrationService.h"
 #import "Calendar.h"
 #import "EKCalendar+VFDaily.h"
-#import "Todo+VFDaily.h"
+//#import "Todo+VFDaily.h"
 
 @implementation MigrationService
 
@@ -10,11 +10,11 @@
 {
     [MTMigration migrateToBuild:@"1.0.6" block:^{
         [self migrateSelectedCalendarsFromUserDefaults];
-        [Todo migrateFromTodoIdentifiers];
+//        [Todo migrateFromTodoIdentifiers];
     }];
     
     [MTMigration migrateToBuild:@"1.0.8" block:^{
-        [Todo migrateFromTimeToNoneTime];
+//        [Todo migrateFromTimeToNoneTime];
     }];
     
     [MTMigration migrateToBuild:@"1.0.10" block:^{

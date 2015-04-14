@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class TodoEvent;
+@class MutableTodoEvent;
 
 @interface DetailViewController : UITableViewController
 
-@property (nonatomic, strong) TodoEvent *todoEvent;
+- (instancetype)initWithTodoEvent:(MutableTodoEvent *)todoEvent;
 
 @end

@@ -9,7 +9,7 @@
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
 #import "SettingsViewController.h"
-#import "EKEventStore+VFDaily.h"
+
 #import "EKCalendar+VFDaily.h"
 
 @interface SettingsViewController () <EKCalendarChooserDelegate>
@@ -99,7 +99,7 @@
 
 - (void)presentCalendarChooser
 {
-    EKEventStore *eventStore = [EKEventStore sharedEventStore];
+    EKEventStore *eventStore = [[EKEventStore alloc] init];
     NSArray *selectedCalendars = [EKCalendar selectedCalendarForEntityType:EKEntityTypeEvent];
     dispatch_async(dispatch_get_main_queue(), ^{
         EKCalendarChooser *calendarChooser = [[EKCalendarChooser alloc] initWithSelectionStyle:EKCalendarChooserSelectionStyleMultiple displayStyle:EKCalendarChooserDisplayAllCalendars entityType:EKEntityTypeEvent eventStore:eventStore];
@@ -122,8 +122,8 @@
 
 -(void)calendarChooserDidFinish:(EKCalendarChooser *)calendarChooser
 {
-    [[Analytics sharedAnalytics] track:@"Changed Visible Calendars"];
-    NSArray *calendars = [[EKEventStore sharedEventStore] calendarsForEntityType:EKEntityTypeEvent];
+    EKEventStore *eventStore = [[EKEventStore alloc] init];
+    NSArray *calendars = [eventStore calendarsForEntityType:EKEntityTypeEvent];
     NSArray *selectedCalendars = [calendarChooser.selectedCalendars allObjects];
     [calendars enumerateObjectsUsingBlock:^(EKCalendar *calendar, NSUInteger idx, BOOL *stop) {
         if ([selectedCalendars containsObject:calendar]) {

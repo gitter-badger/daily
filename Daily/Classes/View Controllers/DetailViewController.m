@@ -6,24 +6,36 @@
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
+#import "TodoEventActions.h"
+
+// Models
+#import "MutableTodoEvent.h"
+#import "TodoEventViewModel.h"
+
+// Controllers
 #import "DetailViewController.h"
-#import "TodoEvent.h"
-#import "EKEventStore+VFDaily.h"
-#import "NSDateFormatter+Extended.h"
-#import <EventKit/EventKit.h>
-#import <EventKitUI/EventKitUI.h>
+#import "UIAlertController+DeleteTodoEvent.h"
 
-@interface DetailViewController () <EKEventEditViewDelegate>
+// Views
+#import "DetailTableViewCell.h"
 
-@property (nonatomic, strong) TodoEvent *editingTodoEvent;
+@interface DetailViewController ()
+
+@property (nonatomic, strong) MutableTodoEvent *todoEvent;
+
+@property (nonatomic, strong) NSArray *cellData;
 
 @end
 
 @implementation DetailViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (instancetype)initWithTodoEvent:(MutableTodoEvent *)todoEvent
 {
-    return [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStylePlain];
+    if (self) {
+        self.todoEvent = todoEvent;
+    }
+    return self;
 }
 
 - (void)viewDidLoad
@@ -31,148 +43,82 @@
     [super viewDidLoad];
     self.title = self.todoEvent.title;
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed:)];
-    if (self.todoEvent.allowsContentModifications) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleDone target:self action:@selector(editButtonPressed:)];
-    }
+    UIBarButtonItem *deleteEventButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete Event" style:UIBarButtonItemStylePlain target:self action:@selector(deleteEvent:)];
+    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    self.toolbarItems = @[flexibleSpace, deleteEventButton, flexibleSpace];
+    self.navigationController.toolbarHidden = NO;
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    self.tableView.separatorColor = [UIColor clearColor];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed:)];
+    
+    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:self.todoEvent];
+    
+    NSMutableArray *cellData = [[NSMutableArray alloc] init];
+    [cellData addObject:@{@"title": viewModel.titleText, @"placeholder": @"Title", @"image": [UIImage imageNamed:@"notes"]}];
+    [cellData addObject:@{@"title": viewModel.timeText, @"placeholder": @"No time", @"image": [UIImage imageNamed:@"clock"]}];
+    [cellData addObject:@{@"title": viewModel.dateText, @"placeholder": @"Date", @"image": [UIImage imageNamed:@"clock"]}];
+    [cellData addObject:@{@"title": viewModel.locationText, @"placeholder": @"Location", @"image": [UIImage imageNamed:@"location"]}];
+    [cellData addObject:@{@"title": viewModel.urlText, @"placeholder": @"URL", @"image": [UIImage imageNamed:@"url"]}];
+    [cellData addObject:@{@"title": viewModel.notesText, @"placeholder": @"Notes", @"image": [UIImage imageNamed:@"notes"]}];
+    
+    self.cellData = [cellData copy];
+    
+    [self.tableView registerClass:[DetailTableViewCell class] forCellReuseIdentifier:@"Cell"];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)deleteEvent:(id)sender
 {
-    [super viewDidAppear:animated];
-    [self.tableView reloadData];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTodoEvent:self.todoEvent handler:^(TodoEventSpan span) {
+        
+        switch (span) {
+            case TodoEventSpanThis:
+                [[TodoEventActions sharedActions] deleteThisTodoEvent:self.todoEvent];
+                break;
+            case TodoEventSpanFuture:
+                [[TodoEventActions sharedActions] deleteFutureTodoEvent:self.todoEvent];
+                break;
+        }
+
+        [self dismissViewController];
+        
+    }];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)closeButtonPressed:(id)sender
 {
+    [self dismissViewController];
+}
+
+- (void)dismissViewController
+{
     [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)editButtonPressed:(id)sender
-{
-    EKEventEditViewController *editViewController = [[EKEventEditViewController alloc] init];
-    editViewController.eventStore = [EKEventStore sharedEventStore];
-    editViewController.event = self.todoEvent.event;
-    self.editingTodoEvent = self.todoEvent;
-    editViewController.editViewDelegate = self;
-    [self presentViewController:editViewController animated:YES completion:nil];
-}
-
-#pragma mark - EKEventEditViewControllerDelegate
-
-- (void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action
-{
-    switch (action) {
-        case EKEventEditViewActionCancelled:
-            break;
-            
-        case EKEventEditViewActionSaved:
-            if (self.editingTodoEvent) {
-                NSArray *todoEvents = [TodoEvent todoEventsFromEvent:controller.event];
-                [todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger idx, BOOL *stop) {
-                    if ([self.editingTodoEvent.date isEqualToDate:todoEvent.date]) {
-                        todoEvent.completed = self.editingTodoEvent.completed;
-                        todoEvent.position = self.editingTodoEvent.position;
-                    }
-                }];
-            }
-            break;
-            
-        case EKEventEditViewActionDeleted:
-            break;
-            
-        default:
-            break;
-    }
-    self.editingTodoEvent = nil;
-
-    // Make sure it only run once. Apple bug.
-    controller.editViewDelegate = nil;
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return 3;
-    }
-    if (section == 1) {
-        return 3;
-    }
-    return 0;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if (section == 1) {
-        return @"Move";
-    }
-    return @"";
+    return self.cellData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    if (indexPath.section == 0 && indexPath.row == 0) {
-        cell.textLabel.text = self.todoEvent.title;
-        cell.textLabel.font = [UIFont systemFontOfSize:22];
-    }
-    if (indexPath.section == 0 && indexPath.row == 1) {
-        NSString *date = [[NSDateFormatter relativeDateFormatter] stringFromDate:self.todoEvent.startDate];
-        cell.textLabel.text = date;
-        cell.textLabel.font = [UIFont systemFontOfSize:18];
-    }
-    if (indexPath.section == 0 && indexPath.row == 2) {
-        NSString *time = [NSString stringWithFormat:@"%@-%@", self.todoEvent.humanReadableStartTime, self.todoEvent.humanReadableEndTime];
-        cell.textLabel.text = time;
-    }
-    if (indexPath.section == 1 && indexPath.row == 0) {
-        cell.textLabel.text = @"Today";
-    }
-    if (indexPath.section == 1 && indexPath.row == 1) {
-        cell.textLabel.text = @"Tomorrow";
-    }
-    if (indexPath.section == 1 && indexPath.row == 2) {
-        cell.textLabel.text = @"Choose Date";
-    }
+    DetailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    NSDictionary *cellData = [self.cellData objectAtIndex:indexPath.row];
+    [cell setTitleText:[cellData objectForKey:@"title"] placeholderText:[cellData objectForKey:@"placeholder"] detailText:[cellData objectForKey:@"detail"] iconImage:[cellData objectForKey:@"image"]];
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger daysBeforeNow = [[self.todoEvent.startDate startOfDay] daysBeforeDate:[[NSDate date] startOfDay]];
-    EKEvent *event = self.todoEvent.event;
-    
-    if (indexPath.section == 1 && (indexPath.row == 0 || indexPath.row == 1)) {
-        if (indexPath.row == 0) {
-            event.startDate = [event.startDate dateByAddingDays:daysBeforeNow];
-            event.endDate = [event.endDate dateByAddingDays:daysBeforeNow];
-        }
-        if (indexPath.row == 1) {
-            event.startDate = [event.startDate dateByAddingDays:daysBeforeNow + 1];
-            event.endDate = [event.endDate dateByAddingDays:daysBeforeNow + 1];
-        }
-        NSError *error;
-        [[EKEventStore sharedEventStore] saveEvent:event span:EKSpanThisEvent error:&error];
-        if (error) {
-            NSLog(@"Error: %@", error);
-        }
-        [self.tableView reloadData];
-    }
-    
-//    if (indexPath.section == 1 && (indexPath.row == 2)) {
-//        MonthDatePickerViewController *vc = [[MonthDatePickerViewController alloc] init];
-//        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
-//        [self presentViewController:nc animated:YES completion:nil];
-//    }
 }
 
 @end

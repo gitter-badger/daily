@@ -14,4 +14,8 @@
 
 - (instancetype)initWithDate:(NSDate *)date;
 
+- (void)setTodoEvents:(NSArray *)todoEvents;
+
+- (void)setScrollEnable:(BOOL)enabled;
+
 @end

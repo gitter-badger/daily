@@ -6,43 +6,50 @@
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
-#import "ListViewController.h"
+#import "TodoEventActions.h"
+#import "VIKArrayController.h"
+
+// Models
+#import "MutableTodoEvent.h"
+#import "TodoEventViewModel.h"
+#import "TodoEventStore.h"
+
+// Views
 #import "DateHeaderView.h"
-
-#import "DetailViewController.h"
-#import "EKEventStore+VFDaily.h"
-
-#import "TodoEvent.h"
-
 #import "TodoEventTableViewCell.h"
+#import "HPReorderTableView.h"
 
-#import "TodoEventFetchedResultsController.h"
+// Controllers
+#import "ListViewController.h"
+#import "DetailViewController.h"
 
-@interface ListViewController () <UIGestureRecognizerDelegate, TodoEventTableViewCellDelegate, TodoEventFetchedResultsControllerDelegate>
+@interface ListViewController () <VIKArrayControllerDelegate, HPReorderTableViewDelegate, TodoEventTableViewCellDelegate>
 
 @property (nonatomic, strong) NSDate *date;
 
-@property (nonatomic, strong) TodoEventFetchedResultsController *fetchedResultsController;
+@property (nonatomic, strong) NSMutableArray *cellControllers;
 
-@property (nonatomic) UIEdgeInsets tableViewEdgeInsets;
+@property (nonatomic, strong) NSIndexPath *startIndexPath;
 
-@property (nonatomic, strong) NSMutableArray *incompletedEvents;
-@property (nonatomic, strong) NSMutableArray *completedEvents;
+@property (nonatomic) BOOL changeIsUserDriven;
 
-@property (nonatomic, strong) DateHeaderView *dateHeaderView;
+@property (nonatomic, strong) VIKArrayController *controller;
 
 @end
 
 @implementation ListViewController
 
-@synthesize date = _date;
-
-- (NSDate *)date
+- (NSMutableArray *)cellControllers
 {
-    if (!_date) {
-        _date = [NSDate date];
+    if (!_cellControllers) {
+        _cellControllers = [[NSMutableArray alloc] init];
     }
-    return _date;
+    return _cellControllers;
+}
+
+- (void)setScrollEnable:(BOOL)enabled
+{
+    self.tableView.scrollEnabled = enabled;
 }
 
 #pragma mark - Life Cycle
@@ -56,117 +63,73 @@
     return self;
 }
 
+- (void)loadView
+{
+    HPReorderTableView *tableView = [[HPReorderTableView alloc] init];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    self.tableView = tableView;
+    self.view = tableView;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.tableViewEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
-    
     self.tableView.rowHeight = 60;
     self.tableView.separatorColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
-    self.tableView.backgroundColor = [UIColor whiteColor];
-    
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
     self.tableView.showsVerticalScrollIndicator = NO;
-    self.tableView.scrollEnabled = NO;
+    self.tableView.tableHeaderView = [self dateHeader];
+    
+    self.controller = [[VIKArrayController alloc] init];
+    self.controller.delegate = self;
     
     [self.tableView registerClass:[TodoEventTableViewCell class] forCellReuseIdentifier:@"Cell"];
-
-    self.dateHeaderView = [[DateHeaderView alloc] initWithDate:self.date];
-    self.dateHeaderView.frame = CGRectMake(0, 0, 320, 150);
-    self.tableView.tableHeaderView = self.dateHeaderView;
-    
-    self.fetchedResultsController = [[TodoEventFetchedResultsController alloc] initWithStartDate:self.date endDate:self.date];
-    self.fetchedResultsController.delegate = self;
 }
 
-- (void)viewDidLayoutSubviews
+- (void)setTodoEvents:(NSArray *)todoEvents
 {
-    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.tableView setSeparatorInset:self.tableViewEdgeInsets];
-    }
-    
-    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
-        [self.tableView setLayoutMargins:self.tableViewEdgeInsets];
-    }
+    self.controller.objects = [self sortedTodoEvents:todoEvents];
 }
 
-#pragma mark - TodoEventFetchedResultsController
-
-- (void)todoEventControllerWillChangeContent:(TodoEventFetchedResultsController *)controller
+- (NSArray *)sortedTodoEvents:(NSArray *)todoEvents
 {
-//    [self.tableView beginUpdates];
-    NSLog(@"todoEventControllerWillChangeContent");
-}
-
-- (void)todoEventController:(TodoEventFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(TodoEventFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
-{
-    switch (type)
-    {
-        case TodoEventFetchedResultsChangeInsert:
-            NSLog(@"TodoEventFetchedResultsChangeInsert");
-            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case TodoEventFetchedResultsChangeDelete:
-            NSLog(@"TodoEventFetchedResultsChangeDelete");
-            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case TodoEventFetchedResultsChangeUpdate:
-            NSLog(@"TodoEventFetchedResultsChangeUpdate");
-            // CONFIGURE CELL
-            break;
-        case TodoEventFetchedResultsChangeMove:
-            NSLog(@"TodoEventFetchedResultsChangeMove");
-            NSLog(@"%@, %@, %@", [(TodoEvent *)anObject title], indexPath, newIndexPath);
-//            [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
-            break;
-    }
-}
-
-- (void)todoEventControllerDidChangeContent:(TodoEventFetchedResultsController *)controller
-{
-    NSLog(@"todoEventControllerDidChangeContent");
-//    [self.tableView endUpdates];
+    NSSortDescriptor *completionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"completed" ascending:YES];
+    NSSortDescriptor *positionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES];
+    return [todoEvents sortedArrayUsingDescriptors:@[completionSortDescriptor, positionSortDescriptor]];
 }
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.fetchedResultsController numberOfSections];
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([self.fetchedResultsController numberOfSections] > 0) {
-        TodoEventFetchedResultsSection *sectionInfo = [self.fetchedResultsController.sections objectAtIndex:section];
-        return [sectionInfo numberOfObjects];
-    }
-    return 0;
+    return [self.controller numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (TodoEventTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TodoEventTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    
-    TodoEvent *todoEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.delegate = self;
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.titleLabel.text = todoEvent.title;
-    cell.detailLabel.text = todoEvent.humanReadableStartTime;
-    if (todoEvent.isCompleted) {
-        [cell applyCompletedStyle];
-    } else {
-        [cell applyIncompletedStyle];
-    }
+    [cell setDelegate:self];
+    [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
 }
 
+- (void)configureCell:(TodoEventTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:todoEvent];
+    [cell setTitleText:viewModel.titleText timeText:viewModel.timeText locationText:viewModel.locationText completed:viewModel.completed];
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TodoEvent *todoEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
     if (!todoEvent.allDay) {
         return 88;
     }
@@ -177,43 +140,148 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TodoEvent *todoEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    DetailViewController *vc = [[DetailViewController alloc] init];
-    vc.todoEvent = todoEvent;
+    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    DetailViewController *vc = [[DetailViewController alloc] initWithTodoEvent:todoEvent];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self presentViewController:nc animated:YES completion:nil];
 }
 
-
-// TODO: Subclass UITableViewController
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:self.tableViewEdgeInsets];
+    self.changeIsUserDriven = YES;
+    
+    if (!self.startIndexPath) {
+        self.startIndexPath = fromIndexPath;
     }
     
-    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        [cell setLayoutMargins:self.tableViewEdgeInsets];
-    }
+    NSMutableArray *todoEvents = [self.controller.objects mutableCopy];
+    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:fromIndexPath];
+    [todoEvents removeObjectAtIndex:fromIndexPath.row];
+    [todoEvents insertObject:todoEvent atIndex:toIndexPath.row];
+    
+    self.controller.objects = [todoEvents copy];
 }
+
 
 #pragma mark - TodoEventTableViewCellDelegate
 
-- (void)todoEventTableViewCell:(TodoEventTableViewCell *)cell didToggleCheckbox:(BOOL)checked
+- (void)todoEventTableViewCellDidToggleCheckbox:(TodoEventTableViewCell *)cell
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    TodoEvent *todoEvent = [self.fetchedResultsController objectAtIndexPath:indexPath];
-
-    if (checked) {
-        todoEvent.completed = @YES;
-//        [cell applyCompletedStyle];
+    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    
+    if (todoEvent.completed) {
+        todoEvent.completed = NO;
+        todoEvent.position = INT_MAX;
     } else {
-        todoEvent.completed = @NO;
-//        [cell applyIncompletedStyle];
+        todoEvent.completed = YES;
+        todoEvent.position = 0;
     }
     
-    [[NSManagedObjectContext defaultContext] saveToPersistentStoreAndWait];
+    NSArray *sortedObjects = [self sortedTodoEvents:self.controller.objects];
+    [sortedObjects enumerateObjectsUsingBlock:^(MutableTodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+        todoEvent.position = index;
+    }];
+    
+    [[TodoEventActions sharedActions] updateTodoEvents:self.controller.objects];
+}
+
+
+#pragma mark - HPReorderTableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didEndReorderingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (![self.startIndexPath isEqual:indexPath]) {
+        
+        MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+        MutableTodoEvent *todoEventSibling = [self todoEventSibling:todoEvent];
+        todoEvent.completed = todoEventSibling.completed;
+
+        [self.controller.objects enumerateObjectsUsingBlock:^(MutableTodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+            todoEvent.position = index;
+        }];
+        
+        [[TodoEventActions sharedActions] updateTodoEvents:self.controller.objects];
+    }
+    
+    self.changeIsUserDriven = NO;
+    self.startIndexPath = nil;
+}
+
+- (MutableTodoEvent *)todoEventSibling:(MutableTodoEvent *)todoEvent
+{
+    if (todoEvent.completed) {
+        return [self todoEventAfter:todoEvent];
+    } else {
+        return [self todoEventBefore:todoEvent];
+    }
+}
+
+- (MutableTodoEvent *)todoEventAfter:(MutableTodoEvent *)todoEvent
+{
+    NSInteger index = [self.controller.objects indexOfObject:todoEvent];
+    NSInteger max = self.controller.numberOfObjects - 1;
+    NSInteger newIndex = MIN(index + 1, max); // Use the lowest
+    return [self.controller.objects objectAtIndex:newIndex];
+}
+
+- (MutableTodoEvent *)todoEventBefore:(MutableTodoEvent *)todoEvent
+{
+    NSInteger index = [self.controller.objects indexOfObject:todoEvent];
+    NSInteger newIndex = MAX(index - 1, 0); // Use the biggest
+    return [self.controller.objects objectAtIndex:newIndex];
+}
+
+
+#pragma mark - VIKArrayControllerDelegate
+
+- (void)controllerWillChangeContent:(VIKArrayController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(VIKArrayController *)controller didChangeObject:(id)anObject atIndex:(NSUInteger)index forChangeType:(VIKArrayChangeType)type newIndex:(NSUInteger)newIndex
+{
+    if (self.changeIsUserDriven) return;
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newIndex inSection:0];
+    
+    switch (type) {
+        case VIKArrayChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+        case VIKArrayChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+        case VIKArrayChangeMove:
+            [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+            break;
+        case VIKArrayChangeUpdate:
+            [self configureCell:(TodoEventTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:newIndexPath];
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(VIKArrayController *)controller
+{
+    [self.tableView endUpdates];
+}
+
+
+#pragma mark - Helpers
+
+- (DateHeaderView *)dateHeader
+{
+    DateHeaderView *dateHeaderView = [[DateHeaderView alloc] initWithDate:self.date];
+    dateHeaderView.frame = CGRectMake(0, 0, 320, 150);
+    return dateHeaderView;
+}
+
+- (MutableTodoEvent *)todoEventAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.controller.objects objectAtIndex:indexPath.row];
 }
 
 @end

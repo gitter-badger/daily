@@ -10,9 +10,9 @@
 
 @interface TodoEventTableViewCell ()
 
-@property (nonatomic, strong) UIButton *checkbox;
-
-@property (nonatomic) BOOL completed;
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *detailLabel;
+@property (nonatomic, strong) UIButton *checkboxButton;
 
 @end
 
@@ -25,56 +25,51 @@
         self.textLabel.hidden = YES;
         self.detailTextLabel.hidden = YES;
         
-        self.checkbox = [[UIButton alloc] init];
-        [self.checkbox addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:self.checkbox];
+        self.checkboxButton = [[UIButton alloc] init];
+        [self.checkboxButton addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:self.checkboxButton];
         
         self.titleLabel = [[UILabel alloc] init];
-        self.titleLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:19];
         [self.contentView addSubview:self.titleLabel];
         
         self.detailLabel = [[UILabel alloc] init];
-        self.detailLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:16];
         [self.contentView addSubview:self.detailLabel];
+        
+        self.titleLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:19];
+        self.detailLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:16];
     }
     return self;
 }
 
+- (void)setTitleText:(NSString *)titleText timeText:(NSString *)timeText locationText:(NSString *)locationText completed:(BOOL)completed
+{
+    if (completed) {
+        self.titleLabel.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+        self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:titleText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
+        
+        self.detailLabel.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+        self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:timeText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
+        
+        [self.checkboxButton setImage:[UIImage imageNamed:@"checkbox-on"] forState:UIControlStateNormal];
+    } else {
+        self.titleLabel.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
+        self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:titleText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]}];
+        
+        self.detailLabel.textColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:1];
+        self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:timeText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]}];
+        
+        [self.checkboxButton setImage:[UIImage imageNamed:@"checkbox-off"] forState:UIControlStateNormal];
+    }
+}
+
 - (void)checkboxDidReceiveTap:(id)sender
 {
-    NSLog(@"HÄR?");
-    [self.delegate todoEventTableViewCell:self didToggleCheckbox:!self.completed];
-}
-
-- (void)applyCompletedStyle
-{
-    [self.checkbox setImage:[UIImage imageNamed:@"checkbox-on"] forState:UIControlStateNormal];
-    
-    self.titleLabel.textColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
-    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.titleLabel.text attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
-    
-    self.detailLabel.textColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
-    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:self.detailLabel.text attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
-    
-    self.completed = YES;
-}
-
-- (void)applyIncompletedStyle
-{
-    [self.checkbox setImage:[UIImage imageNamed:@"checkbox-off"] forState:UIControlStateNormal];
-    
-    self.titleLabel.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
-    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.titleLabel.text attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]}];
-    
-    self.detailLabel.textColor = [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1];
-    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:self.detailLabel.text attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]}];
-    
-    self.completed = NO;
+    [self.delegate todoEventTableViewCellDidToggleCheckbox:self];
 }
 
 - (void)layoutSubviews
 {
-    self.checkbox.frame = CGRectMake(0, 0, 64, CGRectGetHeight(self.bounds));
+    self.checkboxButton.frame = CGRectMake(0, 0, 64, CGRectGetHeight(self.bounds));
     
     self.titleLabel.frame = CGRectMake(64, 22, CGRectGetWidth(self.bounds) - 64 - 20, 21);
     

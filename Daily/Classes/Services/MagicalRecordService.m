@@ -1,5 +1,7 @@
 #import "MagicalRecordService.h"
 
+#import "Todo+Extended.h"
+
 @implementation MagicalRecordService
 
 #pragma mark - Application Delegate
