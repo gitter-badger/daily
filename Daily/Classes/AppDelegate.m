@@ -9,9 +9,10 @@
 // Classes
 #import "AppDelegate.h"
 
+// Stores
+#import "TodoEventStore.h"
+
 // Services
-#import "BadgeService.h"
-#import "NotificationService.h"
 #import "MigrationService.h"
 #import "UserDefaultsService.h"
 #import "MagicalRecordService.h"
@@ -22,30 +23,21 @@
 
 // Categories
 #import "NSUserDefaults+DLY.h"
-#import "EKEventStore+VFDaily.h"
 
 @interface AppDelegate ()
 
-@property (nonatomic, strong) BadgeService *badgeService;
 @property (nonatomic, strong) MagicalRecordService *magicalRecordService;
 @property (nonatomic, strong) MigrationService *migrationService;
-@property (nonatomic, strong) NotificationService *notificationService;
 @property (nonatomic, strong) UserDefaultsService *userDefaultsService;
 @property (nonatomic, strong) CrashlyticsService *crashlyticsService;
+
+@property (nonatomic, strong) TodoEventStore *todoEventStore;
 
 @end
 
 @implementation AppDelegate
 
 #pragma mark - Services
-
-- (BadgeService *)badgeService
-{
-    if (!_badgeService) {
-        _badgeService = [[BadgeService alloc] init];
-    }
-    return _badgeService;
-}
 
 - (MagicalRecordService *)magicalRecordService
 {
@@ -61,14 +53,6 @@
         _migrationService = [[MigrationService alloc] init];
     }
     return _migrationService;
-}
-
-- (NotificationService *)notificationService
-{
-    if (!_notificationService) {
-        _notificationService = [[NotificationService alloc] init];
-    }
-    return _notificationService;
 }
 
 - (UserDefaultsService *)userDefaultsService
@@ -96,6 +80,8 @@
     // TODO: Could be init instead?
     [self.crashlyticsService startLogging];
     [self.magicalRecordService setup];
+    
+    [TodoEventStore sharedStore];
     // TODO: ENABLE
 //    [self.migrationService run];
 //    [self.notificationService listenForChanges];
@@ -117,57 +103,28 @@
     return YES;
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-    [self.notificationService presentNotification:notification];
-}
-
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     [self.userDefaultsService save];
     [self setLastSeen];
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            [self.badgeService updateBadge:application];
-        }
-    }];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [self.userDefaultsService save];
     [self setLastSeen];
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            [self.badgeService updateBadge:application];
-        }
-    }];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [self.userDefaultsService save];
     [self setLastSeen];
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            [self.badgeService updateBadge:application];
-            [self.magicalRecordService clean];
-        }
-    }];
+    [self.magicalRecordService clean];
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    [[EKEventStore sharedEventStore] requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            [self.magicalRecordService setup];
-            [self.badgeService updateBadge:application];
-            [self.notificationService scheduleNotifications];
-            completionHandler(UIBackgroundFetchResultNewData);
-        } else {
-            completionHandler(UIBackgroundFetchResultNoData);
-        }
-    }];
+    completionHandler(UIBackgroundFetchResultNoData);
 }
 
 #pragma mark - Private

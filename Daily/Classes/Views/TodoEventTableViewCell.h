@@ -12,18 +12,14 @@
 
 @interface TodoEventTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *detailLabel;
-
 @property (nonatomic, weak) id<TodoEventTableViewCellDelegate> delegate;
 
-- (void)applyCompletedStyle;
-- (void)applyIncompletedStyle;
+- (void)setTitleText:(NSString *)titleText timeText:(NSString *)timeText locationText:(NSString *)locationText completed:(BOOL)completed;
 
 @end
 
 @protocol TodoEventTableViewCellDelegate <NSObject>
 
-- (void)todoEventTableViewCell:(TodoEventTableViewCell *)cell didToggleCheckbox:(BOOL)checked;
+- (void)todoEventTableViewCellDidToggleCheckbox:(TodoEventTableViewCell *)cell;
 
 @end

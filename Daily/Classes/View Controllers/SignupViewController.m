@@ -12,6 +12,8 @@
 
 #import "SAMTextField.h"
 
+#import "MainViewController.h"
+
 @interface SignupViewController () <UITextFieldDelegate>
 
 @property (nonatomic, weak) IBOutlet SAMTextField *emailField;
@@ -43,10 +45,8 @@
     [[NSUserDefaults standardUserDefaults] setEmail:email];
     [[NSUserDefaults standardUserDefaults] setCreated:now];
     
-    [[Analytics sharedAnalytics] identify:email];
-    
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:[NSBundle mainBundle]];
-    [self presentViewController:[storyboard instantiateInitialViewController] animated:YES completion:nil];
+    MainViewController *vc = [[MainViewController alloc] init];
+    [self presentViewController:vc animated:YES completion:nil];
     
     return YES;
 }

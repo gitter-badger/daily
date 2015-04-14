@@ -10,8 +10,6 @@
 
 @interface DateHeaderView : UIView
 
-@property (nonatomic, strong, readonly) NSDate *date;
-
 - (instancetype)initWithDate:(NSDate *)date;
 
 @end

@@ -16,6 +16,10 @@
 
 #import "FloatingButton.h"
 
+#import "TodoEventActions.h"
+
+#import "TodoEventStore.h"
+
 @interface MainViewController () <UIScrollViewDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -26,6 +30,8 @@
 @property (nonatomic, strong) ListViewController *currentViewController;
 
 @property (nonatomic, strong) FloatingButton *addButton;
+
+@property (nonatomic, strong) NSArray *todoEvents;
 
 @end
 
@@ -43,8 +49,33 @@
                                              selector:@selector(statusBarTappedAction:)
                                                  name:@"statusBarTappedNotification"
                                                object:nil];
-
+    
+    self.todoEvents = [[TodoEventStore sharedStore] todoEvents];
+    
+    NSDate *startDate = [[[NSDate date] dateBySubtractingDays:7] startOfDay];
+    NSDate *endDate = [[[NSDate date] dateByAddingDays:7] endOfDay];
+    
+    [[TodoEventActions sharedActions] loadTodoEventsWithStartDate:startDate endDate:endDate];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoEventStoreDidChange:) name:@"TodoEventStoreDidChangeNotification" object:nil];
+    
     [self setupViews];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"TodoEventStoreDidChangeNotification" object:nil];
+}
+
+- (void)todoEventStoreDidChange:(NSNotification *)notification
+{
+    self.todoEvents = [[TodoEventStore sharedStore] todoEvents];
+    [self reloadData];
+}
+
+- (void)reloadData
+{
+    NSArray *todoEvents = [self todoEventsForDate:self.currentViewController.date];
+    [self.currentViewController setTodoEvents:todoEvents];
 }
 
 - (void)statusBarTappedAction:(NSNotification *)notification
@@ -72,7 +103,7 @@
         [self.currentViewController.tableView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
         self.currentViewController.tableView.contentOffset = CGPointZero;
         
-        ListViewController *viewController = [[ListViewController alloc] initWithDate:date];
+        ListViewController *viewController = [self listViewControllerWithDate:date];
         [viewController.tableView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:KVOContext];
         
         if ([self.currentViewController.date isBeforeDate:date]) {
@@ -109,11 +140,11 @@
                            navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                            options:options];
     
+    self.pageViewController.view.backgroundColor = [UIColor blackColor];
     self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
     
-    NSDate *today = [NSDate date];
-    self.currentViewController = [[ListViewController alloc] initWithDate:today];
+    self.currentViewController = [self listViewControllerWithDate:[NSDate date]];
     [self.currentViewController.tableView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) options:NSKeyValueObservingOptionOld context:KVOContext];
     [_pageViewController setViewControllers:@[self.currentViewController]
                                   direction:UIPageViewControllerNavigationDirectionForward
@@ -206,6 +237,25 @@ static void *KVOContext = &KVOContext;
     self.currentViewController.tableView.contentOffset = CGPointMake(0, contentOffset.y - CGRectGetHeight(self.weekView.frame));
 }
 
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    if (targetContentOffset->y > CGRectGetHeight(self.weekView.frame))
+        return;
+    
+    if (velocity.y > 0) {
+        targetContentOffset->y = CGRectGetHeight(self.weekView.frame);
+    }
+    else if (velocity.y > 0) {
+        targetContentOffset->y = 0;
+    } else {
+        if (targetContentOffset->y > (CGRectGetHeight(self.weekView.frame)/2)) {
+            targetContentOffset->y = CGRectGetHeight(self.weekView.frame);
+        } else {
+            targetContentOffset->y = 0;
+        }
+    }
+}
+
 #pragma mark - UIPageViewControllerDataSource
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
@@ -224,16 +274,40 @@ static void *KVOContext = &KVOContext;
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(ListViewController *)viewController
 {
     NSDate *date = [viewController.date dateBySubtractingDays:1];
-    ListViewController *listViewController = [[ListViewController alloc] initWithDate:date];
-    return listViewController;
+    return [self listViewControllerWithDate:date];
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(ListViewController *)viewController
 {
     NSDate *date = [viewController.date dateByAddingDays:1];
+    return [self listViewControllerWithDate:date];
+}
+
+#pragma mark - Helpers
+
+- (ListViewController *)listViewControllerWithDate:(NSDate *)date
+{
     ListViewController *listViewController = [[ListViewController alloc] initWithDate:date];
+    [listViewController setScrollEnable:NO];
+    [listViewController setTodoEvents:[self todoEventsForDate:date]];
     return listViewController;
 }
 
+- (NSArray *)todoEventsForDate:(NSDate *)date
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"date = %@", [date startOfDay]];
+    NSArray *todoEvents = [self.todoEvents filteredArrayUsingPredicate:predicate];
+    return todoEvents;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
 
 @end
