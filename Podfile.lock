@@ -2,15 +2,18 @@ PODS:
   - Intercom (2.0.6)
   - MagicalRecord/Shorthand (2.2)
   - NSDate+TimeAgo (1.0.3)
+  - RSDayFlow (0.7.3)
 
 DEPENDENCIES:
   - Intercom
   - MagicalRecord/Shorthand
   - NSDate+TimeAgo
+  - RSDayFlow
 
 SPEC CHECKSUMS:
   Intercom: e3da0bc01c5aa31a01c215baebba6c3bb7705af5
   MagicalRecord: 2b471584fc9e3137f3d0a56967917baa4979e224
   NSDate+TimeAgo: f3533e0198fab05b716368b19f8c2185d53d6f3b
+  RSDayFlow: 06e3efb0115c1409c455e548570c5ec76d9c575b
 
 COCOAPODS: 0.35.0

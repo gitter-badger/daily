@@ -1,3 +1,5 @@
-pod "Intercom"
-pod "MagicalRecord/Shorthand"
-pod "NSDate+TimeAgo"
+pod 'Intercom'
+pod 'MagicalRecord/Shorthand'
+pod 'NSDate+TimeAgo'
+pod 'RSDayFlow'
+pod 'ObjectiveSugar'
