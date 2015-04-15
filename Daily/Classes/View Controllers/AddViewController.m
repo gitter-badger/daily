@@ -10,7 +10,7 @@
 #import "TextFieldTableViewCell.h"
 
 #import "TodoEventActions.h"
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 
 @interface AddViewController () <UITextFieldDelegate>
 
@@ -168,7 +168,7 @@
         endDate = [startDate dateByAddingTimeInterval:60*60];
     }
 
-    MutableTodoEvent *todoEvent = [[MutableTodoEvent alloc] init];
+    TodoEvent *todoEvent = [[TodoEvent alloc] init];
     todoEvent.title = title;
     todoEvent.startDate = startDate;
     todoEvent.endDate = endDate;

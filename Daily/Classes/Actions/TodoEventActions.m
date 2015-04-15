@@ -7,12 +7,12 @@
 //
 
 #import "TodoEventActions.h"
-#import "TodoEventClient.h"
+#import "TodoEventAPI.h"
 #import "Dispatcher.h"
 
 @interface TodoEventActions ()
 
-@property (nonatomic, strong) TodoEventClient *client;
+@property (nonatomic, strong) TodoEventAPI *client;
 @property (nonatomic, strong) NSDate *startDate;
 @property (nonatomic, strong) NSDate *endDate;
 
@@ -33,7 +33,7 @@
 {
     self = [super init];
     if (self) {
-        self.client = [[TodoEventClient alloc] init];
+        self.client = [[TodoEventAPI alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoEventClientDidChange:) name:@"TodoEventClientDidChangeNotificaiton" object:nil];
     }
     return self;
@@ -68,28 +68,28 @@
     }];
 }
 
-- (void)createTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)createTodoEvent:(TodoEvent *)todoEvent
 {
     [self.client createTodoEvent:todoEvent completion:^(NSError *error) {
         [self handleChange:error];
     }];
 }
 
-- (void)deleteThisTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)deleteThisTodoEvent:(TodoEvent *)todoEvent
 {
     [self.client deleteThisTodoEvent:todoEvent completion:^(NSError *error) {
         [self handleChange:error];
     }];
 }
 
-- (void)deleteFutureTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)deleteFutureTodoEvent:(TodoEvent *)todoEvent
 {
     [self.client deleteFutureTodoEvent:todoEvent completion:^(NSError *error) {
         [self handleChange:error];
     }];
 }
 
-- (void)updateTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)updateTodoEvent:(TodoEvent *)todoEvent
 {
     [self.client updateTodoEvent:todoEvent completion:^(NSError *error) {
         [self handleChange:error];
@@ -103,14 +103,14 @@
     }];
 }
 
-- (void)completeTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)completeTodoEvent:(TodoEvent *)todoEvent
 {
     [self.client completeTodoEvent:todoEvent completion:^(NSError *error) {
         [self handleChange:error];
     }];
 }
 
-- (void)uncompleteTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)uncompleteTodoEvent:(TodoEvent *)todoEvent
 {
     [self.client uncompleteTodoEvent:todoEvent completion:^(NSError *error) {
         [self handleChange:error];

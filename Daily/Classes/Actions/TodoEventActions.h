@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "MutableTodoEvent.h"
-
-@class TodoEvent;
+#import "TodoEvent.h"
 
 @interface TodoEventActions : NSObject
 
@@ -18,15 +16,15 @@
 
 - (void)loadTodoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 
-- (void)createTodoEvent:(MutableTodoEvent *)todoEvent;
+- (void)createTodoEvent:(TodoEvent *)todoEvent;
 
-- (void)updateTodoEvent:(MutableTodoEvent *)todoEvent;
+- (void)updateTodoEvent:(TodoEvent *)todoEvent;
 - (void)updateTodoEvents:(NSArray *)todoEvents;
 
-- (void)deleteThisTodoEvent:(MutableTodoEvent *)todoEvent;
-- (void)deleteFutureTodoEvent:(MutableTodoEvent *)todoEvent;
+- (void)deleteThisTodoEvent:(TodoEvent *)todoEvent;
+- (void)deleteFutureTodoEvent:(TodoEvent *)todoEvent;
 
-- (void)completeTodoEvent:(MutableTodoEvent *)todoEvent;
-- (void)uncompleteTodoEvent:(MutableTodoEvent *)todoEvent;
+- (void)completeTodoEvent:(TodoEvent *)todoEvent;
+- (void)uncompleteTodoEvent:(TodoEvent *)todoEvent;
 
 @end

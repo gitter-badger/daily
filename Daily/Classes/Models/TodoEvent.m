@@ -7,18 +7,18 @@
 //
 
 #import <EventKit/EventKit.h>
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 #import "Todo+Extended.h"
 
-@interface MutableTodoEvent ()
+@interface TodoEvent ()
 
 @end
 
-@implementation MutableTodoEvent
+@implementation TodoEvent
 
 + (instancetype)todoEventFromTodo:(Todo *)todo event:(EKEvent *)event
 {
-    MutableTodoEvent *todoEvent = [[MutableTodoEvent alloc] init];
+    TodoEvent *todoEvent = [[TodoEvent alloc] init];
     if (event) {
         todoEvent.title = event.title;
         todoEvent.allDay = event.allDay;
@@ -73,7 +73,7 @@
 }
 
 
-- (BOOL)isEqualToTodoEvent:(MutableTodoEvent *)todoEvent
+- (BOOL)isEqualToTodoEvent:(TodoEvent *)todoEvent
 {
     return [todoEvent.todoEventIdentifier isEqual:self.todoEventIdentifier];
 }

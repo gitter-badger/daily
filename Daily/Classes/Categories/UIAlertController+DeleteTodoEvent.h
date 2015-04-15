@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class MutableTodoEvent;
+@class TodoEvent;
 
 typedef NS_ENUM(NSUInteger, TodoEventSpan) {
     TodoEventSpanThis,
@@ -19,6 +19,6 @@ typedef void (^DeleteTodoEventBlock)(TodoEventSpan span);
 
 @interface UIAlertController (DeleteTodoEventFactory)
 
-+ (UIAlertController *)alertControllerWithTodoEvent:(MutableTodoEvent *)todoEvent handler:(DeleteTodoEventBlock)handler;
++ (UIAlertController *)alertControllerWithTodoEvent:(TodoEvent *)todoEvent handler:(DeleteTodoEventBlock)handler;
 
 @end

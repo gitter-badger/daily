@@ -10,7 +10,7 @@
 
 @class Todo, EKEvent;
 
-@interface MutableTodoEvent : NSObject
+@interface TodoEvent : NSObject
 
 @property (nonatomic, strong) NSString *todoEventIdentifier;
 @property (nonatomic, strong) NSString *title;
@@ -25,7 +25,7 @@
 @property (nonatomic) BOOL completed;
 @property (nonatomic) BOOL allDay;
 
-- (BOOL)isEqualToTodoEvent:(MutableTodoEvent *)todoEvent;
+- (BOOL)isEqualToTodoEvent:(TodoEvent *)todoEvent;
 
 - (BOOL)hasFutureEvents;
 

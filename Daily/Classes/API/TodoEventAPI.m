@@ -8,19 +8,19 @@
 
 #import <EventKit/EventKit.h>
 
-#import "TodoEventClient.h"
+#import "TodoEventAPI.h"
 
 #import "EKCalendar+VFDaily.h"
 
 #import "Todo+Extended.h"
 
-@interface TodoEventClient ()
+@interface TodoEventAPI ()
 
 @property (nonatomic, strong) EKEventStore *eventStore;
 
 @end
 
-@implementation TodoEventClient
+@implementation TodoEventAPI
 
 #pragma mark - Life cycle
 
@@ -47,7 +47,7 @@
 
 #pragma mark - Public methods
 
-- (void)createTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)createTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
     event.calendar = [self.eventStore defaultCalendarForNewEvents];
@@ -65,9 +65,9 @@
 
 - (void)fetchTodoEventWithTodoEventIdentifier:(NSString *)todoEventIdentifier completion:(TodoEventClientItemBlock)completion
 {
-    NSDate *date = [MutableTodoEvent dateFromTodoEventIdentifier:todoEventIdentifier];
+    NSDate *date = [TodoEvent dateFromTodoEventIdentifier:todoEventIdentifier];
     [self fetchTodoEventsWithStartDate:[date startOfDay] endDate:[date endOfDay] completion:^(NSError *error, NSArray *todoEvents) {
-        for (MutableTodoEvent *todoEvent in todoEvents) {
+        for (TodoEvent *todoEvent in todoEvents) {
             if ([todoEvent.todoEventIdentifier isEqual:todoEventIdentifier]) {
                 return completion(error, todoEvent);
             }
@@ -118,11 +118,11 @@
                     NSDate *date = [[event.startDate dateByAddingDays:i] startOfDay];
                     NSString *todoIdentifier = [Todo todoIdentifierFromEventIdentifier:event.eventIdentifier date:date];
                     
-                    MutableTodoEvent *todoEvent;
+                    TodoEvent *todoEvent;
                     
                     Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoIdentifier];
                     if (todo) {
-                        todoEvent = [MutableTodoEvent todoEventFromTodo:todo event:event];
+                        todoEvent = [TodoEvent todoEventFromTodo:todo event:event];
                         [todoEvents addObject:todoEvent];
                     }
                     
@@ -138,7 +138,7 @@
 - (void)updateTodoEvents:(NSArray *)todoEvents completion:(TodoEventClientNoneBlock)completion
 {
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
-        [todoEvents enumerateObjectsUsingBlock:^(MutableTodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+        [todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
             Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier"
                                           withValue:todoEvent.todoEventIdentifier
                                           inContext:localContext];
@@ -150,7 +150,7 @@
     }];
 }
 
-- (void)updateTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)updateTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
         Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier"
@@ -164,7 +164,7 @@
     }];
 }
 
-- (void)uncompleteTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)uncompleteTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     todoEvent.completed = NO;
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
@@ -177,7 +177,7 @@
     }];
 }
 
-- (void)completeTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)completeTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     todoEvent.completed = YES;
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
@@ -190,7 +190,7 @@
     }];
 }
 
-- (void)deleteThisTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)deleteThisTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     EKEvent *event = [self eventFromTodoEvent:todoEvent];
     
@@ -200,7 +200,7 @@
     completion(error);
 }
 
-- (void)deleteFutureTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)deleteFutureTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     EKEvent *event = [self eventFromTodoEvent:todoEvent];
     
@@ -220,15 +220,15 @@
     return [self.eventStore eventsMatchingPredicate:storePredicate];
 }
 
-- (EKEvent *)eventFromTodoEvent:(MutableTodoEvent *)todoEvent
+- (EKEvent *)eventFromTodoEvent:(TodoEvent *)todoEvent
 {
     return [self eventFromTodoEventIdentifier:todoEvent.todoEventIdentifier];
 }
 
 - (EKEvent *)eventFromTodoEventIdentifier:(NSString *)todoEventIdentifier
 {
-    NSString *eventIdentifier = [MutableTodoEvent eventIdentifierFromTodoEventIdentifier:todoEventIdentifier];
-    NSDate *date = [MutableTodoEvent dateFromTodoEventIdentifier:todoEventIdentifier];
+    NSString *eventIdentifier = [TodoEvent eventIdentifierFromTodoEventIdentifier:todoEventIdentifier];
+    NSDate *date = [TodoEvent dateFromTodoEventIdentifier:todoEventIdentifier];
     
     NSArray *events = [self eventsWithStartDate:[date startOfDay] endDate:[date endOfDay]];
     for (EKEvent *localEvent in events) {
@@ -240,7 +240,7 @@
     return nil;
 }
 
-- (void)updateEventWithTodoEvent:(MutableTodoEvent *)todoEvent
+- (void)updateEventWithTodoEvent:(TodoEvent *)todoEvent
 {
     EKEvent *event = [self eventFromTodoEvent:todoEvent];
     
