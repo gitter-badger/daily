@@ -6,13 +6,60 @@
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
+#import <EventKit/EventKit.h>
 #import "MutableTodoEvent.h"
+#import "Todo+Extended.h"
 
 @interface MutableTodoEvent ()
 
 @end
 
 @implementation MutableTodoEvent
+
++ (instancetype)todoEventFromTodo:(Todo *)todo event:(EKEvent *)event
+{
+    MutableTodoEvent *todoEvent = [[MutableTodoEvent alloc] init];
+    if (event) {
+        todoEvent.title = event.title;
+        todoEvent.allDay = event.allDay;
+        todoEvent.startDate = event.startDate;
+        todoEvent.endDate = event.endDate;
+        todoEvent.location = event.location;
+        todoEvent.notes = event.notes;
+        todoEvent.url = event.URL.absoluteString;
+    }
+    if (todo) {
+        todoEvent.todoEventIdentifier = todo.todoIdentifier;
+        todoEvent.completed = todo.completed.boolValue;
+        todoEvent.position = todo.position.integerValue;
+        todoEvent.date = todo.date;
+    }
+    
+    return todoEvent;
+}
+
++ (NSString *)eventIdentifierFromTodoEventIdentifier:(NSString *)todoEventIdentifier
+{
+    // %eventIdentifier-yyyyMMdd
+    return [todoEventIdentifier substringToIndex:todoEventIdentifier.length - 9];
+}
+
++ (NSDate *)dateFromTodoEventIdentifier:(NSString *)todoEventIdentifier
+{
+    // %eventIdentifier-yyyyMMdd
+    NSString *dateString = [todoEventIdentifier substringFromIndex:todoEventIdentifier.length - 8];
+    return [self.dayMonthYearFormatter dateFromString:dateString];
+}
+
++ (NSDateFormatter *)dayMonthYearFormatter {
+    static NSDateFormatter *dayMonthYearFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dayMonthYearFormatter = [[NSDateFormatter alloc] init];
+        dayMonthYearFormatter.dateFormat = @"ddMMyyyy";
+    });
+    return dayMonthYearFormatter;
+}
 
 - (BOOL)isEqual:(id)object
 {
@@ -25,9 +72,10 @@
     return [self isEqualToTodoEvent:object];
 }
 
+
 - (BOOL)isEqualToTodoEvent:(MutableTodoEvent *)todoEvent
 {
-    return [todoEvent.identifier isEqual:self.identifier];
+    return [todoEvent.todoEventIdentifier isEqual:self.todoEventIdentifier];
 }
 
 - (BOOL)hasFutureEvents

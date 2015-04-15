@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+@class Todo, EKEvent;
+
 @interface MutableTodoEvent : NSObject
 
-@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, strong) NSString *todoEventIdentifier;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSDate *startDate;
 @property (nonatomic, strong) NSDate *endDate;
@@ -26,5 +28,11 @@
 - (BOOL)isEqualToTodoEvent:(MutableTodoEvent *)todoEvent;
 
 - (BOOL)hasFutureEvents;
+
++ (instancetype)todoEventFromTodo:(Todo *)todo event:(EKEvent *)event;
+
++ (NSString *)eventIdentifierFromTodoEventIdentifier:(NSString *)todoEventIdentifier;
+
++ (NSDate *)dateFromTodoEventIdentifier:(NSString *)todoEventIdentifier;
 
 @end
