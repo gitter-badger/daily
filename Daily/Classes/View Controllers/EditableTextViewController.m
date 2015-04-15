@@ -64,12 +64,12 @@
     if (![self.originalText isEqual:self.textView.text]) {
         UIAlertController *ac = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         [ac addAction:[UIAlertAction actionWithTitle:@"Discard Changes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            self.completion(NO, nil);
+            self.completion(NO, self.originalText);
         }]];
         [ac addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [self presentViewController:ac animated:YES completion:nil];
     } else {
-        self.completion(NO, nil);
+        self.completion(NO, self.originalText);
     }
 }
 
