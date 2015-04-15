@@ -8,6 +8,11 @@
 
 #import "Todo.h"
 
+@class EKEvent;
+
 @interface Todo (Extended)
+
++ (instancetype)todoFromEvent:(EKEvent *)event forDate:(NSDate *)date inContext:(NSManagedObjectContext *)context;
++ (NSString *)todoIdentifierFromEventIdentifier:(NSString *)eventIdentifier date:(NSDate *)date;
 
 @end

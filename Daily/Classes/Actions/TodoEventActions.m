@@ -59,7 +59,7 @@
 
 - (void)loadTodoEvents
 {
-    [self.client todoEventsWithStartDate:self.startDate endDate:self.endDate completion:^(NSArray *todoEvents, NSError *error) {
+    [self.client fetchTodoEventsWithStartDate:self.startDate endDate:self.endDate completion:^(NSError *error, NSArray *todoEvents) {
         if (error) {
             [[Dispatcher sharedDispatcher] dispatch:@{@"actionType": @"LOAD_TODOEVENTS_FAIL", @"error": error}];
         } else {

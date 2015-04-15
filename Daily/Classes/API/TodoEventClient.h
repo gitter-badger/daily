@@ -10,18 +10,18 @@
 
 #import "MutableTodoEvent.h"
 
-@class TodoEvent;
+@protocol TodoEventClientDelegate;
 
-typedef void (^TodoEventClientCollectionBlock)(NSArray *todoEvents, NSError *error);
-typedef void (^TodoEventClientItemBlock)(MutableTodoEvent *todoEvent, NSError *error);
+typedef void (^TodoEventClientCollectionBlock)(NSError *error, NSArray *todoEvents);
+typedef void (^TodoEventClientItemBlock)(NSError *error, MutableTodoEvent *todoEvent);
 typedef void (^TodoEventClientNoneBlock)(NSError *error);
 
 @interface TodoEventClient : NSObject
 
 - (void)createTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 
-- (void)deleteThisTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
-- (void)deleteFutureTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
+- (void)fetchTodoEventWithTodoEventIdentifier:(NSString *)todoEventIdentifier completion:(TodoEventClientItemBlock)completion;
+- (void)fetchTodoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate completion:(TodoEventClientCollectionBlock)completion;
 
 - (void)updateTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 - (void)updateTodoEvents:(NSArray *)todoEvents completion:(TodoEventClientNoneBlock)completion;
@@ -29,6 +29,7 @@ typedef void (^TodoEventClientNoneBlock)(NSError *error);
 - (void)completeTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 - (void)uncompleteTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 
-- (void)todoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate completion:(TodoEventClientCollectionBlock)completion;
+- (void)deleteThisTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
+- (void)deleteFutureTodoEvent:(MutableTodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 
 @end
