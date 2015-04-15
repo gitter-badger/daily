@@ -30,12 +30,15 @@ typedef NS_ENUM(NSUInteger, VIKArrayChangeType) {
     VIKArrayChangeUpdate = 4
 };
 
+@optional
 - (void)controllerWillChangeContent:(VIKArrayController *)controller;
 
+@optional
 - (void)controller:(VIKArrayController *)controller didChangeObject:(id)anObject
        atIndex:(NSUInteger)index forChangeType:(VIKArrayChangeType)type
       newIndex:(NSUInteger)newIndex;
 
+@optional
 - (void)controllerDidChangeContent:(VIKArrayController *)controller;
 
 @end
