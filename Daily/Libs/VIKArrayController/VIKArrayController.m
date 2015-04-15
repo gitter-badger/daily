@@ -25,39 +25,54 @@
     NSArray *oldObjects = [_objects copy];
     NSArray *newObjects = [objects copy];
     
-    [self.delegate controllerWillChangeContent:self];
+    if ([self.delegate respondsToSelector:@selector(controllerWillChangeContent:)]) {
+        [self.delegate controllerWillChangeContent:self];
+    }
     
     _objects = objects;
     
     NSIndexSet *removedIndexes = [self removedIndexesFromArray:oldObjects toArray:newObjects];
     [removedIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
         id object = [oldObjects objectAtIndex:index];
-        [self.delegate controller:self didChangeObject:object atIndex:index forChangeType:VIKArrayChangeDelete newIndex:NSNotFound];
+        
+        if ([self.delegate respondsToSelector:@selector(controller:didChangeObject:atIndex:forChangeType:newIndex:)]) {
+            [self.delegate controller:self didChangeObject:object atIndex:index forChangeType:VIKArrayChangeDelete newIndex:NSNotFound];
+        }
     }];
     
     NSIndexSet *addedIndexes = [self addedIndexesFromArray:oldObjects toArray:newObjects];
     [addedIndexes enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
         id object = [newObjects objectAtIndex:index];
-        [self.delegate controller:self didChangeObject:object atIndex:NSNotFound forChangeType:VIKArrayChangeInsert newIndex:index];
+        
+        if ([self.delegate respondsToSelector:@selector(controller:didChangeObject:atIndex:forChangeType:newIndex:)]) {
+            [self.delegate controller:self didChangeObject:object atIndex:NSNotFound forChangeType:VIKArrayChangeInsert newIndex:index];
+        }
     }];
     
     NSArray *movedIndexes = [self movedIndexesFromArray:oldObjects toArray:newObjects];
     [movedIndexes enumerateObjectsUsingBlock:^(NSDictionary *fromToIndex, NSUInteger index, BOOL *stop) {
         NSNumber *fromIndex = [fromToIndex objectForKey:@"fromIndex"];
         NSNumber *toIndex = [fromToIndex objectForKey:@"toIndex"];
-        
         id object = [oldObjects objectAtIndex:fromIndex.integerValue];
-        [self.delegate controller:self didChangeObject:object atIndex:fromIndex.integerValue forChangeType:VIKArrayChangeMove newIndex:toIndex.integerValue];
+        
+        if ([self.delegate respondsToSelector:@selector(controller:didChangeObject:atIndex:forChangeType:newIndex:)]) {
+            [self.delegate controller:self didChangeObject:object atIndex:fromIndex.integerValue forChangeType:VIKArrayChangeMove newIndex:toIndex.integerValue];
+        }
     }];
     
     NSIndexSet *updatedIndexes = [self updatedIndexesFromArray:oldObjects toArray:newObjects];
     [updatedIndexes enumerateIndexesUsingBlock:^(NSUInteger toIndex, BOOL *stop) {
         id object = [newObjects objectAtIndex:toIndex];
         NSUInteger fromIndex = [oldObjects indexOfObject:object];
-        [self.delegate controller:self didChangeObject:object atIndex:fromIndex forChangeType:VIKArrayChangeUpdate newIndex:toIndex];
+        
+        if ([self.delegate respondsToSelector:@selector(controller:didChangeObject:atIndex:forChangeType:newIndex:)]) {
+            [self.delegate controller:self didChangeObject:object atIndex:fromIndex forChangeType:VIKArrayChangeUpdate newIndex:toIndex];
+        }
     }];
-    
-    [self.delegate controllerDidChangeContent:self];
+
+    if ([self.delegate respondsToSelector:@selector(controllerDidChangeContent:)]) {
+        [self.delegate controllerDidChangeContent:self];
+    }
 }
 
 - (id)objectAtIndex:(NSUInteger)index
