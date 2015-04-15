@@ -7,13 +7,13 @@
 //
 
 #import "UIAlertController+DeleteTodoEvent.h"
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 
 @implementation UIAlertController (DeleteTodoEventFactory)
 
 #pragma mark - Public
 
-+ (UIAlertController *)alertControllerWithTodoEvent:(MutableTodoEvent *)todoEvent handler:(DeleteTodoEventBlock)handler
++ (UIAlertController *)alertControllerWithTodoEvent:(TodoEvent *)todoEvent handler:(DeleteTodoEventBlock)handler
 {
     if ([todoEvent hasFutureEvents])
         return [self deleteRecurringTodoEventAlertControllerWithHandler:handler];

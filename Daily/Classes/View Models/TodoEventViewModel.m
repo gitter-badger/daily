@@ -7,7 +7,7 @@
 //
 
 #import "TodoEventViewModel.h"
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 
 @interface TodoEventViewModel ()
 
@@ -47,7 +47,7 @@
     return formatter;
 }
 
-- (instancetype)initWithTodoEvent:(MutableTodoEvent *)todoEvent
+- (instancetype)initWithTodoEvent:(TodoEvent *)todoEvent
 {
     self = [super init];
     if (self) {
@@ -63,7 +63,7 @@
     return self;
 }
 
-- (NSString *)dateTextFromTodoEvent:(MutableTodoEvent *)todoEvent
+- (NSString *)dateTextFromTodoEvent:(TodoEvent *)todoEvent
 {
     NSString *startDate = [[TodoEventViewModel fullDateFormatter] stringFromDate:todoEvent.startDate];
     NSString *endDate = [[TodoEventViewModel fullDateFormatter] stringFromDate:todoEvent.endDate];
@@ -76,7 +76,7 @@
     }
 }
 
-- (NSString *)dateTextFullFromTodoEvent:(MutableTodoEvent *)todoEvent
+- (NSString *)dateTextFullFromTodoEvent:(TodoEvent *)todoEvent
 {   
     NSString *startDate = [[TodoEventViewModel fullDateFormatter] stringFromDate:todoEvent.startDate];
     NSString *endDate = [[TodoEventViewModel fullDateFormatter] stringFromDate:todoEvent.endDate];
@@ -101,7 +101,7 @@
     }
 }
 
-- (NSString *)startTimeTextFromTodoEvent:(MutableTodoEvent *)todoEvent
+- (NSString *)startTimeTextFromTodoEvent:(TodoEvent *)todoEvent
 {
     if (todoEvent.allDay)
         return @"";
@@ -109,7 +109,7 @@
     return [[TodoEventViewModel timeFormatter] stringFromDate:todoEvent.startDate];
 }
 
-- (NSString *)endTimeTextFromTodoEvent:(MutableTodoEvent *)todoEvent
+- (NSString *)endTimeTextFromTodoEvent:(TodoEvent *)todoEvent
 {
     if (todoEvent.allDay)
         return @"";
@@ -117,7 +117,7 @@
     return [[TodoEventViewModel timeFormatter] stringFromDate:todoEvent.endDate];
 }
 
-- (NSString *)startEndTimeTextFrom:(MutableTodoEvent *)todoEvent
+- (NSString *)startEndTimeTextFrom:(TodoEvent *)todoEvent
 {
     if (todoEvent.allDay)
         return @"";

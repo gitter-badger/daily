@@ -13,14 +13,14 @@
 		020E5ADA1AD6A95B00C6342D /* TodoEventActions.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A5B1AD6A95B00C6342D /* TodoEventActions.m */; };
 		020E5ADB1AD6A95B00C6342D /* Todo+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */; };
 		020E5ADC1AD6A95B00C6342D /* Todo.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A611AD6A95B00C6342D /* Todo.m */; };
-		020E5ADD1AD6A95B00C6342D /* TodoEventClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A631AD6A95B00C6342D /* TodoEventClient.m */; };
+		020E5ADD1AD6A95B00C6342D /* TodoEventAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A631AD6A95B00C6342D /* TodoEventAPI.m */; };
 		020E5ADE1AD6A95B00C6342D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A651AD6A95B00C6342D /* AppDelegate.m */; };
 		020E5ADF1AD6A95B00C6342D /* NSDateFormatter+Extended.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A681AD6A95B00C6342D /* NSDateFormatter+Extended.m */; };
 		020E5AE01AD6A95B00C6342D /* NSUserDefaults+DLY.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A6A1AD6A95B00C6342D /* NSUserDefaults+DLY.m */; };
 		020E5AE11AD6A95B00C6342D /* UIAlertController+DeleteTodoEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A6C1AD6A95B00C6342D /* UIAlertController+DeleteTodoEvent.m */; };
 		020E5AE21AD6A95B00C6342D /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A6E1AD6A95B00C6342D /* UIImage+Tint.m */; };
 		020E5AE31AD6A95B00C6342D /* Dispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A701AD6A95B00C6342D /* Dispatcher.m */; };
-		020E5AE41AD6A95B00C6342D /* MutableTodoEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A731AD6A95B00C6342D /* MutableTodoEvent.m */; };
+		020E5AE41AD6A95B00C6342D /* TodoEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A731AD6A95B00C6342D /* TodoEvent.m */; };
 		020E5AE51AD6A95B00C6342D /* CrashlyticsService.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A761AD6A95B00C6342D /* CrashlyticsService.m */; };
 		020E5AE61AD6A95B00C6342D /* MagicalRecordService.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A781AD6A95B00C6342D /* MagicalRecordService.m */; };
 		020E5AE71AD6A95B00C6342D /* MigrationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A7A1AD6A95B00C6342D /* MigrationService.m */; };
@@ -84,8 +84,8 @@
 		020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Todo+Extended.m"; sourceTree = "<group>"; };
 		020E5A601AD6A95B00C6342D /* Todo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Todo.h; sourceTree = "<group>"; };
 		020E5A611AD6A95B00C6342D /* Todo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Todo.m; sourceTree = "<group>"; };
-		020E5A621AD6A95B00C6342D /* TodoEventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventClient.h; sourceTree = "<group>"; };
-		020E5A631AD6A95B00C6342D /* TodoEventClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventClient.m; sourceTree = "<group>"; };
+		020E5A621AD6A95B00C6342D /* TodoEventAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventAPI.h; sourceTree = "<group>"; };
+		020E5A631AD6A95B00C6342D /* TodoEventAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventAPI.m; sourceTree = "<group>"; };
 		020E5A641AD6A95B00C6342D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		020E5A651AD6A95B00C6342D /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		020E5A671AD6A95B00C6342D /* NSDateFormatter+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateFormatter+Extended.h"; sourceTree = "<group>"; };
@@ -98,8 +98,8 @@
 		020E5A6E1AD6A95B00C6342D /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		020E5A6F1AD6A95B00C6342D /* Dispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dispatcher.h; sourceTree = "<group>"; };
 		020E5A701AD6A95B00C6342D /* Dispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dispatcher.m; sourceTree = "<group>"; };
-		020E5A721AD6A95B00C6342D /* MutableTodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutableTodoEvent.h; path = ../../Models/MutableTodoEvent.h; sourceTree = "<group>"; };
-		020E5A731AD6A95B00C6342D /* MutableTodoEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutableTodoEvent.m; path = ../../Models/MutableTodoEvent.m; sourceTree = "<group>"; };
+		020E5A721AD6A95B00C6342D /* TodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodoEvent.h; path = ../../Models/TodoEvent.h; sourceTree = "<group>"; };
+		020E5A731AD6A95B00C6342D /* TodoEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodoEvent.m; path = ../../Models/TodoEvent.m; sourceTree = "<group>"; };
 		020E5A751AD6A95B00C6342D /* CrashlyticsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashlyticsService.h; sourceTree = "<group>"; };
 		020E5A761AD6A95B00C6342D /* CrashlyticsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashlyticsService.m; sourceTree = "<group>"; };
 		020E5A771AD6A95B00C6342D /* MagicalRecordService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalRecordService.h; sourceTree = "<group>"; };
@@ -272,8 +272,8 @@
 			isa = PBXGroup;
 			children = (
 				020E5A5D1AD6A95B00C6342D /* Models */,
-				020E5A621AD6A95B00C6342D /* TodoEventClient.h */,
-				020E5A631AD6A95B00C6342D /* TodoEventClient.m */,
+				020E5A621AD6A95B00C6342D /* TodoEventAPI.h */,
+				020E5A631AD6A95B00C6342D /* TodoEventAPI.m */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -281,8 +281,8 @@
 		020E5A5D1AD6A95B00C6342D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				020E5A721AD6A95B00C6342D /* MutableTodoEvent.h */,
-				020E5A731AD6A95B00C6342D /* MutableTodoEvent.m */,
+				020E5A721AD6A95B00C6342D /* TodoEvent.h */,
+				020E5A731AD6A95B00C6342D /* TodoEvent.m */,
 				020E5A5E1AD6A95B00C6342D /* Todo+Extended.h */,
 				020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */,
 				020E5A601AD6A95B00C6342D /* Todo.h */,
@@ -756,9 +756,9 @@
 				020E5AD81AD6A95B00C6342D /* Calendar.m in Sources */,
 				020E5B021AD6A95B00C6342D /* NSManagedObject+VIKKit.m in Sources */,
 				020E5B051AD6A95B00C6342D /* UIView+VIKKit.m in Sources */,
-				020E5ADD1AD6A95B00C6342D /* TodoEventClient.m in Sources */,
+				020E5ADD1AD6A95B00C6342D /* TodoEventAPI.m in Sources */,
 				020E5AEF1AD6A95B00C6342D /* SettingsViewController.m in Sources */,
-				020E5AE41AD6A95B00C6342D /* MutableTodoEvent.m in Sources */,
+				020E5AE41AD6A95B00C6342D /* TodoEvent.m in Sources */,
 				020E5AFA1AD6A95B00C6342D /* HPReorderTableView.m in Sources */,
 				020E5AE61AD6A95B00C6342D /* MagicalRecordService.m in Sources */,
 				020E5AF51AD6A95B00C6342D /* FloatingButton.m in Sources */,

@@ -8,7 +8,7 @@
 
 #import "EditableTextViewController.h"
 
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 
 @interface EditableTextViewController ()
 

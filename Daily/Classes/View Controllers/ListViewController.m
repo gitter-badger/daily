@@ -10,7 +10,7 @@
 #import "VIKArrayController.h"
 
 // Models
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 #import "TodoEventViewModel.h"
 #import "TodoEventStore.h"
 
@@ -122,14 +122,14 @@
 
 - (void)configureCell:(TodoEventTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
     TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:todoEvent];
     [cell setTitleText:viewModel.titleText timeText:viewModel.timeText locationText:viewModel.locationText completed:viewModel.completed];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
     if (!todoEvent.allDay) {
         return 88;
     }
@@ -140,7 +140,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
     DetailViewController *vc = [[DetailViewController alloc] initWithTodoEvent:todoEvent];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -156,7 +156,7 @@
     }
     
     NSMutableArray *todoEvents = [self.controller.objects mutableCopy];
-    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:fromIndexPath];
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:fromIndexPath];
     [todoEvents removeObjectAtIndex:fromIndexPath.row];
     [todoEvents insertObject:todoEvent atIndex:toIndexPath.row];
     
@@ -169,7 +169,7 @@
 - (void)todoEventTableViewCellDidToggleCheckbox:(TodoEventTableViewCell *)cell
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
     
     if (todoEvent.completed) {
         todoEvent.completed = NO;
@@ -180,7 +180,7 @@
     }
     
     NSArray *sortedObjects = [self sortedTodoEvents:self.controller.objects];
-    [sortedObjects enumerateObjectsUsingBlock:^(MutableTodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+    [sortedObjects enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
         todoEvent.position = index;
     }];
     
@@ -194,11 +194,11 @@
 {
     if (![self.startIndexPath isEqual:indexPath]) {
         
-        MutableTodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
-        MutableTodoEvent *todoEventSibling = [self todoEventSibling:todoEvent];
+        TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+        TodoEvent *todoEventSibling = [self todoEventSibling:todoEvent];
         todoEvent.completed = todoEventSibling.completed;
 
-        [self.controller.objects enumerateObjectsUsingBlock:^(MutableTodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+        [self.controller.objects enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
             todoEvent.position = index;
         }];
         
@@ -209,7 +209,7 @@
     self.startIndexPath = nil;
 }
 
-- (MutableTodoEvent *)todoEventSibling:(MutableTodoEvent *)todoEvent
+- (TodoEvent *)todoEventSibling:(TodoEvent *)todoEvent
 {
     if (todoEvent.completed) {
         return [self todoEventAfter:todoEvent];
@@ -218,7 +218,7 @@
     }
 }
 
-- (MutableTodoEvent *)todoEventAfter:(MutableTodoEvent *)todoEvent
+- (TodoEvent *)todoEventAfter:(TodoEvent *)todoEvent
 {
     NSInteger index = [self.controller.objects indexOfObject:todoEvent];
     NSInteger max = self.controller.numberOfObjects - 1;
@@ -226,7 +226,7 @@
     return [self.controller.objects objectAtIndex:newIndex];
 }
 
-- (MutableTodoEvent *)todoEventBefore:(MutableTodoEvent *)todoEvent
+- (TodoEvent *)todoEventBefore:(TodoEvent *)todoEvent
 {
     NSInteger index = [self.controller.objects indexOfObject:todoEvent];
     NSInteger newIndex = MAX(index - 1, 0); // Use the biggest
@@ -279,7 +279,7 @@
     return dateHeaderView;
 }
 
-- (MutableTodoEvent *)todoEventAtIndexPath:(NSIndexPath *)indexPath
+- (TodoEvent *)todoEventAtIndexPath:(NSIndexPath *)indexPath
 {
     return [self.controller.objects objectAtIndex:indexPath.row];
 }

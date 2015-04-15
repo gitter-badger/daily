@@ -7,10 +7,10 @@
 //
 
 #import "TodoEventActions.h"
-#import "TodoEventClient.h"
+#import "TodoEventAPI.h"
 
 // Models
-#import "MutableTodoEvent.h"
+#import "TodoEvent.h"
 #import "TodoEventViewModel.h"
 
 // Controllers
@@ -23,7 +23,7 @@
 
 @interface DetailViewController ()
 
-@property (nonatomic, strong) MutableTodoEvent *todoEvent;
+@property (nonatomic, strong) TodoEvent *todoEvent;
 
 @property (nonatomic, strong) NSArray *cellData;
 
@@ -31,11 +31,14 @@
 
 @implementation DetailViewController
 
-- (instancetype)initWithTodoEvent:(MutableTodoEvent *)todoEvent
+- (instancetype)initWithTodoEvent:(TodoEvent *)todoEvent
 {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         self.todoEvent = todoEvent;
+        
+        TodoEventAPI *client = [[TodoEventAPI alloc] init];
+        // Subscribe for changes
     }
     return self;
 }

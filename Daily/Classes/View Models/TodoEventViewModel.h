@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class MutableTodoEvent;
+@class TodoEvent;
 
 @interface TodoEventViewModel : NSObject
 
@@ -21,6 +21,6 @@
 @property (nonatomic, strong ,readonly) NSString *dateText;
 @property (nonatomic, readonly) BOOL completed;
 
-- (instancetype)initWithTodoEvent:(MutableTodoEvent *)todoEvent;
+- (instancetype)initWithTodoEvent:(TodoEvent *)todoEvent;
 
 @end
