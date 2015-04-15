@@ -125,7 +125,7 @@
     
     for (int fromIndex = 0; fromIndex < fromWithoutRemoved.count; fromIndex++) {
         id object = [fromWithoutRemoved objectAtIndex:fromIndex];
-        int toIndex = [toWithoutAdded indexOfObject:object];
+        NSUInteger toIndex = [toWithoutAdded indexOfObject:object];
         
         if (fromIndex != toIndex) {
             NSMutableDictionary *fromToindex = [[NSMutableDictionary alloc] init];
@@ -145,7 +145,7 @@
     for (int i = 0; i < toArray.count; i++) {
         id object = [toArray objectAtIndex:i];
         if ([fromArray containsObject:object]) {
-            int fromIndex = [fromArray indexOfObject:object];
+            NSUInteger fromIndex = [fromArray indexOfObject:object];
             id object2 = [fromArray objectAtIndex:fromIndex];
             if (object != object2) {
                 [indexes addIndex:i];
