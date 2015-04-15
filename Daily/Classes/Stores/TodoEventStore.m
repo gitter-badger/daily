@@ -38,8 +38,7 @@
             NSString *actionType = [payload valueForKey:@"actionType"];
             
             if ([actionType isEqual:@"LOAD_TODOEVENTS_SUCCESS"]) {
-                NSArray *todoEvents = [payload valueForKey:@"todoEvents"];
-                [self setTodoEvents:todoEvents];
+                self.todoEvents = [payload valueForKey:@"todoEvents"];
             }
 
         }];
