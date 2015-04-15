@@ -39,19 +39,6 @@
 
 @implementation ListViewController
 
-- (NSMutableArray *)cellControllers
-{
-    if (!_cellControllers) {
-        _cellControllers = [[NSMutableArray alloc] init];
-    }
-    return _cellControllers;
-}
-
-- (void)setScrollEnable:(BOOL)enabled
-{
-    self.tableView.scrollEnabled = enabled;
-}
-
 #pragma mark - Life Cycle
 
 - (instancetype)initWithDate:(NSDate *)date
@@ -79,12 +66,23 @@
     self.tableView.rowHeight = 60;
     self.tableView.separatorColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
     self.tableView.showsVerticalScrollIndicator = NO;
-    self.tableView.tableHeaderView = [self dateHeader];
+    
+    DateHeaderView *dateHeaderView = [[DateHeaderView alloc] initWithDate:self.date];
+    dateHeaderView.frame = CGRectMake(0, 0, 320, 150);
+    self.tableView.tableHeaderView = dateHeaderView;
     
     self.controller = [[VIKArrayController alloc] init];
     self.controller.delegate = self;
     
     [self.tableView registerClass:[TodoEventTableViewCell class] forCellReuseIdentifier:@"Cell"];
+}
+
+
+#pragma mark - Public methods
+
+- (void)setScrollEnable:(BOOL)enabled
+{
+    self.tableView.scrollEnabled = enabled;
 }
 
 - (void)setTodoEvents:(NSArray *)todoEvents
@@ -98,6 +96,7 @@
     NSSortDescriptor *positionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES];
     return [todoEvents sortedArrayUsingDescriptors:@[completionSortDescriptor, positionSortDescriptor]];
 }
+
 
 #pragma mark - UITableViewDataSource
 
@@ -135,6 +134,7 @@
     }
     return 60;
 }
+
 
 #pragma mark - UITableViewDelegate
 
@@ -267,16 +267,6 @@
 - (void)controllerDidChangeContent:(VIKArrayController *)controller
 {
     [self.tableView endUpdates];
-}
-
-
-#pragma mark - Helpers
-
-- (DateHeaderView *)dateHeader
-{
-    DateHeaderView *dateHeaderView = [[DateHeaderView alloc] initWithDate:self.date];
-    dateHeaderView.frame = CGRectMake(0, 0, 320, 150);
-    return dateHeaderView;
 }
 
 - (TodoEvent *)todoEventAtIndexPath:(NSIndexPath *)indexPath
