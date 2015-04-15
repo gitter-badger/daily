@@ -7,6 +7,7 @@
 //
 
 #import "TodoEventActions.h"
+#import "TodoEventClient.h"
 
 // Models
 #import "MutableTodoEvent.h"
@@ -15,6 +16,7 @@
 // Controllers
 #import "DetailViewController.h"
 #import "UIAlertController+DeleteTodoEvent.h"
+#import "EditableTextViewController.h"
 
 // Views
 #import "DetailTableViewCell.h"
@@ -119,6 +121,39 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:self.todoEvent];
+    EditableTextViewController *vc;
+    
+    if (indexPath.row == 0) {
+        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit Title" text:viewModel.titleText completion:^(BOOL success, NSString *text) {
+            self.todoEvent.title = text;
+            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+    }
+    if (indexPath.row == 3) {
+        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit Location" text:viewModel.locationText completion:^(BOOL success, NSString *text) {
+            self.todoEvent.location = text;
+            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+    }
+    if (indexPath.row == 4) {
+        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit URL" text:viewModel.urlText completion:^(BOOL success, NSString *text) {
+            self.todoEvent.url = text;
+            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+    }
+    if (indexPath.row == 5) {
+        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit Notes" text:viewModel.notesText completion:^(BOOL success, NSString *text) {
+            self.todoEvent.notes = text;
+            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
+            [self.navigationController popViewControllerAnimated:YES];
+        }];
+    }
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end
