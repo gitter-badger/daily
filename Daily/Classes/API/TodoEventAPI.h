@@ -10,11 +10,11 @@
 
 #import "TodoEvent.h"
 
-@protocol TodoEventClientDelegate;
-
 typedef void (^TodoEventClientCollectionBlock)(NSError *error, NSArray *todoEvents);
 typedef void (^TodoEventClientItemBlock)(NSError *error, TodoEvent *todoEvent);
 typedef void (^TodoEventClientNoneBlock)(NSError *error);
+
+extern NSString *const TodoEventAPIDidChangeNotification;
 
 @interface TodoEventAPI : NSObject
 

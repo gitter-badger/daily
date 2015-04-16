@@ -6,19 +6,22 @@
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
-#import <EventKit/EventKit.h>
-
 #import "TodoEventAPI.h"
 
-#import "EKCalendar+VFDaily.h"
+#import <EventKit/EventKit.h>
 
+#import "EKCalendar+VFDaily.h"
 #import "Todo+Extended.h"
+
+
+NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotification";
 
 @interface TodoEventAPI ()
 
 @property (nonatomic, strong) EKEventStore *eventStore;
 
 @end
+
 
 @implementation TodoEventAPI
 
@@ -29,19 +32,28 @@
     self = [super init];
     if (self) {
         self.eventStore = [[EKEventStore alloc] init];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreDidChange:) name:EKEventStoreChangedNotification object:self.eventStore];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoStoreDidChange:) name:NSManagedObjectContextDidSaveNotification object:[NSManagedObjectContext defaultContext]];
     }
     return self;
 }
 
 - (void)eventStoreDidChange:(NSNotification *)notification
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TodoEventClientDidChangeNotificaiton" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TodoEventAPIDidChangeNotification object:self];
+}
+
+- (void)todoStoreDidChange:(NSNotification *)notification
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:TodoEventAPIDidChangeNotification object:self];
 }
 
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:EKEventStoreChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:nil];
 }
 
 
