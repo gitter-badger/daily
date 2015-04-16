@@ -123,7 +123,8 @@
 {
     TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
     TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:todoEvent];
-    [cell setTitleText:viewModel.titleText timeText:viewModel.timeText locationText:viewModel.locationText completed:viewModel.completed];
+    
+    [cell configureWithTitle:viewModel.titleText time:viewModel.timeText completed:viewModel.completed];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
