@@ -34,14 +34,14 @@
     self = [super init];
     if (self) {
         self.client = [[TodoEventAPI alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoEventClientDidChange:) name:@"TodoEventClientDidChangeNotificaiton" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoEventClientDidChange:) name:TodoEventAPIDidChangeNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"TodoEventClientDidChangeNotificaiton" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:TodoEventAPIDidChangeNotification object:nil];
 }
 
 - (void)todoEventClientDidChange:(NSNotification *)notificaiton
