@@ -22,44 +22,33 @@
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textLabel.hidden = YES;
-        self.detailTextLabel.hidden = YES;
-        
-        self.checkboxButton = [[UIButton alloc] init];
-        [self.checkboxButton addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:self.checkboxButton];
-        
-        self.titleLabel = [[UILabel alloc] init];
-        [self.contentView addSubview:self.titleLabel];
-        
-        self.detailLabel = [[UILabel alloc] init];
-        [self.contentView addSubview:self.detailLabel];
-        
-        self.titleLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:19];
-        self.detailLabel.font = [UIFont fontWithName:@"Palatino-Roman" size:16];
+        [self setupViews];
     }
     return self;
 }
 
-- (void)setTitleText:(NSString *)titleText timeText:(NSString *)timeText locationText:(NSString *)locationText completed:(BOOL)completed
+- (void)setupViews
 {
-    if (completed) {
-        self.titleLabel.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
-        self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:titleText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
-        
-        self.detailLabel.textColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
-        self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:timeText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]}];
-        
-        [self.checkboxButton setImage:[UIImage imageNamed:@"checkbox-on"] forState:UIControlStateNormal];
-    } else {
-        self.titleLabel.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1];
-        self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:titleText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]}];
-        
-        self.detailLabel.textColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:1];
-        self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:timeText attributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleNone]}];
-        
-        [self.checkboxButton setImage:[UIImage imageNamed:@"checkbox-off"] forState:UIControlStateNormal];
-    }
+    self.textLabel.hidden = YES;
+    self.detailTextLabel.hidden = YES;
+    
+    self.checkboxButton = [[UIButton alloc] init];
+    [self.checkboxButton addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.checkboxButton];
+    
+    self.titleLabel = [[UILabel alloc] init];
+    [self.contentView addSubview:self.titleLabel];
+    
+    self.detailLabel = [[UILabel alloc] init];
+    [self.contentView addSubview:self.detailLabel];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    self.checkboxButton.frame = CGRectMake(0, 0, 64, CGRectGetHeight(self.bounds));
+    self.titleLabel.frame = CGRectMake(64, 22, CGRectGetWidth(self.bounds) - 64 - 20, 21);
+    self.detailLabel.frame = CGRectMake(64, 48, CGRectGetWidth(self.bounds) - 64 - 20, 18);
 }
 
 - (void)checkboxDidReceiveTap:(id)sender
@@ -67,15 +56,50 @@
     [self.delegate todoEventTableViewCellDidToggleCheckbox:self];
 }
 
-- (void)layoutSubviews
+- (void)configureWithTitle:(NSString *)title time:(NSString *)time completed:(BOOL)completed
 {
-    self.checkboxButton.frame = CGRectMake(0, 0, 64, CGRectGetHeight(self.bounds));
+    NSDictionary *styles = [self styles];
     
-    self.titleLabel.frame = CGRectMake(64, 22, CGRectGetWidth(self.bounds) - 64 - 20, 21);
+    NSDictionary *titleStyles = completed ? styles[@"titleCompleted"] : styles[@"title"];
+    NSDictionary *detailStyles = completed ? styles[@"detailCompleted"] : styles[@"detail"];
+    NSDictionary *checkboxStyles = completed ? styles[@"checkboxCompleted"] : styles[@"checkbox"];
     
-    self.detailLabel.frame = CGRectMake(64, 48, CGRectGetWidth(self.bounds) - 64 - 20, 18);
+    self.titleLabel.font = titleStyles[@"font"];
+    self.titleLabel.textColor = titleStyles[@"textColor"];
+    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:@{NSStrikethroughStyleAttributeName: titleStyles[@"strikethroughStyle"]}];
     
-    [super layoutSubviews];
+    self.detailLabel.font = detailStyles[@"font"];
+    self.detailLabel.textColor = detailStyles[@"textColor"];
+    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:@{NSStrikethroughStyleAttributeName: detailStyles[@"strikethroughStyle"]}];
+    
+    [self.checkboxButton setImage:checkboxStyles[@"image"] forState:UIControlStateNormal];
+}
+
+- (NSDictionary *)styles
+{
+    NSMutableDictionary *styles = [NSMutableDictionary dictionary];
+    
+    styles[@"title"] = @{@"font": [UIFont fontWithName:@"Palatino-Roman" size:19],
+                         @"textColor": [UIColor colorWithRed:0 green:0 blue:0 alpha:1],
+                         @"strikethroughStyle": [NSNumber numberWithInt:NSUnderlineStyleNone]};
+    
+    styles[@"titleCompleted"] = @{@"font": styles[@"title"][@"font"],
+                                  @"textColor": [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1],
+                                  @"strikethroughStyle": [NSNumber numberWithInt:NSUnderlineStyleSingle]};
+    
+    styles[@"detail"] = @{@"font": [UIFont fontWithName:@"Palatino-Roman" size:16],
+                          @"textColor": [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:1],
+                          @"strikethroughStyle": [NSNumber numberWithInt:NSUnderlineStyleNone]};
+    
+    styles[@"detailCompleted"] = @{@"font": styles[@"detail"][@"font"],
+                                   @"textColor": [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1],
+                                   @"strikethroughStyle": [NSNumber numberWithInt:NSUnderlineStyleSingle]};
+    
+    styles[@"checkbox"] = @{@"image": [UIImage imageNamed:@"checkbox-off"]};
+    
+    styles[@"checkboxCompleted"] = @{@"image": [UIImage imageNamed:@"checkbox-on"]};
+    
+    return styles;
 }
 
 @end

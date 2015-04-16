@@ -14,7 +14,7 @@
 
 @property (nonatomic, weak) id<TodoEventTableViewCellDelegate> delegate;
 
-- (void)setTitleText:(NSString *)titleText timeText:(NSString *)timeText locationText:(NSString *)locationText completed:(BOOL)completed;
+- (void)configureWithTitle:(NSString *)title time:(NSString *)time completed:(BOOL)completed;
 
 @end
 
