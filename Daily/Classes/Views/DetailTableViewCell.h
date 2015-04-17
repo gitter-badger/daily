@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DetailValue.h"
 
 @interface DetailTableViewCell : UITableViewCell
 
-- (void)setTitleText:(NSString *)titleText placeholderText:(NSString *)placeholderText detailText:(NSString *)detailText iconImage:(UIImage *)image;
+- (void)configureWithDetailValue:(DetailValue *)detailValue;
+- (void)configureWithTitle:(NSString *)title placeholder:(NSString *)placeholder icon:(UIImage *)icon;
 
 @end

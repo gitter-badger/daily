@@ -6,12 +6,12 @@
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
-#import "TodoEventActions.h"
 #import "TodoEventAPI.h"
 
 // Models
 #import "TodoEvent.h"
 #import "TodoEventViewModel.h"
+#import "DetailValue.h"
 
 // Controllers
 #import "DetailViewController.h"
@@ -21,11 +21,11 @@
 // Views
 #import "DetailTableViewCell.h"
 
-@interface DetailViewController ()
+@interface DetailViewController () <EditableTextViewControllerDelegate>
 
 @property (nonatomic, strong) TodoEvent *todoEvent;
 
-@property (nonatomic, strong) NSArray *cellData;
+@property (nonatomic, strong) NSString *editingKey;
 
 @end
 
@@ -37,16 +37,48 @@
     if (self) {
         self.todoEvent = todoEvent;
         
-        TodoEventAPI *client = [[TodoEventAPI alloc] init];
-        // Subscribe for changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clientDidChange:) name:TodoEventAPIDidChangeNotification object:[TodoEventAPI sharedInstance]];
     }
     return self;
+}
+
+- (void)setTodoEvent:(TodoEvent *)todoEvent
+{
+    _todoEvent = todoEvent;
+    self.title = todoEvent.title;
+    [self.tableView reloadData];
+}
+
+- (void)clientDidChange:(NSNotification *)notification
+{
+    NSLog(@"ClientDidChange...");
+    [[TodoEventAPI sharedInstance] fetchTodoEventWithTodoEventIdentifier:self.todoEvent.todoEventIdentifier completion:^(NSError *error, TodoEvent *todoEvent) {
+        self.todoEvent = todoEvent;
+    }];
+}
+
+- (NSArray *)cellValues
+{
+    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:self.todoEvent];
+    
+    DetailValue *titleValue = [[DetailValue alloc] initWithKey:@"title" value:viewModel.titleText placeholder:@"Title" icon:[UIImage imageNamed:@"notes"]];
+    
+    DetailValue *timeValue = [[DetailValue alloc] initWithKey:@"time" value:viewModel.timeText placeholder:@"Time" icon:[UIImage imageNamed:@"clock"]];
+    
+    DetailValue *dateValue = [[DetailValue alloc] initWithKey:@"date" value:viewModel.dateText placeholder:@"Date" icon:[UIImage imageNamed:@"clock"]];
+    
+    DetailValue *locationValue = [[DetailValue alloc] initWithKey:@"location" value:viewModel.locationText placeholder:@"Location" icon:[UIImage imageNamed:@"location"]];
+    
+    DetailValue *urlValue = [[DetailValue alloc] initWithKey:@"url" value:viewModel.urlText placeholder:@"URL" icon:[UIImage imageNamed:@"url"]];
+    
+    DetailValue *notesValue = [[DetailValue alloc] initWithKey:@"notes" value:viewModel.notesText placeholder:@"Notes" icon:[UIImage imageNamed:@"notes"]];
+    
+    return @[titleValue, timeValue, dateValue, locationValue, urlValue, notesValue];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = self.todoEvent.title;
     
     UIBarButtonItem *deleteEventButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete Event" style:UIBarButtonItemStylePlain target:self action:@selector(deleteEvent:)];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -55,21 +87,18 @@
     
     self.tableView.separatorColor = [UIColor clearColor];
     
+    self.tableView.estimatedRowHeight = 44.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+
+    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed:)];
     
-    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:self.todoEvent];
-    
-    NSMutableArray *cellData = [[NSMutableArray alloc] init];
-    [cellData addObject:@{@"title": viewModel.titleText, @"placeholder": @"Title", @"image": [UIImage imageNamed:@"notes"]}];
-    [cellData addObject:@{@"title": viewModel.timeText, @"placeholder": @"No time", @"image": [UIImage imageNamed:@"clock"]}];
-    [cellData addObject:@{@"title": viewModel.dateText, @"placeholder": @"Date", @"image": [UIImage imageNamed:@"clock"]}];
-    [cellData addObject:@{@"title": viewModel.locationText, @"placeholder": @"Location", @"image": [UIImage imageNamed:@"location"]}];
-    [cellData addObject:@{@"title": viewModel.urlText, @"placeholder": @"URL", @"image": [UIImage imageNamed:@"url"]}];
-    [cellData addObject:@{@"title": viewModel.notesText, @"placeholder": @"Notes", @"image": [UIImage imageNamed:@"notes"]}];
-    
-    self.cellData = [cellData copy];
-    
     [self.tableView registerClass:[DetailTableViewCell class] forCellReuseIdentifier:@"Cell"];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self.tableView reloadData];
 }
 
 - (void)deleteEvent:(id)sender
@@ -78,10 +107,10 @@
         
         switch (span) {
             case TodoEventSpanThis:
-                [[TodoEventActions sharedActions] deleteThisTodoEvent:self.todoEvent];
+                [[TodoEventAPI sharedInstance] deleteThisTodoEvent:self.todoEvent completion:nil];
                 break;
             case TodoEventSpanFuture:
-                [[TodoEventActions sharedActions] deleteFutureTodoEvent:self.todoEvent];
+                [[TodoEventAPI sharedInstance] deleteFutureTodoEvent:self.todoEvent completion:nil];
                 break;
         }
 
@@ -108,53 +137,50 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.cellData.count;
+    return self.cellValues.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DetailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    NSDictionary *cellData = [self.cellData objectAtIndex:indexPath.row];
-    [cell setTitleText:[cellData objectForKey:@"title"] placeholderText:[cellData objectForKey:@"placeholder"] detailText:[cellData objectForKey:@"detail"] iconImage:[cellData objectForKey:@"image"]];
+    [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
 }
 
+- (UITableViewCell *)configureCell:(DetailTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    DetailValue *detailValue = [self.cellValues objectAtIndex:indexPath.row];
+    [cell configureWithDetailValue:detailValue];
+    return cell;
+}
+
+- (void)editableTextViewController:(EditableTextViewController *)controller didCompleteWithAction:(EditableTextViewAction)action
+{
+    if (action == EditableTextViewActionSaved) {
+        TodoEvent *todoEvent = [self.todoEvent copy];
+        [todoEvent setValue:controller.text forKey:self.editingKey];
+        
+        // optimistic update
+        self.todoEvent = todoEvent;
+        
+        // pessimistic update
+        [[TodoEventAPI sharedInstance] updateTodoEvent:todoEvent completion:nil];
+    }
+    
+    self.editingKey = nil;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:self.todoEvent];
-    EditableTextViewController *vc;
+    DetailValue *detailValue = [self.cellValues objectAtIndex:indexPath.row];
     
-    if (indexPath.row == 0) {
-        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit Title" text:viewModel.titleText completion:^(BOOL success, NSString *text) {
-            self.todoEvent.title = text;
-            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
-            [self.navigationController popViewControllerAnimated:YES];
-        }];
-    }
-    if (indexPath.row == 3) {
-        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit Location" text:viewModel.locationText completion:^(BOOL success, NSString *text) {
-            self.todoEvent.location = text;
-            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
-            [self.navigationController popViewControllerAnimated:YES];
-        }];
-    }
-    if (indexPath.row == 4) {
-        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit URL" text:viewModel.urlText completion:^(BOOL success, NSString *text) {
-            self.todoEvent.url = text;
-            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
-            [self.navigationController popViewControllerAnimated:YES];
-        }];
-    }
-    if (indexPath.row == 5) {
-        vc = [[EditableTextViewController alloc] initWithTitle:@"Edit Notes" text:viewModel.notesText completion:^(BOOL success, NSString *text) {
-            self.todoEvent.notes = text;
-            [[TodoEventActions sharedActions] updateTodoEvent:self.todoEvent];
-            [self.navigationController popViewControllerAnimated:YES];
-        }];
-    }
+    NSString *title = [NSString stringWithFormat:@"Edit %@", detailValue.placeholder];
+    EditableTextViewController *vc = [[EditableTextViewController alloc] initWithTitle:title text:detailValue.value];
+    vc.delegate = self;
+    self.editingKey = detailValue.key;
     
     [self.navigationController pushViewController:vc animated:YES];
 }

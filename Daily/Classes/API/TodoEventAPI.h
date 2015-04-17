@@ -18,6 +18,8 @@ extern NSString *const TodoEventAPIDidChangeNotification;
 
 @interface TodoEventAPI : NSObject
 
++ (instancetype)sharedInstance;
+
 - (void)createTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 
 - (void)fetchTodoEventWithTodoEventIdentifier:(NSString *)todoEventIdentifier completion:(TodoEventClientItemBlock)completion;

@@ -27,6 +27,16 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
 
 #pragma mark - Life cycle
 
++ (instancetype)sharedInstance
+{
+    static TodoEventAPI *sharedInstace = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstace = [[self alloc] init];
+    });
+    return sharedInstace;
+}
+
 - (instancetype)init
 {
     self = [super init];
@@ -72,7 +82,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
     NSError *error;
     [self.eventStore saveEvent:event span:EKSpanThisEvent error:&error];
     
-    completion(error);
+    if (completion) completion(error);
 }
 
 - (void)fetchTodoEventWithTodoEventIdentifier:(NSString *)todoEventIdentifier completion:(TodoEventClientItemBlock)completion
@@ -84,7 +94,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
                 return completion(error, todoEvent);
             }
         }
-        completion(error, nil);
+        if (completion) completion(error, nil);
     }];
 }
 
@@ -141,7 +151,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
                 }
             }];
             
-            completion(error, todoEvents);
+            if (completion) completion(error, todoEvents);
         }];
         
     }];
@@ -158,7 +168,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
             todo.completed = [NSNumber numberWithBool:todoEvent.completed];
         }];
     } completion:^(BOOL success, NSError *error) {
-        completion(error);
+        if (completion) completion(error);
     }];
 }
 
@@ -172,7 +182,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
         todo.completed = [NSNumber numberWithBool:todoEvent.completed];
     } completion:^(BOOL success, NSError *error) {
         [self updateEventWithTodoEvent:todoEvent];
-        completion(error);
+        if (completion) completion(error);
     }];
 }
 
@@ -185,7 +195,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
                                       inContext:localContext];
         todo.completed = [NSNumber numberWithBool:todoEvent.completed];
     } completion:^(BOOL success, NSError *error) {
-        completion(error);
+        if (completion) completion(error);
     }];
 }
 
@@ -198,7 +208,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
                                       inContext:localContext];
         todo.completed = [NSNumber numberWithBool:todoEvent.completed];
     } completion:^(BOOL success, NSError *error) {
-        completion(error);
+        if (completion) completion(error);
     }];
 }
 
@@ -209,7 +219,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
     NSError *error;
     [self.eventStore removeEvent:event span:EKSpanThisEvent commit:YES error:&error];
     
-    completion(error);
+    if (completion) completion(error);
 }
 
 - (void)deleteFutureTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
@@ -219,7 +229,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
     NSError *error;
     [self.eventStore removeEvent:event span:EKSpanFutureEvents commit:YES error:&error];
     
-    completion(error);
+    if (completion) completion(error);
 }
 
 

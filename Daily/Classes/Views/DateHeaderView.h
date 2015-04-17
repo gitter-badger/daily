@@ -10,6 +10,6 @@
 
 @interface DateHeaderView : UIView
 
-- (instancetype)initWithDate:(NSDate *)date;
+- (void)configureWithDate:(NSDate *)date;
 
 @end

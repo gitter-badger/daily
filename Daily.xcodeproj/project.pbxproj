@@ -59,6 +59,8 @@
 		020E5B0A1AD6A95B00C6342D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 020E5AD01AD6A95B00C6342D /* LaunchScreen.storyboard */; };
 		020E5B0B1AD6A95B00C6342D /* Onboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 020E5AD11AD6A95B00C6342D /* Onboard_iPhone.storyboard */; };
 		020E5B0C1AD6A95B00C6342D /* store.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AD21AD6A95B00C6342D /* store.xcdatamodeld */; };
+		021903B81ADFF217007B3E0E /* MagicTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 021903B71ADFF217007B3E0E /* MagicTableViewDataSource.m */; };
+		021903C91AE10BB5007B3E0E /* DetailValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 021903C81AE10BB5007B3E0E /* DetailValue.m */; };
 		021CBD121ADD04B500B00F21 /* EditableTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 021CBD111ADD04B500B00F21 /* EditableTextViewController.m */; };
 		0230CC59199DC6CF004D7713 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC58199DC6CF004D7713 /* Foundation.framework */; };
 		0230CC5B199DC6CF004D7713 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC5A199DC6CF004D7713 /* CoreGraphics.framework */; };
@@ -80,10 +82,10 @@
 		020E5A581AD6A95B00C6342D /* EKCalendar+VFDaily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EKCalendar+VFDaily.m"; sourceTree = "<group>"; };
 		020E5A5A1AD6A95B00C6342D /* TodoEventActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventActions.h; sourceTree = "<group>"; };
 		020E5A5B1AD6A95B00C6342D /* TodoEventActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventActions.m; sourceTree = "<group>"; };
-		020E5A5E1AD6A95B00C6342D /* Todo+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Todo+Extended.h"; sourceTree = "<group>"; };
-		020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Todo+Extended.m"; sourceTree = "<group>"; };
-		020E5A601AD6A95B00C6342D /* Todo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Todo.h; sourceTree = "<group>"; };
-		020E5A611AD6A95B00C6342D /* Todo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Todo.m; sourceTree = "<group>"; };
+		020E5A5E1AD6A95B00C6342D /* Todo+Extended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Todo+Extended.h"; path = "../API/CoreData/Todo+Extended.h"; sourceTree = "<group>"; };
+		020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Todo+Extended.m"; path = "../API/CoreData/Todo+Extended.m"; sourceTree = "<group>"; };
+		020E5A601AD6A95B00C6342D /* Todo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Todo.h; path = ../API/CoreData/Todo.h; sourceTree = "<group>"; };
+		020E5A611AD6A95B00C6342D /* Todo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Todo.m; path = ../API/CoreData/Todo.m; sourceTree = "<group>"; };
 		020E5A621AD6A95B00C6342D /* TodoEventAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventAPI.h; sourceTree = "<group>"; };
 		020E5A631AD6A95B00C6342D /* TodoEventAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventAPI.m; sourceTree = "<group>"; };
 		020E5A641AD6A95B00C6342D /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -98,8 +100,8 @@
 		020E5A6E1AD6A95B00C6342D /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		020E5A6F1AD6A95B00C6342D /* Dispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dispatcher.h; sourceTree = "<group>"; };
 		020E5A701AD6A95B00C6342D /* Dispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dispatcher.m; sourceTree = "<group>"; };
-		020E5A721AD6A95B00C6342D /* TodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodoEvent.h; path = ../../Models/TodoEvent.h; sourceTree = "<group>"; };
-		020E5A731AD6A95B00C6342D /* TodoEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodoEvent.m; path = ../../Models/TodoEvent.m; sourceTree = "<group>"; };
+		020E5A721AD6A95B00C6342D /* TodoEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodoEvent.h; path = ../Models/TodoEvent.h; sourceTree = "<group>"; };
+		020E5A731AD6A95B00C6342D /* TodoEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodoEvent.m; path = ../Models/TodoEvent.m; sourceTree = "<group>"; };
 		020E5A751AD6A95B00C6342D /* CrashlyticsService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashlyticsService.h; sourceTree = "<group>"; };
 		020E5A761AD6A95B00C6342D /* CrashlyticsService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashlyticsService.m; sourceTree = "<group>"; };
 		020E5A771AD6A95B00C6342D /* MagicalRecordService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicalRecordService.h; sourceTree = "<group>"; };
@@ -178,6 +180,10 @@
 		020E5AD41AD6A95B00C6342D /* store 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "store 3.xcdatamodel"; sourceTree = "<group>"; };
 		020E5AD51AD6A95B00C6342D /* store 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "store 4.xcdatamodel"; sourceTree = "<group>"; };
 		020E5AD61AD6A95B00C6342D /* store.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = store.xcdatamodel; sourceTree = "<group>"; };
+		021903B61ADFF217007B3E0E /* MagicTableViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagicTableViewDataSource.h; sourceTree = "<group>"; };
+		021903B71ADFF217007B3E0E /* MagicTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagicTableViewDataSource.m; sourceTree = "<group>"; };
+		021903C71AE10BB5007B3E0E /* DetailValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailValue.h; sourceTree = "<group>"; };
+		021903C81AE10BB5007B3E0E /* DetailValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailValue.m; sourceTree = "<group>"; };
 		021CBD101ADD04B500B00F21 /* EditableTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextViewController.h; sourceTree = "<group>"; };
 		021CBD111ADD04B500B00F21 /* EditableTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextViewController.m; sourceTree = "<group>"; };
 		0230CC55199DC6CF004D7713 /* Daily.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Daily.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -229,19 +235,19 @@
 		020E5A511AD6A95B00C6342D /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				020E5A521AD6A95B00C6342D /* _Refactor_ */,
 				020E5A641AD6A95B00C6342D /* AppDelegate.h */,
 				020E5A651AD6A95B00C6342D /* AppDelegate.m */,
 				020E5A6F1AD6A95B00C6342D /* Dispatcher.h */,
 				020E5A701AD6A95B00C6342D /* Dispatcher.m */,
-				020E5A521AD6A95B00C6342D /* _Refactor_ */,
+				020E5A741AD6A95B00C6342D /* Services */,
+				020E5A7D1AD6A95B00C6342D /* Stores */,
 				020E5A591AD6A95B00C6342D /* Actions */,
 				020E5A5C1AD6A95B00C6342D /* API */,
 				020E5A661AD6A95B00C6342D /* Categories */,
-				020E5A741AD6A95B00C6342D /* Services */,
-				020E5A7D1AD6A95B00C6342D /* Stores */,
-				020E5A801AD6A95B00C6342D /* View Controllers */,
-				020E5A911AD6A95B00C6342D /* View Models */,
+				020E5A911AD6A95B00C6342D /* Models */,
 				020E5A941AD6A95B00C6342D /* Views */,
+				020E5A801AD6A95B00C6342D /* Controllers */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -271,25 +277,10 @@
 		020E5A5C1AD6A95B00C6342D /* API */ = {
 			isa = PBXGroup;
 			children = (
-				020E5A5D1AD6A95B00C6342D /* Models */,
 				020E5A621AD6A95B00C6342D /* TodoEventAPI.h */,
 				020E5A631AD6A95B00C6342D /* TodoEventAPI.m */,
 			);
 			path = API;
-			sourceTree = "<group>";
-		};
-		020E5A5D1AD6A95B00C6342D /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				020E5A721AD6A95B00C6342D /* TodoEvent.h */,
-				020E5A731AD6A95B00C6342D /* TodoEvent.m */,
-				020E5A5E1AD6A95B00C6342D /* Todo+Extended.h */,
-				020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */,
-				020E5A601AD6A95B00C6342D /* Todo.h */,
-				020E5A611AD6A95B00C6342D /* Todo.m */,
-			);
-			name = Models;
-			path = CoreData;
 			sourceTree = "<group>";
 		};
 		020E5A661AD6A95B00C6342D /* Categories */ = {
@@ -331,9 +322,11 @@
 			path = Stores;
 			sourceTree = "<group>";
 		};
-		020E5A801AD6A95B00C6342D /* View Controllers */ = {
+		020E5A801AD6A95B00C6342D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				021CBD101ADD04B500B00F21 /* EditableTextViewController.h */,
+				021CBD111ADD04B500B00F21 /* EditableTextViewController.m */,
 				020E5A811AD6A95B00C6342D /* AddViewController.h */,
 				020E5A821AD6A95B00C6342D /* AddViewController.m */,
 				020E5A831AD6A95B00C6342D /* ApplicationViewController.h */,
@@ -348,18 +341,28 @@
 				020E5A8C1AD6A95B00C6342D /* SettingsViewController.m */,
 				020E5A8D1AD6A95B00C6342D /* SignupViewController.h */,
 				020E5A8E1AD6A95B00C6342D /* SignupViewController.m */,
-				021CBD101ADD04B500B00F21 /* EditableTextViewController.h */,
-				021CBD111ADD04B500B00F21 /* EditableTextViewController.m */,
+				021903B61ADFF217007B3E0E /* MagicTableViewDataSource.h */,
+				021903B71ADFF217007B3E0E /* MagicTableViewDataSource.m */,
 			);
+			name = Controllers;
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
-		020E5A911AD6A95B00C6342D /* View Models */ = {
+		020E5A911AD6A95B00C6342D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				020E5A601AD6A95B00C6342D /* Todo.h */,
+				020E5A611AD6A95B00C6342D /* Todo.m */,
+				020E5A5E1AD6A95B00C6342D /* Todo+Extended.h */,
+				020E5A5F1AD6A95B00C6342D /* Todo+Extended.m */,
+				020E5A721AD6A95B00C6342D /* TodoEvent.h */,
+				020E5A731AD6A95B00C6342D /* TodoEvent.m */,
 				020E5A921AD6A95B00C6342D /* TodoEventViewModel.h */,
 				020E5A931AD6A95B00C6342D /* TodoEventViewModel.m */,
+				021903C71AE10BB5007B3E0E /* DetailValue.h */,
+				021903C81AE10BB5007B3E0E /* DetailValue.m */,
 			);
+			name = Models;
 			path = "View Models";
 			sourceTree = "<group>";
 		};
@@ -372,8 +375,6 @@
 				020E5A981AD6A95B00C6342D /* DetailTableViewCell.m */,
 				020E5A991AD6A95B00C6342D /* FloatingButton.h */,
 				020E5A9A1AD6A95B00C6342D /* FloatingButton.m */,
-				020E5A9B1AD6A95B00C6342D /* LSWeekView.h */,
-				020E5A9C1AD6A95B00C6342D /* LSWeekView.m */,
 				020E5A9D1AD6A95B00C6342D /* TextFieldTableViewCell.h */,
 				020E5A9E1AD6A95B00C6342D /* TextFieldTableViewCell.m */,
 				020E5A9F1AD6A95B00C6342D /* TodoEventTableViewCell.h */,
@@ -387,6 +388,7 @@
 			children = (
 				020E5AA21AD6A95B00C6342D /* CLAFluxDispatcher */,
 				020E5AA51AD6A95B00C6342D /* HPReorderTableView */,
+				021903C61AE076B1007B3E0E /* LSWeekView */,
 				020E5AA81AD6A95B00C6342D /* MTMigration */,
 				020E5AAB1AD6A95B00C6342D /* SAMTextField */,
 				020E5AAE1AD6A95B00C6342D /* VIKArrayController */,
@@ -510,6 +512,16 @@
 				020E5AD21AD6A95B00C6342D /* store.xcdatamodeld */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		021903C61AE076B1007B3E0E /* LSWeekView */ = {
+			isa = PBXGroup;
+			children = (
+				020E5A9B1AD6A95B00C6342D /* LSWeekView.h */,
+				020E5A9C1AD6A95B00C6342D /* LSWeekView.m */,
+			);
+			name = LSWeekView;
+			path = ../Classes/Views;
 			sourceTree = "<group>";
 		};
 		0230CC4C199DC6CF004D7713 = {
@@ -757,7 +769,9 @@
 				020E5B021AD6A95B00C6342D /* NSManagedObject+VIKKit.m in Sources */,
 				020E5B051AD6A95B00C6342D /* UIView+VIKKit.m in Sources */,
 				020E5ADD1AD6A95B00C6342D /* TodoEventAPI.m in Sources */,
+				021903C91AE10BB5007B3E0E /* DetailValue.m in Sources */,
 				020E5AEF1AD6A95B00C6342D /* SettingsViewController.m in Sources */,
+				021903B81ADFF217007B3E0E /* MagicTableViewDataSource.m in Sources */,
 				020E5AE41AD6A95B00C6342D /* TodoEvent.m in Sources */,
 				020E5AFA1AD6A95B00C6342D /* HPReorderTableView.m in Sources */,
 				020E5AE61AD6A95B00C6342D /* MagicalRecordService.m in Sources */,
