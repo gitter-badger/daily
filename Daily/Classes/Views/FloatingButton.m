@@ -14,7 +14,7 @@
 {
     self = [super init];
     if (self) {
-        [self setup];
+        [self configureViews];
     }
     return self;
 }
@@ -23,7 +23,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setup];
+        [self configureViews];
     }
     return self;
 }
@@ -32,17 +32,15 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self setup];
+        [self configureViews];
     }
     return self;
 }
 
-- (void)setup
+- (void)configureViews
 {
     self.backgroundColor = [UIColor redColor];
-    
     self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-    
     self.layer.cornerRadius = 25;
     
     self.titleLabel.font = [UIFont systemFontOfSize:24];
