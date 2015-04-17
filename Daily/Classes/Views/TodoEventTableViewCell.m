@@ -29,9 +29,6 @@
 
 - (void)setupViews
 {
-    self.textLabel.hidden = YES;
-    self.detailTextLabel.hidden = YES;
-    
     self.checkboxButton = [[UIButton alloc] init];
     [self.checkboxButton addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.checkboxButton];
@@ -46,9 +43,16 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.checkboxButton.frame = CGRectMake(0, 0, 64, CGRectGetHeight(self.bounds));
-    self.titleLabel.frame = CGRectMake(64, 22, CGRectGetWidth(self.bounds) - 64 - 20, 21);
-    self.detailLabel.frame = CGRectMake(64, 48, CGRectGetWidth(self.bounds) - 64 - 20, 18);
+    
+    // Make sure the contentView does a layout pass here so that its subviews have their frames set, which we
+    // need to use to set the preferredMaxLayoutWidth below.
+    [self.contentView setNeedsLayout];
+    [self.contentView layoutIfNeeded];
+    
+    // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
+    // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
+    self.titleLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.titleLabel.frame);
+    self.detailLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.detailLabel.frame);
 }
 
 - (void)checkboxDidReceiveTap:(id)sender
@@ -64,13 +68,35 @@
     NSDictionary *detailStyles = completed ? styles[@"detailCompleted"] : styles[@"detail"];
     NSDictionary *checkboxStyles = completed ? styles[@"checkboxCompleted"] : styles[@"checkbox"];
     
+    self.checkboxButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.detailLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSDictionary *views = @{@"titleLabel": self.titleLabel, @"detailLabel": self.detailLabel, @"checkboxButton": self.checkboxButton};
+    
+    NSNumber *titleDetailSpacing = time.length ? @5 : @0;
+    
+    // Remove contraints
+    [self.contentView removeConstraints:self.contentView.constraints];
+    
+    // Setup contraints
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[titleLabel]-spacing-[detailLabel]-20-|" options:0 metrics:@{@"spacing": titleDetailSpacing} views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[checkboxButton]-|" options:0 metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[checkboxButton(==46)]" options:0 metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-61-[titleLabel]-20-|" options:0 metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-61-[detailLabel]-20-|" options:0 metrics:nil views:views]];
+    
+    self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.titleLabel.numberOfLines = 0;
     self.titleLabel.font = titleStyles[@"font"];
     self.titleLabel.textColor = titleStyles[@"textColor"];
     self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:@{NSStrikethroughStyleAttributeName: titleStyles[@"strikethroughStyle"]}];
     
+    self.detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.detailLabel.numberOfLines = 0;
     self.detailLabel.font = detailStyles[@"font"];
     self.detailLabel.textColor = detailStyles[@"textColor"];
-    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:@{NSStrikethroughStyleAttributeName: detailStyles[@"strikethroughStyle"]}];
+    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:time attributes:@{NSStrikethroughStyleAttributeName: detailStyles[@"strikethroughStyle"]}];
     
     [self.checkboxButton setImage:checkboxStyles[@"image"] forState:UIControlStateNormal];
 }

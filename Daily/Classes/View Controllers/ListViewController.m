@@ -63,7 +63,8 @@
 {
     [super viewDidLoad];
     
-    self.tableView.rowHeight = 60;
+    self.tableView.estimatedRowHeight = 60.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.separatorColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
     self.tableView.showsVerticalScrollIndicator = NO;
     
@@ -125,15 +126,6 @@
     TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:todoEvent];
     
     [cell configureWithTitle:viewModel.titleText time:viewModel.timeText completed:viewModel.completed];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
-    if (!todoEvent.allDay) {
-        return 88;
-    }
-    return 60;
 }
 
 
