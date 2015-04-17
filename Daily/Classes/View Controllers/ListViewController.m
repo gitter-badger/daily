@@ -6,49 +6,38 @@
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
-#import "TodoEventActions.h"
-#import "VIKArrayController.h"
+#import "ListViewController.h"
 
 // Models
 #import "TodoEvent.h"
+
+// View Models
 #import "TodoEventViewModel.h"
-#import "TodoEventStore.h"
 
 // Views
+#import "HPReorderTableView.h"
 #import "DateHeaderView.h"
 #import "TodoEventTableViewCell.h"
-#import "HPReorderTableView.h"
 
 // Controllers
-#import "ListViewController.h"
 #import "DetailViewController.h"
 
-@interface ListViewController () <VIKArrayControllerDelegate, HPReorderTableViewDelegate, TodoEventTableViewCellDelegate>
+// Other
+#import "MagicTableViewDataSource.h"
+#import "TodoEventAPI.h"
+
+@interface ListViewController () <HPReorderTableViewDelegate, TodoEventTableViewCellDelegate, MagicTableViewDataSourceDelegate>
 
 @property (nonatomic, strong) NSDate *date;
-
-@property (nonatomic, strong) NSMutableArray *cellControllers;
-
 @property (nonatomic, strong) NSIndexPath *startIndexPath;
-
-@property (nonatomic) BOOL changeIsUserDriven;
-
-@property (nonatomic, strong) VIKArrayController *controller;
+@property (nonatomic, strong) DateHeaderView *headerView;
+@property (nonatomic, strong) MagicTableViewDataSource *dataSource;
 
 @end
 
 @implementation ListViewController
 
 #pragma mark - Life Cycle
-
-- (instancetype)initWithDate:(NSDate *)date
-{
-    self = [super init];
-    if (self) {
-        self.date = date;
-    }
-    return self;
-}
 
 - (void)loadView
 {
@@ -66,16 +55,15 @@
     self.tableView.estimatedRowHeight = 60.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.separatorColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
-    self.tableView.showsVerticalScrollIndicator = NO;
-    
-    DateHeaderView *dateHeaderView = [[DateHeaderView alloc] initWithDate:self.date];
-    dateHeaderView.frame = CGRectMake(0, 0, 320, 150);
-    self.tableView.tableHeaderView = dateHeaderView;
-    
-    self.controller = [[VIKArrayController alloc] init];
-    self.controller.delegate = self;
     
     [self.tableView registerClass:[TodoEventTableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    self.dataSource = [[MagicTableViewDataSource alloc] initWithTableView:self.tableView cellIdentifier:@"Cell"];
+    self.dataSource.delegate = self;
+    
+    self.headerView = [[DateHeaderView alloc] init];
+    self.headerView.frame = CGRectMake(0, 0, 320, 150);
+    self.tableView.tableHeaderView = self.headerView;
 }
 
 
@@ -83,48 +71,24 @@
 
 - (void)setScrollEnable:(BOOL)enabled
 {
+    self.tableView.showsVerticalScrollIndicator = enabled;
     self.tableView.scrollEnabled = enabled;
 }
 
-- (void)setTodoEvents:(NSArray *)todoEvents
+- (void)configureWithDate:(NSDate *)date todoEvents:(NSArray *)todoEvents
 {
-    self.controller.objects = [self sortedTodoEvents:todoEvents];
-}
-
-- (NSArray *)sortedTodoEvents:(NSArray *)todoEvents
-{
-    NSSortDescriptor *completionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"completed" ascending:YES];
-    NSSortDescriptor *positionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES];
-    return [todoEvents sortedArrayUsingDescriptors:@[completionSortDescriptor, positionSortDescriptor]];
+    self.date = date;
+    [self.headerView configureWithDate:date];
+    [self.dataSource configureWithItems:[self sortedTodoEvents:todoEvents]];
 }
 
 
-#pragma mark - UITableViewDataSource
+#pragma mark - MagicTableViewDataSourceDelegate
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (void)configureCell:(TodoEventTableViewCell *)cell item:(TodoEvent *)item
 {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [self.controller numberOfObjects];
-}
-
-- (TodoEventTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    TodoEventTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    [cell setDelegate:self];
-    [self configureCell:cell atIndexPath:indexPath];
-    
-    return cell;
-}
-
-- (void)configureCell:(TodoEventTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
-    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:todoEvent];
-    
+    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:item];
+    cell.delegate = self;
     [cell configureWithTitle:viewModel.titleText time:viewModel.timeText completed:viewModel.completed];
 }
 
@@ -134,26 +98,51 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    
     DetailViewController *vc = [[DetailViewController alloc] initWithTodoEvent:todoEvent];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [self presentViewController:nc animated:YES completion:nil];
+    
+    [self presentViewController:nc animated:YES completion:^{
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    self.changeIsUserDriven = YES;
+    self.dataSource.changeIsUserDriven = YES;
     
     if (!self.startIndexPath) {
         self.startIndexPath = fromIndexPath;
     }
     
-    NSMutableArray *todoEvents = [self.controller.objects mutableCopy];
+    NSMutableArray *todoEvents = [self.todoEvents mutableCopy];
     TodoEvent *todoEvent = [self todoEventAtIndexPath:fromIndexPath];
     [todoEvents removeObjectAtIndex:fromIndexPath.row];
     [todoEvents insertObject:todoEvent atIndex:toIndexPath.row];
     
-    self.controller.objects = [todoEvents copy];
+    [self.dataSource configureWithItems:[todoEvents copy]];
+}
+
+
+#pragma mark - HPReorderTableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didEndReorderingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (![self.startIndexPath isEqual:indexPath]) {
+        
+        TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+        TodoEvent *todoEventSibling = [self todoEventSibling:todoEvent];
+        todoEvent.completed = todoEventSibling.completed;
+
+        [self.todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
+            todoEvent.position = index;
+        }];
+        
+        [[TodoEventAPI sharedInstance] updateTodoEvents:self.todoEvents completion:nil];
+    }
+    
+    self.dataSource.changeIsUserDriven = NO;
+    self.startIndexPath = nil;
 }
 
 
@@ -172,34 +161,23 @@
         todoEvent.position = 0;
     }
     
-    NSArray *sortedObjects = [self sortedTodoEvents:self.controller.objects];
+    NSArray *sortedObjects = [self sortedTodoEvents:self.todoEvents];
     [sortedObjects enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
         todoEvent.position = index;
     }];
     
-    [[TodoEventActions sharedActions] updateTodoEvents:self.controller.objects];
+    [[TodoEventAPI sharedInstance] updateTodoEvents:self.todoEvents completion:nil];
+
 }
 
 
-#pragma mark - HPReorderTableViewDelegate
+#pragma mark - Helpers
 
-- (void)tableView:(UITableView *)tableView didEndReorderingRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSArray *)sortedTodoEvents:(NSArray *)todoEvents
 {
-    if (![self.startIndexPath isEqual:indexPath]) {
-        
-        TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
-        TodoEvent *todoEventSibling = [self todoEventSibling:todoEvent];
-        todoEvent.completed = todoEventSibling.completed;
-
-        [self.controller.objects enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-            todoEvent.position = index;
-        }];
-        
-        [[TodoEventActions sharedActions] updateTodoEvents:self.controller.objects];
-    }
-    
-    self.changeIsUserDriven = NO;
-    self.startIndexPath = nil;
+    NSSortDescriptor *completionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"completed" ascending:YES];
+    NSSortDescriptor *positionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES];
+    return [todoEvents sortedArrayUsingDescriptors:@[completionSortDescriptor, positionSortDescriptor]];
 }
 
 - (TodoEvent *)todoEventSibling:(TodoEvent *)todoEvent
@@ -213,58 +191,27 @@
 
 - (TodoEvent *)todoEventAfter:(TodoEvent *)todoEvent
 {
-    NSInteger index = [self.controller.objects indexOfObject:todoEvent];
-    NSInteger max = self.controller.numberOfObjects - 1;
+    NSInteger index = [self.todoEvents indexOfObject:todoEvent];
+    NSInteger max = self.todoEvents.count - 1;
     NSInteger newIndex = MIN(index + 1, max); // Use the lowest
-    return [self.controller.objects objectAtIndex:newIndex];
+    return [self.todoEvents objectAtIndex:newIndex];
 }
 
 - (TodoEvent *)todoEventBefore:(TodoEvent *)todoEvent
 {
-    NSInteger index = [self.controller.objects indexOfObject:todoEvent];
+    NSInteger index = [self.todoEvents indexOfObject:todoEvent];
     NSInteger newIndex = MAX(index - 1, 0); // Use the biggest
-    return [self.controller.objects objectAtIndex:newIndex];
+    return [self.todoEvents objectAtIndex:newIndex];
 }
 
-
-#pragma mark - VIKArrayControllerDelegate
-
-- (void)controllerWillChangeContent:(VIKArrayController *)controller
+- (NSArray *)todoEvents
 {
-    [self.tableView beginUpdates];
-}
-
-- (void)controller:(VIKArrayController *)controller didChangeObject:(id)anObject atIndex:(NSUInteger)index forChangeType:(VIKArrayChangeType)type newIndex:(NSUInteger)newIndex
-{
-    if (self.changeIsUserDriven) return;
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:newIndex inSection:0];
-    
-    switch (type) {
-        case VIKArrayChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case VIKArrayChangeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-        case VIKArrayChangeMove:
-            [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
-            break;
-        case VIKArrayChangeUpdate:
-            [self configureCell:(TodoEventTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:newIndexPath];
-            break;
-    }
-}
-
-- (void)controllerDidChangeContent:(VIKArrayController *)controller
-{
-    [self.tableView endUpdates];
+    return self.dataSource.items;
 }
 
 - (TodoEvent *)todoEventAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.controller.objects objectAtIndex:indexPath.row];
+    return [self.dataSource itemAtIndexPath:indexPath];
 }
 
 @end

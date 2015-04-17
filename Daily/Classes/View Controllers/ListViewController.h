@@ -12,9 +12,7 @@
 
 @property (nonatomic, strong, readonly) NSDate *date;
 
-- (instancetype)initWithDate:(NSDate *)date;
-
-- (void)setTodoEvents:(NSArray *)todoEvents;
+- (void)configureWithDate:(NSDate *)date todoEvents:(NSArray *)todoEvents;
 
 - (void)setScrollEnable:(BOOL)enabled;
 

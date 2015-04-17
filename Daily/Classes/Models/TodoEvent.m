@@ -10,7 +10,7 @@
 #import "TodoEvent.h"
 #import "Todo+Extended.h"
 
-@interface TodoEvent ()
+@interface TodoEvent () <NSCopying>
 
 @end
 
@@ -46,19 +46,14 @@
 
 + (NSDate *)dateFromTodoEventIdentifier:(NSString *)todoEventIdentifier
 {
-    // %eventIdentifier-yyyyMMdd
-    NSString *dateString = [todoEventIdentifier substringFromIndex:todoEventIdentifier.length - 8];
-    return [self.dayMonthYearFormatter dateFromString:dateString];
-}
-
-+ (NSDateFormatter *)dayMonthYearFormatter {
     static NSDateFormatter *dayMonthYearFormatter;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    if (!dayMonthYearFormatter) {
         dayMonthYearFormatter = [[NSDateFormatter alloc] init];
         dayMonthYearFormatter.dateFormat = @"ddMMyyyy";
-    });
-    return dayMonthYearFormatter;
+    }
+    // %eventIdentifier-yyyyMMdd
+    NSString *dateString = [todoEventIdentifier substringFromIndex:todoEventIdentifier.length - 8];
+    return [dayMonthYearFormatter dateFromString:dateString];
 }
 
 - (BOOL)isEqual:(id)object
@@ -87,6 +82,28 @@
 - (NSString *)description
 {
     return self.title;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    TodoEvent *todoEventCopy = [[TodoEvent allocWithZone:zone] init];
+    
+    todoEventCopy.todoEventIdentifier = self.todoEventIdentifier;
+    todoEventCopy.title = self.title;
+    todoEventCopy.location = self.location;
+    todoEventCopy.notes = self.notes;
+    todoEventCopy.url = self.url;
+    
+    todoEventCopy.startDate = self.startDate;
+    todoEventCopy.endDate = self.endDate;
+    todoEventCopy.date = self.date;
+    
+    todoEventCopy.position = self.position;
+    
+    todoEventCopy.completed = self.completed;
+    todoEventCopy.allDay = self.allDay;
+    
+    return todoEventCopy;
 }
 
 @end

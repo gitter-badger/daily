@@ -56,17 +56,21 @@
     return self;
 }
 
-- (void)setTitleText:(NSString *)titleText placeholderText:(NSString *)placeholderText detailText:(NSString *)detailText iconImage:(UIImage *)image
+- (void)configureWithDetailValue:(DetailValue *)detailValue
 {
-    if (titleText.length) {
-        self.textLabel.text = titleText;
+    [self configureWithTitle:detailValue.value placeholder:detailValue.placeholder icon:detailValue.icon];
+}
+
+- (void)configureWithTitle:(NSString *)title placeholder:(NSString *)placeholder icon:(UIImage *)icon
+{
+    if (title && title.length) {
+        self.textLabel.text = title;
         self.textLabel.textColor = [UIColor blackColor];
     } else {
-        self.textLabel.text = placeholderText;
+        self.textLabel.text = placeholder;
         self.textLabel.textColor = [UIColor lightGrayColor];
     }
-    self.detailTextLabel.text = detailText;
-    [self.iconView setImage:[image imageTintedWithColor:[UIColor grayColor]]];
+    [self.iconView setImage:[icon imageTintedWithColor:[UIColor grayColor]]];
 }
 
 - (void)layoutSubviews

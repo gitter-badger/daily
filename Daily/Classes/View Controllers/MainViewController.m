@@ -72,10 +72,15 @@
     [self reloadData];
 }
 
+- (NSDate *)currentDate
+{
+    return self.currentViewController.date;
+}
+
 - (void)reloadData
 {
-    NSArray *todoEvents = [self todoEventsForDate:self.currentViewController.date];
-    [self.currentViewController setTodoEvents:todoEvents];
+    NSArray *todoEvents = [self todoEventsForDate:self.currentDate];
+    [self.currentViewController configureWithDate:self.currentDate todoEvents:todoEvents];
 }
 
 - (void)statusBarTappedAction:(NSNotification *)notification
@@ -99,14 +104,14 @@
 
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated
 {
-    if (![[self.currentViewController.date startOfDay] isEqualToDate:[date startOfDay]]) {
+    if (![[self.currentDate startOfDay] isEqualToDate:[date startOfDay]]) {
         [self.currentViewController.tableView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
         self.currentViewController.tableView.contentOffset = CGPointZero;
         
         ListViewController *viewController = [self listViewControllerWithDate:date];
         [viewController.tableView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:KVOContext];
         
-        if ([self.currentViewController.date isBeforeDate:date]) {
+        if ([self.currentDate isBeforeDate:date]) {
             [self.pageViewController setViewControllers:@[viewController] direction:UIPageViewControllerNavigationDirectionForward animated:animated completion:nil];
         } else {
             [self.pageViewController setViewControllers:@[viewController] direction:UIPageViewControllerNavigationDirectionReverse animated:animated completion:nil];
@@ -168,7 +173,7 @@
 - (void)addButtonPressed:(id)sender
 {
     AddViewController *avc = [[AddViewController alloc] init];
-    avc.date = self.currentViewController.date;
+    avc.date = self.currentDate;
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:avc];
     [self presentViewController:nc animated:YES completion:nil];
 }
@@ -267,7 +272,7 @@ static void *KVOContext = &KVOContext;
         self.currentViewController = [pageViewController.viewControllers firstObject];
         [self.currentViewController.tableView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionInitial context:KVOContext];
         
-        [self.weekView setSelectedDate:self.currentViewController.date animated:YES];
+        [self.weekView setSelectedDate:self.currentDate animated:YES];
     }
 }
 
@@ -287,9 +292,9 @@ static void *KVOContext = &KVOContext;
 
 - (ListViewController *)listViewControllerWithDate:(NSDate *)date
 {
-    ListViewController *listViewController = [[ListViewController alloc] initWithDate:date];
+    ListViewController *listViewController = [[ListViewController alloc] init];
     [listViewController setScrollEnable:NO];
-    [listViewController setTodoEvents:[self todoEventsForDate:date]];
+    [listViewController configureWithDate:date todoEvents:[self todoEventsForDate:date]];
     return listViewController;
 }
 

@@ -8,10 +8,25 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^EditableTextViewControllerBlock)(BOOL success, NSString *text);
+@protocol EditableTextViewControllerDelegate;
 
 @interface EditableTextViewController : UIViewController
 
-- (instancetype)initWithTitle:(NSString *)title text:(NSString *)text completion:(EditableTextViewControllerBlock)completion;
+@property (nonatomic, weak) id <EditableTextViewControllerDelegate> delegate;
+
+- (NSString *)text;
+
+- (instancetype)initWithTitle:(NSString *)title text:(NSString *)text;
+
+@end
+
+@protocol EditableTextViewControllerDelegate <NSObject>
+
+typedef enum {
+    EditableTextViewActionCanceled,
+    EditableTextViewActionSaved,
+} EditableTextViewAction;
+
+- (void)editableTextViewController:(EditableTextViewController *)controller didCompleteWithAction:(EditableTextViewAction)action;
 
 @end
