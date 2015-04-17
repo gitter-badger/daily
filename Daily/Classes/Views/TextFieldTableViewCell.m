@@ -20,10 +20,15 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textField = [[UITextField alloc] init];
-        [self.contentView addSubview:self.textField];
+        [self setupViews];
     }
     return self;
+}
+
+- (void)setupViews
+{
+    self.textField = [[UITextField alloc] init];
+    [self.contentView addSubview:self.textField];
 }
 
 - (void)layoutSubviews {
