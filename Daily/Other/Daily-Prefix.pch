@@ -19,4 +19,5 @@
     #import "VIKKit+Foundation.h"
     #import "VIKKit+UIKit.h"
     #import "VIKKit+MagicalRecord.h"
+    #import "ObjectiveSugar.h"
 #endif

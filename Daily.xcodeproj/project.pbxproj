@@ -61,7 +61,9 @@
 		020E5B0C1AD6A95B00C6342D /* store.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AD21AD6A95B00C6342D /* store.xcdatamodeld */; };
 		021903B81ADFF217007B3E0E /* MagicTableViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 021903B71ADFF217007B3E0E /* MagicTableViewDataSource.m */; };
 		021903C91AE10BB5007B3E0E /* DetailValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 021903C81AE10BB5007B3E0E /* DetailValue.m */; };
+		021903CC1AE14C53007B3E0E /* EditableTimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 021903CB1AE14C53007B3E0E /* EditableTimeViewController.m */; };
 		021CBD121ADD04B500B00F21 /* EditableTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 021CBD111ADD04B500B00F21 /* EditableTextViewController.m */; };
+		0223E9661AE1921200C6305F /* VIKStateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0223E9651AE1921200C6305F /* VIKStateController.m */; };
 		0230CC59199DC6CF004D7713 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC58199DC6CF004D7713 /* Foundation.framework */; };
 		0230CC5B199DC6CF004D7713 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC5A199DC6CF004D7713 /* CoreGraphics.framework */; };
 		0230CC5D199DC6CF004D7713 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0230CC5C199DC6CF004D7713 /* UIKit.framework */; };
@@ -70,6 +72,12 @@
 		0265EC331A3074C800334388 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0265EC321A3074C800334388 /* Crashlytics.framework */; };
 		029B22E819A4E0F100CC5EDC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22E719A4E0F100CC5EDC /* CoreData.framework */; };
 		029B22F619A63FC800CC5EDC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22F519A63FC800CC5EDC /* MessageUI.framework */; };
+		02E655701AE2DB9900580812 /* NSArray+ObjectiveSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E655641AE2DB9900580812 /* NSArray+ObjectiveSugar.m */; };
+		02E655711AE2DB9900580812 /* NSDictionary+ObjectiveSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E655661AE2DB9900580812 /* NSDictionary+ObjectiveSugar.m */; };
+		02E655721AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E655681AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.m */; };
+		02E655731AE2DB9900580812 /* NSNumber+ObjectiveSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E6556A1AE2DB9900580812 /* NSNumber+ObjectiveSugar.m */; };
+		02E655741AE2DB9900580812 /* NSSet+ObjectiveSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E6556C1AE2DB9900580812 /* NSSet+ObjectiveSugar.m */; };
+		02E655751AE2DB9900580812 /* NSString+ObjectiveSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E6556E1AE2DB9900580812 /* NSString+ObjectiveSugar.m */; };
 		5570820603D4AC8CDEC33ED5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B66A7B5565A6B90E230991 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -184,8 +192,12 @@
 		021903B71ADFF217007B3E0E /* MagicTableViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagicTableViewDataSource.m; sourceTree = "<group>"; };
 		021903C71AE10BB5007B3E0E /* DetailValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailValue.h; sourceTree = "<group>"; };
 		021903C81AE10BB5007B3E0E /* DetailValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailValue.m; sourceTree = "<group>"; };
+		021903CA1AE14C53007B3E0E /* EditableTimeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTimeViewController.h; sourceTree = "<group>"; };
+		021903CB1AE14C53007B3E0E /* EditableTimeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTimeViewController.m; sourceTree = "<group>"; };
 		021CBD101ADD04B500B00F21 /* EditableTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTextViewController.h; sourceTree = "<group>"; };
 		021CBD111ADD04B500B00F21 /* EditableTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTextViewController.m; sourceTree = "<group>"; };
+		0223E9641AE1921200C6305F /* VIKStateController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIKStateController.h; sourceTree = "<group>"; };
+		0223E9651AE1921200C6305F /* VIKStateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIKStateController.m; sourceTree = "<group>"; };
 		0230CC55199DC6CF004D7713 /* Daily.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Daily.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0230CC58199DC6CF004D7713 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0230CC5A199DC6CF004D7713 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -196,6 +208,19 @@
 		0265EC321A3074C800334388 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		029B22E719A4E0F100CC5EDC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		029B22F519A63FC800CC5EDC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		02E655631AE2DB9900580812 /* NSArray+ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+ObjectiveSugar.h"; sourceTree = "<group>"; };
+		02E655641AE2DB9900580812 /* NSArray+ObjectiveSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+ObjectiveSugar.m"; sourceTree = "<group>"; };
+		02E655651AE2DB9900580812 /* NSDictionary+ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ObjectiveSugar.h"; sourceTree = "<group>"; };
+		02E655661AE2DB9900580812 /* NSDictionary+ObjectiveSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ObjectiveSugar.m"; sourceTree = "<group>"; };
+		02E655671AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+ObjectiveSugar.h"; sourceTree = "<group>"; };
+		02E655681AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+ObjectiveSugar.m"; sourceTree = "<group>"; };
+		02E655691AE2DB9900580812 /* NSNumber+ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+ObjectiveSugar.h"; sourceTree = "<group>"; };
+		02E6556A1AE2DB9900580812 /* NSNumber+ObjectiveSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+ObjectiveSugar.m"; sourceTree = "<group>"; };
+		02E6556B1AE2DB9900580812 /* NSSet+ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+ObjectiveSugar.h"; sourceTree = "<group>"; };
+		02E6556C1AE2DB9900580812 /* NSSet+ObjectiveSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+ObjectiveSugar.m"; sourceTree = "<group>"; };
+		02E6556D1AE2DB9900580812 /* NSString+ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ObjectiveSugar.h"; sourceTree = "<group>"; };
+		02E6556E1AE2DB9900580812 /* NSString+ObjectiveSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ObjectiveSugar.m"; sourceTree = "<group>"; };
+		02E6556F1AE2DB9900580812 /* ObjectiveSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveSugar.h; sourceTree = "<group>"; };
 		C5B66A7B5565A6B90E230991 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5CB889AE946CE49532F232D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		D5D1C979767605F5794B7F2C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -327,6 +352,8 @@
 			children = (
 				021CBD101ADD04B500B00F21 /* EditableTextViewController.h */,
 				021CBD111ADD04B500B00F21 /* EditableTextViewController.m */,
+				021903CA1AE14C53007B3E0E /* EditableTimeViewController.h */,
+				021903CB1AE14C53007B3E0E /* EditableTimeViewController.m */,
 				020E5A811AD6A95B00C6342D /* AddViewController.h */,
 				020E5A821AD6A95B00C6342D /* AddViewController.m */,
 				020E5A831AD6A95B00C6342D /* ApplicationViewController.h */,
@@ -343,6 +370,8 @@
 				020E5A8E1AD6A95B00C6342D /* SignupViewController.m */,
 				021903B61ADFF217007B3E0E /* MagicTableViewDataSource.h */,
 				021903B71ADFF217007B3E0E /* MagicTableViewDataSource.m */,
+				0223E9641AE1921200C6305F /* VIKStateController.h */,
+				0223E9651AE1921200C6305F /* VIKStateController.m */,
 			);
 			name = Controllers;
 			path = "View Controllers";
@@ -386,6 +415,7 @@
 		020E5AA11AD6A95B00C6342D /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				02E655621AE2DB9900580812 /* ObjectiveSugar */,
 				020E5AA21AD6A95B00C6342D /* CLAFluxDispatcher */,
 				020E5AA51AD6A95B00C6342D /* HPReorderTableView */,
 				021903C61AE076B1007B3E0E /* LSWeekView */,
@@ -555,6 +585,26 @@
 				C5B66A7B5565A6B90E230991 /* libPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		02E655621AE2DB9900580812 /* ObjectiveSugar */ = {
+			isa = PBXGroup;
+			children = (
+				02E655631AE2DB9900580812 /* NSArray+ObjectiveSugar.h */,
+				02E655641AE2DB9900580812 /* NSArray+ObjectiveSugar.m */,
+				02E655651AE2DB9900580812 /* NSDictionary+ObjectiveSugar.h */,
+				02E655661AE2DB9900580812 /* NSDictionary+ObjectiveSugar.m */,
+				02E655671AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.h */,
+				02E655681AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.m */,
+				02E655691AE2DB9900580812 /* NSNumber+ObjectiveSugar.h */,
+				02E6556A1AE2DB9900580812 /* NSNumber+ObjectiveSugar.m */,
+				02E6556B1AE2DB9900580812 /* NSSet+ObjectiveSugar.h */,
+				02E6556C1AE2DB9900580812 /* NSSet+ObjectiveSugar.m */,
+				02E6556D1AE2DB9900580812 /* NSString+ObjectiveSugar.h */,
+				02E6556E1AE2DB9900580812 /* NSString+ObjectiveSugar.m */,
+				02E6556F1AE2DB9900580812 /* ObjectiveSugar.h */,
+			);
+			path = ObjectiveSugar;
 			sourceTree = "<group>";
 		};
 		661C8ADA6E1D3927DFEB63B2 /* Pods */ = {
@@ -728,6 +778,7 @@
 				020E5AE21AD6A95B00C6342D /* UIImage+Tint.m in Sources */,
 				020E5AF81AD6A95B00C6342D /* TodoEventTableViewCell.m in Sources */,
 				020E5AD91AD6A95B00C6342D /* EKCalendar+VFDaily.m in Sources */,
+				02E655731AE2DB9900580812 /* NSNumber+ObjectiveSugar.m in Sources */,
 				020E5AE01AD6A95B00C6342D /* NSUserDefaults+DLY.m in Sources */,
 				020E5AF91AD6A95B00C6342D /* CLAFluxDispatcher.m in Sources */,
 				020E5B011AD6A95B00C6342D /* UIColor+VIKKit.m in Sources */,
@@ -735,13 +786,16 @@
 				020E5B001AD6A95B00C6342D /* NSString+VIKKit.m in Sources */,
 				020E5AFD1AD6A95B00C6342D /* VIKArrayController.m in Sources */,
 				020E5AF41AD6A95B00C6342D /* DetailTableViewCell.m in Sources */,
+				02E655721AE2DB9900580812 /* NSMutableArray+ObjectiveSugar.m in Sources */,
 				020E5AD71AD6A95B00C6342D /* Calendar+VFDaily.m in Sources */,
 				020E5AE31AD6A95B00C6342D /* Dispatcher.m in Sources */,
 				020E5AE81AD6A95B00C6342D /* UserDefaultsService.m in Sources */,
 				021CBD121ADD04B500B00F21 /* EditableTextViewController.m in Sources */,
 				020E5AEC1AD6A95B00C6342D /* DetailViewController.m in Sources */,
 				020E5AE11AD6A95B00C6342D /* UIAlertController+DeleteTodoEvent.m in Sources */,
+				02E655711AE2DB9900580812 /* NSDictionary+ObjectiveSugar.m in Sources */,
 				020E5AED1AD6A95B00C6342D /* ListViewController.m in Sources */,
+				021903CC1AE14C53007B3E0E /* EditableTimeViewController.m in Sources */,
 				020E5AF61AD6A95B00C6342D /* LSWeekView.m in Sources */,
 				020E5AF21AD6A95B00C6342D /* TodoEventViewModel.m in Sources */,
 				020E5AE71AD6A95B00C6342D /* MigrationService.m in Sources */,
@@ -751,6 +805,7 @@
 				020E5AEB1AD6A95B00C6342D /* ApplicationViewController.m in Sources */,
 				020E5AF71AD6A95B00C6342D /* TextFieldTableViewCell.m in Sources */,
 				020E5ADF1AD6A95B00C6342D /* NSDateFormatter+Extended.m in Sources */,
+				02E655751AE2DB9900580812 /* NSString+ObjectiveSugar.m in Sources */,
 				020E5AEA1AD6A95B00C6342D /* AddViewController.m in Sources */,
 				020E5AFC1AD6A95B00C6342D /* SAMTextField.m in Sources */,
 				020E5ADB1AD6A95B00C6342D /* Todo+Extended.m in Sources */,
@@ -764,12 +819,15 @@
 				020E5AEE1AD6A95B00C6342D /* MainViewController.m in Sources */,
 				020E5AFE1AD6A95B00C6342D /* NSArray+VIKKit.m in Sources */,
 				020E5AD81AD6A95B00C6342D /* Calendar.m in Sources */,
+				0223E9661AE1921200C6305F /* VIKStateController.m in Sources */,
 				020E5B021AD6A95B00C6342D /* NSManagedObject+VIKKit.m in Sources */,
 				020E5B051AD6A95B00C6342D /* UIView+VIKKit.m in Sources */,
 				020E5ADD1AD6A95B00C6342D /* TodoEventAPI.m in Sources */,
 				021903C91AE10BB5007B3E0E /* DetailValue.m in Sources */,
 				020E5AEF1AD6A95B00C6342D /* SettingsViewController.m in Sources */,
 				021903B81ADFF217007B3E0E /* MagicTableViewDataSource.m in Sources */,
+				02E655741AE2DB9900580812 /* NSSet+ObjectiveSugar.m in Sources */,
+				02E655701AE2DB9900580812 /* NSArray+ObjectiveSugar.m in Sources */,
 				020E5AE41AD6A95B00C6342D /* TodoEvent.m in Sources */,
 				020E5AFA1AD6A95B00C6342D /* HPReorderTableView.m in Sources */,
 				020E5AE61AD6A95B00C6342D /* MagicalRecordService.m in Sources */,

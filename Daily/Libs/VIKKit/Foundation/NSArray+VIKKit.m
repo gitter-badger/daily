@@ -10,41 +10,55 @@
 
 @implementation NSArray (VIKKit)
 
-- (NSArray *)mappedArrayWithBlock:(VKEnumerationBlock)enumerationBlock
-{
-    NSMutableArray *returnArray = [NSMutableArray array];
-    
-    for (id object in self) {
-        id returnObject = enumerationBlock(object);
-        
-        if (returnObject) [returnArray addObject:returnObject];
-    }
-    
-    return [NSArray arrayWithArray:returnArray];
-}
-
-- (NSArray *)arrayBySelectingObjectsWithBlock:(VKSelectionBlock)selectionBlock
-{
-    return [self filteredArrayWithComparisonBlock:selectionBlock shouldSelect:YES];
-}
-
-- (NSArray *)arrayByRejectingObjectsWithBlock:(VKSelectionBlock)selectionBlock
-{
-    return [self filteredArrayWithComparisonBlock:selectionBlock shouldSelect:NO];
-}
-
-#pragma mark - Private
-
-- (NSArray *)filteredArrayWithComparisonBlock:(VKSelectionBlock)comparisonBlock shouldSelect:(BOOL)shouldSelect
-{
-    NSMutableArray *returnArray = [NSMutableArray array];
-    
-    for (id object in self) {
-        if (comparisonBlock(object) && shouldSelect) [returnArray addObject:object];
-        else if (!comparisonBlock(object) && !shouldSelect) [returnArray addObject:object];
-    }
-    
-    return [NSArray arrayWithArray:returnArray];
-}
+//- (id)find:(BOOL (^)(id))block
+//{
+//    NSParameterAssert(block != nil);
+//    return [[self select:^BOOL(id obj) {
+//        return block(obj);
+//    }] firstObject];
+//}
+//
+//- (NSArray *)select:(BOOL (^)(id obj))block
+//{
+//    NSParameterAssert(block != nil);
+//    return [self objectsAtIndexes:[self indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+//        return block(obj);
+//    }]];
+//}
+//
+//- (NSArray *)reject:(BOOL (^)(id obj))block
+//{
+//    NSParameterAssert(block != nil);
+//    return [self select:^BOOL(id obj) {
+//        return !block(obj);
+//    }];
+//}
+//
+//- (NSArray *)map:(id (^)(id obj))block
+//{
+//    NSParameterAssert(block != nil);
+//    
+//    NSMutableArray *result = [NSMutableArray arrayWithCapacity:self.count];
+//    
+//    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//        id value = block(obj) ?: [NSNull null];
+//        [result addObject:value];
+//    }];
+//    
+//    return result;
+//}
+//
+//- (id)reduce:(id)initial withBlock:(id (^)(id sum, id obj))block
+//{
+//    NSParameterAssert(block != nil);
+//    
+//    __block id result = initial;
+//    
+//    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//        result = block(result, obj);
+//    }];
+//    
+//    return result;
+//}
 
 @end
