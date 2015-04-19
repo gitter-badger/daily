@@ -10,7 +10,7 @@
 
 @interface NSString (VIKKit)
 
-- (BOOL)containsString:(NSString *)string;
-- (BOOL)containsStrings:(NSArray *)strings;
+//- (BOOL)containsString:(NSString *)string;
+//- (BOOL)containsStrings:(NSArray *)strings;
 
 @end

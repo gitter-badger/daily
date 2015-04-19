@@ -8,14 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-
-typedef id (^VKEnumerationBlock)(id object);
-typedef BOOL (^VKSelectionBlock)(id object);
-
 @interface NSArray (VIKKit)
 
-- (NSArray *)mappedArrayWithBlock:(VKEnumerationBlock)enumerationBlock;
-- (NSArray *)arrayBySelectingObjectsWithBlock:(VKSelectionBlock)selectionBlock;
-- (NSArray *)arrayByRejectingObjectsWithBlock:(VKSelectionBlock)selectionBlock;
+//- (id)find:(BOOL (^)(id obj))block;
+//- (NSArray *)select:(BOOL (^)(id obj))block;
+//- (NSArray *)reject:(BOOL (^)(id obj))block;
+//- (NSArray *)map:(id (^)(id obj))block;
 
 @end
