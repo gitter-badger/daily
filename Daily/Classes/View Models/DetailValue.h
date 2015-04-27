@@ -10,10 +10,10 @@
 
 @interface DetailValue : NSObject
 
-@property (nonatomic, strong) UIImage *icon;
-@property (nonatomic, copy) NSString *key;
-@property (nonatomic, copy) NSString *placeholder;
-@property (nonatomic, copy) NSString *value;
+@property (nonatomic, copy, readonly) UIImage *icon;
+@property (nonatomic, copy, readonly) NSString *key;
+@property (nonatomic, copy, readonly) NSString *placeholder;
+@property (nonatomic, copy, readonly) NSString *value;
 
 - (instancetype)initWithKey:(NSString *)key value:(NSString *)value placeholder:(NSString *)placeholder icon:(UIImage *)icon;
 

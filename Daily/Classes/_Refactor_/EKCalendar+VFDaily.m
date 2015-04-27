@@ -40,13 +40,13 @@
 
 - (NSDate *)enabledDate
 {
+    return [NSDate date]; // FIXME: Use CoreData instead (but better...)
     return self.calendar.enabledDate;
 }
 
 - (void)setEnabledDate:(NSDate *)date
 {
     self.calendar.enabledDate = date;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CalendarUpdated" object:self];
 }
 
 + (NSArray *)calendarForEntityType:(EKEntityType)entityType

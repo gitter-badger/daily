@@ -1,5 +1,5 @@
 //
-//  MutableTodoEvent.h
+//  TodoEvent.h
 //  Daily
 //
 //  Created by Viktor Fröberg on 07/04/15.
@@ -8,35 +8,26 @@
 
 #import <Foundation/Foundation.h>
 
-@class Todo, EKEvent;
+#import "Mantle.h"
 
-@interface TodoEvent : NSObject
+@interface TodoEvent : MTLModel
 
-@property (nonatomic, copy) NSString *todoEventIdentifier;
-@property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSString *location;
-@property (nonatomic, copy) NSString *notes;
-@property (nonatomic, copy) NSString *url;
-
-@property (nonatomic, strong) NSDate *startDate;
-@property (nonatomic, strong) NSDate *endDate;
-@property (nonatomic, strong) NSDate *date;
-
-@property (nonatomic, assign) NSUInteger position;
-
-@property (nonatomic, assign) BOOL completed;
-@property (nonatomic, assign) BOOL allDay;
-
-
-+ (instancetype)todoEventFromTodo:(Todo *)todo event:(EKEvent *)event;
-
-+ (NSString *)eventIdentifierFromTodoEventIdentifier:(NSString *)todoEventIdentifier;
+@property (nonatomic, copy, readonly) NSString *todoEventIdentifier;
+@property (nonatomic, copy, readonly) NSString *eventIdentifier;
+@property (nonatomic, copy, readonly) NSString *title;
+@property (nonatomic, copy, readonly) NSDate *date;
+@property (nonatomic, assign, readonly) BOOL allDay;
+@property (nonatomic, copy, readonly) NSDate *startDate;
+@property (nonatomic, copy, readonly) NSDate *endDate;
+@property (nonatomic, copy, readonly) NSString *location;
+@property (nonatomic, copy, readonly) NSString *url;
+@property (nonatomic, copy, readonly) NSString *notes;
+@property (nonatomic, assign, readonly) NSUInteger position;
+@property (nonatomic, assign, readonly) BOOL completed;
 
 + (NSDate *)dateFromTodoEventIdentifier:(NSString *)todoEventIdentifier;
 
-
-- (BOOL)isEqualToTodoEvent:(TodoEvent *)todoEvent;
-
 - (BOOL)hasFutureEvents;
+- (BOOL)isEqualToTodoEvent:(TodoEvent *)todoEvent;
 
 @end

@@ -10,4 +10,23 @@
 
 @implementation UIView (VIKKit)
 
+- (void)setSubviews:(NSArray *)subviews
+{
+    NSArray *removedSubviews = [self.subviews select:^BOOL(id object) {
+        return ![subviews containsObject:object];
+    }];
+
+    NSArray *addedSubviews = [subviews select:^BOOL(id object) {
+        return ![self.subviews containsObject:object];
+    }];
+    
+    [removedSubviews each:^(UIView *view) {
+        [view removeFromSuperview];
+    }];
+
+    [addedSubviews each:^(UIView *view) {
+        [self addSubview:view];
+    }];
+}
+
 @end

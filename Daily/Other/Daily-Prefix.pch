@@ -19,5 +19,7 @@
     #import "VIKKit+Foundation.h"
     #import "VIKKit+UIKit.h"
     #import "VIKKit+MagicalRecord.h"
+    #import "VIKKit+Mantel.h"
     #import "ObjectiveSugar.h"
+    #import "ReactiveCocoa.h"
 #endif

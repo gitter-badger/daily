@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) TodoEvent *todoEvent;
 
-@property (nonatomic, strong) NSString *editingKey;
+@property (nonatomic, copy) NSString *editingKey;
 
 @end
 
@@ -33,28 +33,11 @@
 
 - (instancetype)initWithTodoEvent:(TodoEvent *)todoEvent
 {
-    self = [super initWithStyle:UITableViewStylePlain];
+    self = [super init];
     if (self) {
         self.todoEvent = todoEvent;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clientDidChange:) name:TodoEventAPIDidChangeNotification object:[TodoEventAPI sharedInstance]];
     }
     return self;
-}
-
-- (void)setTodoEvent:(TodoEvent *)todoEvent
-{
-    _todoEvent = todoEvent;
-    self.title = todoEvent.title;
-    [self.tableView reloadData];
-}
-
-- (void)clientDidChange:(NSNotification *)notification
-{
-    NSLog(@"ClientDidChange...");
-    [[TodoEventAPI sharedInstance] fetchTodoEventWithTodoEventIdentifier:self.todoEvent.todoEventIdentifier completion:^(NSError *error, TodoEvent *todoEvent) {
-        self.todoEvent = todoEvent;
-    }];
 }
 
 - (NSArray *)cellValues
@@ -89,7 +72,6 @@
     
     self.tableView.estimatedRowHeight = 44.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
-
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonPressed:)];
     
@@ -98,7 +80,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
 }
 
 - (void)deleteEvent:(id)sender
@@ -114,7 +96,7 @@
                 break;
         }
 
-        [self dismissViewController];
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
         
     }];
     [self presentViewController:alertController animated:YES completion:nil];
@@ -122,12 +104,7 @@
 
 - (void)closeButtonPressed:(id)sender
 {
-    [self dismissViewController];
-}
-
-- (void)dismissViewController
-{
-    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

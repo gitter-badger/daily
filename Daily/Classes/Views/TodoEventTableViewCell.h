@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TodoEventViewModel.h"
 
 @protocol TodoEventTableViewCellDelegate;
 
@@ -14,7 +15,11 @@
 
 @property (nonatomic, weak) id<TodoEventTableViewCellDelegate> delegate;
 
-- (void)configureWithTitle:(NSString *)title time:(NSString *)time completed:(BOOL)completed;
+- (void)configureWithViewModel:(TodoEventViewModel *)viewModel delegate:(id <TodoEventTableViewCellDelegate>)delegate;
+
+- (void)configureWithTitle:(NSString *)title time:(NSString *)time completed:(BOOL)completed delegate:(id <TodoEventTableViewCellDelegate>)delegate;
+
+- (CGFloat)estimatedHeight;
 
 @end
 

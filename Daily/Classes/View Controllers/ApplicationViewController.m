@@ -12,6 +12,7 @@
 
 #import "MainViewController.h"
 #import "ListViewController.h"
+#import "TableViewController.h"
 
 @implementation ApplicationViewController
 

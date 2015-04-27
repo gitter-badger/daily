@@ -10,3 +10,5 @@
 #import "NSDate+VIKKit.h"
 #import "NSString+VIKKit.h"
 #import "UIColor+VIKKit.h"
+#import "NSNumber+VIKKit.h"
+#import "NSDictionary+VIKKit.h"

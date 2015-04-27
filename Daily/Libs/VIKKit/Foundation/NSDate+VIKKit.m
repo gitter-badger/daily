@@ -22,6 +22,14 @@ static const unsigned componentFlags = (NSCalendarUnitYear| NSCalendarUnitMonth 
     return sharedCalendar;
 }
 
++ (NSArray *)datesBetweenStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
+{
+    NSInteger dateRangeInDays = [startDate daysBeforeDate:endDate] + 1;
+    return [@(dateRangeInDays) arrayByMapping:^NSDate *(NSNumber *number) {
+        return [startDate dateByAddingDays:number.integerValue];
+    }];
+}
+
 + (NSDate *)dateWithDaysFromNow:(NSInteger) days
 {
     return [[NSDate date] dateByAddingDays:days];

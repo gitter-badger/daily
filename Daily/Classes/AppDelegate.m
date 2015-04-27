@@ -9,9 +9,6 @@
 // Classes
 #import "AppDelegate.h"
 
-// Stores
-#import "TodoEventStore.h"
-
 // Services
 #import "MigrationService.h"
 #import "UserDefaultsService.h"
@@ -30,8 +27,6 @@
 @property (nonatomic, strong) MigrationService *migrationService;
 @property (nonatomic, strong) UserDefaultsService *userDefaultsService;
 @property (nonatomic, strong) CrashlyticsService *crashlyticsService;
-
-@property (nonatomic, strong) TodoEventStore *todoEventStore;
 
 @end
 
@@ -77,11 +72,9 @@
 {
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
-    // TODO: Could be init instead?
     [self.crashlyticsService startLogging];
     [self.magicalRecordService setup];
     
-    [TodoEventStore sharedStore];
     // TODO: ENABLE
 //    [self.migrationService run];
 //    [self.notificationService listenForChanges];

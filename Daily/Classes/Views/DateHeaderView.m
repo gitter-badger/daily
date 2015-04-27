@@ -29,36 +29,64 @@
 {
     self = [super init];
     if (self) {
-        [self setupViews];
+        [self configureViews];
     }
     return self;
 }
 
-- (void)setupViews
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    self.contentView = [[UIView alloc] init];
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self configureViews];
+    }
+    return self;
+}
+
+#pragma mark - UIView
+
+- (void)configureViews
+{
     self.cornerBackground = [[UIView alloc] init];
+    self.cornerBackground.backgroundColor = [UIColor blackColor];
+    
     self.backgroundView = [[UIView alloc] init];
-    self.shadowView = [[UIView alloc] init];
+    self.backgroundView.backgroundColor = [UIColor whiteColor];
+    self.backgroundView.layer.cornerRadius = 5;
     
     self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.textColor = [UIColor blackColor];
+    self.titleLabel.font = [UIFont boldSystemFontOfSize:24];
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    RAC(self.titleLabel, text) = [RACObserve(self, date) map:^NSString *(NSDate *date) {
+        return [[[NSDateFormatter relativeWeekDayFormatterFromDate:date] stringFromDate:date] capitalizedString];
+    }];
+    
     self.detailLabel = [[UILabel alloc] init];
+    self.detailLabel.textColor = [UIColor colorWithRed:.6 green:.6 blue:.6 alpha:1];
+    self.detailLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:14];
+    self.detailLabel.textAlignment = NSTextAlignmentCenter;
+    RAC(self.detailLabel, text) = [RACObserve(self, date) map:^NSString *(NSDate *date) {
+        return [[[NSDateFormatter fullDateFormatter] stringFromDate:date] uppercaseString];
+    }];
     
-    [self.contentView addSubview:self.titleLabel];
-    [self.contentView addSubview:self.detailLabel];
+    self.contentView = [[UIView alloc] init];
     
-    [self addSubview:self.cornerBackground];
-    [self addSubview:self.backgroundView];
-    [self addSubview:self.contentView];
-    [self addSubview:self.shadowView];
+    self.shadowView = [[UIView alloc] init];
+    self.shadowView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
+    
+    [self.contentView setSubviews:@[self.titleLabel, self.detailLabel]];
+    [self setSubviews:@[self.cornerBackground, self.backgroundView, self.contentView, self.shadowView]];
 }
 
 - (void)layoutSubviews
 {
-    self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
     self.cornerBackground.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), 10);
     
+    self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
+    
     self.titleLabel.frame = CGRectMake(0, 0, self.bounds.size.width, 36);
+    
     self.detailLabel.frame = CGRectMake(0, self.titleLabel.frame.size.height, self.bounds.size.width, 30);
     
     CGRect frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
@@ -67,26 +95,6 @@
     self.contentView.frame = frame;
     
     self.shadowView.frame = CGRectMake(0, self.bounds.size.height, self.bounds.size.width, .5);
-}
-
-- (void)configureWithDate:(NSDate *)date
-{
-    self.backgroundView.backgroundColor = [UIColor whiteColor];
-    self.backgroundView.layer.cornerRadius = 5;
-    
-    self.cornerBackground.backgroundColor = [UIColor blackColor];
-    
-    self.titleLabel.text = [[[NSDateFormatter relativeWeekDayFormatterFromDate:date] stringFromDate:date] capitalizedString];
-    self.titleLabel.textColor = [UIColor blackColor];
-    self.titleLabel.font = [UIFont boldSystemFontOfSize:24];
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    
-    self.detailLabel.text = [[[NSDateFormatter fullDateFormatter] stringFromDate:date] uppercaseString];
-    self.detailLabel.textColor = [UIColor colorWithRed:.6 green:.6 blue:.6 alpha:1];
-    self.detailLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:14];
-    self.detailLabel.textAlignment = NSTextAlignmentCenter;
-    
-    self.shadowView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
 }
 
 @end

@@ -2,7 +2,7 @@
 //  ListViewController.h
 //  Daily
 //
-//  Created by Viktor Fröberg on 20/01/15.
+//  Created by Viktor Fröberg on 19/04/15.
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
@@ -10,10 +10,9 @@
 
 @interface ListViewController : UITableViewController
 
-@property (nonatomic, strong, readonly) NSDate *date;
+@property (nonatomic, copy, readonly) NSDate *date;
 
-- (void)configureWithDate:(NSDate *)date todoEvents:(NSArray *)todoEvents;
-
-- (void)setScrollEnable:(BOOL)enabled;
+- (instancetype)initWithDate:(NSDate *)date items:(NSArray *)items;
+- (void)setItems:(NSArray *)items animated:(BOOL)animated;
 
 @end

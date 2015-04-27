@@ -8,4 +8,6 @@
 
 @interface UIView (VIKKit)
 
+- (void)setSubviews:(NSArray *)subviews;
+
 @end

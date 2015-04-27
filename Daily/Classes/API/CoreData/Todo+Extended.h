@@ -12,7 +12,10 @@
 
 @interface Todo (Extended)
 
-+ (instancetype)todoFromEvent:(EKEvent *)event forDate:(NSDate *)date inContext:(NSManagedObjectContext *)context;
++ (instancetype)findOrCreateWithEvent:(EKEvent *)event date:(NSDate *)date inContext:(NSManagedObjectContext *)context;
+
++ (instancetype)createTodoWithTodoIdentifier:(NSString *)todoIdentifier date:(NSDate *)date completed:(NSNumber *)completed inContext:(NSManagedObjectContext *)context;
+
 + (NSString *)todoIdentifierFromEventIdentifier:(NSString *)eventIdentifier date:(NSDate *)date;
 
 @end

@@ -10,55 +10,66 @@
 
 @implementation NSArray (VIKKit)
 
-//- (id)find:(BOOL (^)(id))block
-//{
-//    NSParameterAssert(block != nil);
-//    return [[self select:^BOOL(id obj) {
-//        return block(obj);
-//    }] firstObject];
-//}
-//
-//- (NSArray *)select:(BOOL (^)(id obj))block
-//{
-//    NSParameterAssert(block != nil);
-//    return [self objectsAtIndexes:[self indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-//        return block(obj);
-//    }]];
-//}
-//
-//- (NSArray *)reject:(BOOL (^)(id obj))block
-//{
-//    NSParameterAssert(block != nil);
-//    return [self select:^BOOL(id obj) {
-//        return !block(obj);
-//    }];
-//}
-//
-//- (NSArray *)map:(id (^)(id obj))block
-//{
-//    NSParameterAssert(block != nil);
-//    
-//    NSMutableArray *result = [NSMutableArray arrayWithCapacity:self.count];
-//    
-//    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//        id value = block(obj) ?: [NSNull null];
-//        [result addObject:value];
-//    }];
-//    
-//    return result;
-//}
-//
-//- (id)reduce:(id)initial withBlock:(id (^)(id sum, id obj))block
-//{
-//    NSParameterAssert(block != nil);
-//    
-//    __block id result = initial;
-//    
-//    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//        result = block(result, obj);
-//    }];
-//    
-//    return result;
-//}
+- (id)firstBySelecting:(BOOL (^)(id obj))block
+{
+    return [self find:block];
+}
+
+- (NSArray *)arrayBySelecting:(BOOL (^)(id obj))block
+{
+    return [self select:block];
+}
+
+- (NSArray *)arrayByRejecting:(BOOL (^)(id obj))block
+{
+    return [self reject:block];
+}
+
+- (NSArray *)flatArrayByMapping:(id (^)(id obj))block
+{
+    return [[self map:block] flatten];
+}
+
+- (NSArray *)arrayByMapping:(id (^)(id obj))block
+{
+    return [self map:block];
+}
+
+-(NSArray *)arrayByMappingIndexed:(id (^)(id obj, NSUInteger idx))block
+{
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:self.count];
+    
+    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [array addObject:block(obj, idx) ?: [NSNull null]];
+    }];
+    
+    return array;
+}
+
+- (NSArray *)arrayByMovingObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    NSMutableArray *result = [self mutableCopy];
+    
+    id object = [result objectAtIndex:fromIndex];
+    [result removeObjectAtIndex:fromIndex];
+    [result insertObject:object atIndex:toIndex];
+    
+    return result;
+}
+
+- (NSArray *)arrayByReplacingObjectAtIndex:(NSUInteger)index withObject:(id)anObject
+{
+    NSMutableArray *result = [self mutableCopy];
+    [result replaceObjectAtIndex:index withObject:anObject];
+    return result;
+}
+
+- (NSArray *)arraySortedByKeys:(NSArray *)keys ascending:(BOOL)ascending
+{
+    NSArray *sortDescriptors = [keys arrayByMapping:^NSSortDescriptor *(NSString *key) {
+        return [NSSortDescriptor sortDescriptorWithKey:key ascending:ascending];
+    }];
+    return [self sortedArrayUsingDescriptors:sortDescriptors];
+}
 
 @end

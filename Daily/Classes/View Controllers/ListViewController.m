@@ -1,43 +1,78 @@
 //
-//  ListViewController.m
+//  EXPListViewController.m
 //  Daily
 //
-//  Created by Viktor Fröberg on 20/01/15.
+//  Created by Viktor Fröberg on 19/04/15.
 //  Copyright (c) 2015 Viktor Fröberg. All rights reserved.
 //
 
-#import "ListViewController.h"
+#import "NSArray+Changes.h"
+
+// Stores
+#import "TodoEventAPI.h"
 
 // Models
 #import "TodoEvent.h"
-
-// View Models
 #import "TodoEventViewModel.h"
 
-// Views
-#import "HPReorderTableView.h"
-#import "DateHeaderView.h"
-#import "TodoEventTableViewCell.h"
-
 // Controllers
+#import "ListViewController.h"
 #import "DetailViewController.h"
 
-// Other
-#import "MagicTableViewDataSource.h"
-#import "TodoEventAPI.h"
+// Views
+#import "DateHeaderView.h"
+#import "TodoEventTableViewCell.h"
+#import "HPReorderTableView.h"
 
-@interface ListViewController () <HPReorderTableViewDelegate, TodoEventTableViewCellDelegate, MagicTableViewDataSourceDelegate>
+@interface ListViewController () <HPReorderTableViewDelegate, TodoEventTableViewCellDelegate>
 
-@property (nonatomic, strong) NSDate *date;
-@property (nonatomic, strong) NSIndexPath *startIndexPath;
+@property (nonatomic, copy) NSDate *date;
+@property (nonatomic, copy) NSArray *items;
+
 @property (nonatomic, strong) DateHeaderView *headerView;
-@property (nonatomic, strong) MagicTableViewDataSource *dataSource;
+
+@property (nonatomic, strong) NSIndexPath *startIndexPath;
 
 @end
 
 @implementation ListViewController
 
-#pragma mark - Life Cycle
+#pragma mark - Properties
+
+- (void)setItems:(NSArray *)items animated:(BOOL)animated
+{
+    NSArray *newItems = [items sortedArrayUsingDescriptors:[self sortDescriptors]];
+    NSArray *changes = [self.items changesComparedToArray:newItems];
+    
+    if (!changes.count) return;
+    
+    if (animated) {
+        [self.tableView beginUpdates];
+        self.items = newItems;
+        [self animateChanges:changes];
+        [self.tableView endUpdates];
+    } else {
+        self.items = newItems;
+        [self.tableView reloadData];
+    }
+}
+
+#pragma mark - Lifecycle
+
+- (instancetype)initWithDate:(NSDate *)date items:(NSArray *)items
+{
+    NSParameterAssert(date);
+    NSParameterAssert(items);
+    
+    self = [super init];
+    if (self) {
+        _date = date;
+        _items = [items sortedArrayUsingDescriptors:[self sortDescriptors]];
+    }
+    return self;
+}
+
+#pragma mark - UITableViewController
 
 - (void)loadView
 {
@@ -52,96 +87,132 @@
 {
     [super viewDidLoad];
     
-    self.tableView.estimatedRowHeight = 60.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    // TableView
+    self.tableView.rowHeight = 60.0;
     self.tableView.separatorColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
+    self.tableView.scrollEnabled = NO;
+    self.tableView.showsVerticalScrollIndicator = NO;
     
     [self.tableView registerClass:[TodoEventTableViewCell class] forCellReuseIdentifier:@"Cell"];
     
-    self.dataSource = [[MagicTableViewDataSource alloc] initWithTableView:self.tableView cellIdentifier:@"Cell"];
-    self.dataSource.delegate = self;
-    
-    self.headerView = [[DateHeaderView alloc] init];
-    self.headerView.frame = CGRectMake(0, 0, 320, 150);
+    // HeaderView
+    self.headerView = [[DateHeaderView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 150)];
+    self.headerView.date = self.date;
     self.tableView.tableHeaderView = self.headerView;
 }
 
+#pragma mark - UITableViewUpdates
 
-#pragma mark - Public methods
-
-- (void)setScrollEnable:(BOOL)enabled
+- (void)animateChanges:(NSArray *)changes
 {
-    self.tableView.showsVerticalScrollIndicator = enabled;
-    self.tableView.scrollEnabled = enabled;
+    [changes each:^(ArrayChange *change) {
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:change.index inSection:0];
+        NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:change.newIndex inSection:0];
+        
+        switch (change.type) {
+            case ArrayChangeInsert:
+                [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                break;
+            case ArrayChangeDelete:
+                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                break;
+            case ArrayChangeMove:
+                [self.tableView moveRowAtIndexPath:indexPath toIndexPath:newIndexPath];
+                break;
+            case ArrayChangeUpdate:
+                [self configureCell:(TodoEventTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath] item:[self todoEventAtIndexPath:newIndexPath]];
+                break;
+        }
+        
+    }];
 }
 
-- (void)configureWithDate:(NSDate *)date todoEvents:(NSArray *)todoEvents
-{
-    self.date = date;
-    [self.headerView configureWithDate:date];
-    [self.dataSource configureWithItems:[self sortedTodoEvents:todoEvents]];
-}
 
-
-#pragma mark - MagicTableViewDataSourceDelegate
+#pragma mark - UITableViewDataSource
 
 - (void)configureCell:(TodoEventTableViewCell *)cell item:(TodoEvent *)item
 {
     TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:item];
-    cell.delegate = self;
-    [cell configureWithTitle:viewModel.titleText time:viewModel.timeText completed:viewModel.completed];
+    [cell configureWithViewModel:viewModel delegate:self];
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEventTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    [self configureCell:cell item:todoEvent];
+    return cell;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.items.count;
+}
 
 #pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static TodoEventTableViewCell *sizingCell;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sizingCell = [[TodoEventTableViewCell alloc] init];
+    });
+    
+    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEventViewModel *viewModel = [[TodoEventViewModel alloc] initWithTodoEvent:todoEvent];
+    [sizingCell configureWithViewModel:viewModel delegate:nil];
+    
+    [sizingCell setNeedsLayout];
+    [sizingCell layoutIfNeeded];
+    return sizingCell.estimatedHeight;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
-    
     DetailViewController *vc = [[DetailViewController alloc] initWithTodoEvent:todoEvent];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
     
     [self presentViewController:nc animated:YES completion:^{
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }];
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    self.dataSource.changeIsUserDriven = YES;
-    
-    if (!self.startIndexPath) {
+    if (!self.startIndexPath)
         self.startIndexPath = fromIndexPath;
-    }
     
-    NSMutableArray *todoEvents = [self.todoEvents mutableCopy];
-    TodoEvent *todoEvent = [self todoEventAtIndexPath:fromIndexPath];
-    [todoEvents removeObjectAtIndex:fromIndexPath.row];
-    [todoEvents insertObject:todoEvent atIndex:toIndexPath.row];
-    
-    [self.dataSource configureWithItems:[todoEvents copy]];
+    self.items = [self.items arrayByMovingObjectAtIndex:fromIndexPath.row toIndex:toIndexPath.row];
+    NSLog(@"%@", [self.items valueForKey:@"title"]);
 }
-
-
-#pragma mark - HPReorderTableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didEndReorderingRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (![self.startIndexPath isEqual:indexPath]) {
-        
         TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
         TodoEvent *todoEventSibling = [self todoEventSibling:todoEvent];
-        todoEvent.completed = todoEventSibling.completed;
-
-        [self.todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-            todoEvent.position = index;
-        }];
         
-        [[TodoEventAPI sharedInstance] updateTodoEvents:self.todoEvents completion:nil];
+        NSDictionary *updatedValues = @{@"completed": @(todoEventSibling.completed)};
+        TodoEvent *updatedTodoEvent = [todoEvent modelByAddingEntriesFromDictionary:updatedValues error:nil];
+        
+        NSArray *updatedItems = [[self.items
+            arrayByReplacingObjectAtIndex:indexPath.row withObject:updatedTodoEvent]
+            arrayByMappingIndexed:^TodoEvent *(TodoEvent *todoEvent, NSUInteger idx) {
+                return [todoEvent modelByAddingEntriesFromDictionary:@{@"position": @(idx)} error:nil];
+            }];
+
+        self.items = updatedItems;
+        [[TodoEventAPI sharedInstance] updateTodoEvents:self.items completion:nil];
     }
     
-    self.dataSource.changeIsUserDriven = NO;
     self.startIndexPath = nil;
 }
 
@@ -151,33 +222,31 @@
 - (void)todoEventTableViewCellDidToggleCheckbox:(TodoEventTableViewCell *)cell
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    TodoEvent *todoEvent = [self todoEventAtIndexPath:indexPath];
+    TodoEvent *todoEvent = [self.items objectAtIndex:indexPath.row];
     
-    if (todoEvent.completed) {
-        todoEvent.completed = NO;
-        todoEvent.position = INT_MAX;
-    } else {
-        todoEvent.completed = YES;
-        todoEvent.position = 0;
-    }
+    NSDictionary *updatedValues = @{@"completed": todoEvent.completed ? @NO : @YES,
+                                    @"position": todoEvent.completed ? @(INT_MAX) : @0};
+    TodoEvent *updatedTodoEvent = [todoEvent modelByAddingEntriesFromDictionary:updatedValues error:nil];
     
-    NSArray *sortedObjects = [self sortedTodoEvents:self.todoEvents];
-    [sortedObjects enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-        todoEvent.position = index;
-    }];
+    NSArray *updatedItems = [[[self.items
+        arrayByReplacingObjectAtIndex:indexPath.row withObject:updatedTodoEvent]
+        arraySortedByKeys:@[@"completed", @"position"] ascending:YES]
+        arrayByMappingIndexed:^TodoEvent *(TodoEvent *todoEvent, NSUInteger idx) {
+            return [todoEvent modelByAddingEntriesFromDictionary:@{@"position": @(idx)} error:nil];
+        }];
     
-    [[TodoEventAPI sharedInstance] updateTodoEvents:self.todoEvents completion:nil];
-
+    [self setItems:updatedItems animated:YES];
+    
+    [[TodoEventAPI sharedInstance] updateTodoEvents:updatedItems completion:nil];
 }
 
+#pragma mark - Helpers (Extract if possible)
 
-#pragma mark - Helpers
-
-- (NSArray *)sortedTodoEvents:(NSArray *)todoEvents
+- (NSArray *)sortDescriptors
 {
     NSSortDescriptor *completionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"completed" ascending:YES];
     NSSortDescriptor *positionSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES];
-    return [todoEvents sortedArrayUsingDescriptors:@[completionSortDescriptor, positionSortDescriptor]];
+    return @[completionSortDescriptor, positionSortDescriptor];
 }
 
 - (TodoEvent *)todoEventSibling:(TodoEvent *)todoEvent
@@ -191,27 +260,23 @@
 
 - (TodoEvent *)todoEventAfter:(TodoEvent *)todoEvent
 {
-    NSInteger index = [self.todoEvents indexOfObject:todoEvent];
-    NSInteger max = self.todoEvents.count - 1;
+    NSInteger index = [self.items indexOfObject:todoEvent];
+    NSInteger max = self.items.count - 1;
     NSInteger newIndex = MIN(index + 1, max); // Use the lowest
-    return [self.todoEvents objectAtIndex:newIndex];
+    return [self.items objectAtIndex:newIndex];
 }
 
 - (TodoEvent *)todoEventBefore:(TodoEvent *)todoEvent
 {
-    NSInteger index = [self.todoEvents indexOfObject:todoEvent];
+    NSInteger index = [self.items indexOfObject:todoEvent];
     NSInteger newIndex = MAX(index - 1, 0); // Use the biggest
-    return [self.todoEvents objectAtIndex:newIndex];
-}
-
-- (NSArray *)todoEvents
-{
-    return self.dataSource.items;
+    return [self.items objectAtIndex:newIndex];
 }
 
 - (TodoEvent *)todoEventAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.dataSource itemAtIndexPath:indexPath];
+    return [self.items objectAtIndex:indexPath.row];
 }
 
 @end
+

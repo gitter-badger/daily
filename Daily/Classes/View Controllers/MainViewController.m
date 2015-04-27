@@ -16,28 +16,35 @@
 
 #import "FloatingButton.h"
 
-#import "TodoEventActions.h"
-
-#import "TodoEventStore.h"
+#import "TodoEventAPI.h"
 
 @interface MainViewController () <UIScrollViewDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
-@property (nonatomic, strong) UIScrollView *scrollView;
-
-@property (nonatomic, strong) UIPageViewController *pageViewController;
-@property (nonatomic, strong) LSWeekView *weekView;
+@property (nonatomic, strong) NSArray *items;
 
 @property (nonatomic, strong) ListViewController *currentViewController;
+@property (nonatomic, strong) UIPageViewController *pageViewController;
 
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) LSWeekView *weekView;
 @property (nonatomic, strong) FloatingButton *addButton;
 
-@property (nonatomic, strong) NSArray *todoEvents;
-
+@property (nonatomic, getter=isLoaded) BOOL loaded;
 @end
 
 @implementation MainViewController
 
-#pragma mark Lifecycle
+#pragma mark - Properties
+
+- (NSArray *)items
+{
+    if (!_items) {
+        _items = @[];
+    }
+    return _items;
+}
+
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad
 {
@@ -50,26 +57,18 @@
                                                  name:@"statusBarTappedNotification"
                                                object:nil];
     
-    self.todoEvents = [[TodoEventStore sharedStore] todoEvents];
-    
-    NSDate *startDate = [[[NSDate date] dateBySubtractingDays:7] startOfDay];
-    NSDate *endDate = [[[NSDate date] dateByAddingDays:7] endOfDay];
-    
-    [[TodoEventActions sharedActions] loadTodoEventsWithStartDate:startDate endDate:endDate];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoEventStoreDidChange:) name:@"TodoEventStoreDidChangeNotification" object:nil];
-    
     [self setupViews];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"TodoEventStoreDidChangeNotification" object:nil];
-}
-
-- (void)todoEventStoreDidChange:(NSNotification *)notification
-{
-    self.todoEvents = [[TodoEventStore sharedStore] todoEvents];
-    [self reloadData];
+    
+    NSDate *startDate = [[[NSDate date] dateBySubtractingDays:14] startOfDay];
+    NSDate *endDate = [[[NSDate date] dateByAddingDays:14] endOfDay];
+    
+    RACSignal *fetchEventsSignal = [[[TodoEventAPI sharedInstance] rac_fetchTodoEventsWithStartDate:startDate
+                                                                                           endDate:endDate] throttle:.2];
+    [fetchEventsSignal subscribeNext:^(NSArray *items) {
+        self.items = items;
+        [self reloadDataAnimated:self.isLoaded];
+        self.loaded = YES;
+    }];
 }
 
 - (NSDate *)currentDate
@@ -77,10 +76,12 @@
     return self.currentViewController.date;
 }
 
-- (void)reloadData
+- (void)reloadDataAnimated:(BOOL)animated
 {
-    NSArray *todoEvents = [self todoEventsForDate:self.currentDate];
-    [self.currentViewController configureWithDate:self.currentDate todoEvents:todoEvents];
+    [self.pageViewController.viewControllers each:^(ListViewController *listViewController) {
+        NSArray *items = [self itemsForDate:listViewController.date];
+        [listViewController setItems:items animated:animated];
+    }];
 }
 
 - (void)statusBarTappedAction:(NSNotification *)notification
@@ -105,7 +106,7 @@
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated
 {
     if (![[self.currentDate startOfDay] isEqualToDate:[date startOfDay]]) {
-        [self.currentViewController.tableView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
+        [self.currentViewController.tableView removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) context:KVOContext];
         self.currentViewController.tableView.contentOffset = CGPointZero;
         
         ListViewController *viewController = [self listViewControllerWithDate:date];
@@ -123,9 +124,9 @@
 
 - (void)setupViews
 {
-    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 20, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 20)];
+    self.scrollView = [[UIScrollView alloc] init];
     self.scrollView.layer.cornerRadius = 5;
-    
+
     self.scrollView.delegate = self;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.alwaysBounceVertical = YES;
@@ -138,29 +139,28 @@
     self.weekView.didChangeSelectedDateBlock = ^(NSDate *selectedDate) {
         [welf scrollToDate:selectedDate];
     };
-    
+
     NSDictionary *options = @{ UIPageViewControllerOptionInterPageSpacingKey: @10 };
     self.pageViewController = [[UIPageViewController alloc]
                            initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                            navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                            options:options];
-    
-    self.pageViewController.view.backgroundColor = [UIColor blackColor];
+
     self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
-    
+
     self.currentViewController = [self listViewControllerWithDate:[NSDate date]];
     [self.currentViewController.tableView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) options:NSKeyValueObservingOptionOld context:KVOContext];
-    [_pageViewController setViewControllers:@[self.currentViewController]
+    [self.pageViewController setViewControllers:@[self.currentViewController]
                                   direction:UIPageViewControllerNavigationDirectionForward
                                    animated:NO
                                  completion:nil];
-    
+
     [self.scrollView addSubview:self.weekView];
-    
+
     [self addChildViewController:self.pageViewController];
     [self.scrollView addSubview:self.pageViewController.view];
-    
+
     [self.view addSubview:self.scrollView];
     
     self.addButton = [[FloatingButton alloc] init];
@@ -180,6 +180,10 @@
 
 - (void)viewDidLayoutSubviews
 {
+    [super viewDidLayoutSubviews];
+    
+    self.scrollView.frame = CGRectMake(0, 20, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 20);
+
     self.weekView.frame = CGRectMake(0, self.scrollView.contentOffset.y, CGRectGetWidth(self.scrollView.frame), 100);
     
     CGSize contentSize = self.currentViewController.tableView.contentSize;
@@ -266,7 +270,7 @@ static void *KVOContext = &KVOContext;
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
 {
     if (completed) {
-        [self.currentViewController.tableView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
+        [self.currentViewController.tableView removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) context:KVOContext];
         self.currentViewController.tableView.contentOffset = CGPointZero;
         
         self.currentViewController = [pageViewController.viewControllers firstObject];
@@ -292,27 +296,15 @@ static void *KVOContext = &KVOContext;
 
 - (ListViewController *)listViewControllerWithDate:(NSDate *)date
 {
-    ListViewController *listViewController = [[ListViewController alloc] init];
-    [listViewController setScrollEnable:NO];
-    [listViewController configureWithDate:date todoEvents:[self todoEventsForDate:date]];
+    NSArray *items = [self itemsForDate:date];
+    ListViewController *listViewController = [[ListViewController alloc] initWithDate:date items:items];
     return listViewController;
 }
 
-- (NSArray *)todoEventsForDate:(NSDate *)date
+- (NSArray *)itemsForDate:(NSDate *)date
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"date = %@", [date startOfDay]];
-    NSArray *todoEvents = [self.todoEvents filteredArrayUsingPredicate:predicate];
-    return todoEvents;
-}
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationPortrait;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
+    return [self.items filteredArrayUsingPredicate:predicate];
 }
 
 @end

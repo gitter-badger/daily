@@ -1,19 +1,56 @@
 PODS:
+  - HPReorderTableView (0.2)
   - Intercom (2.0.6)
   - MagicalRecord/Shorthand (2.2)
+  - Mantle (2.0):
+    - Mantle/extobjc (= 2.0)
+  - Mantle/extobjc (2.0)
+  - MTMigration (0.0.5)
   - NSDate+TimeAgo (1.0.3)
-  - RSDayFlow (0.7.3)
+  - ObjectiveSugar (1.1.1)
+  - ReactiveCocoa (2.5):
+    - ReactiveCocoa/UI (= 2.5)
+  - ReactiveCocoa/Core (2.5):
+    - ReactiveCocoa/no-arc
+  - ReactiveCocoa/no-arc (2.5)
+  - ReactiveCocoa/UI (2.5):
+    - ReactiveCocoa/Core
+  - SAMTextField (0.1.2)
 
 DEPENDENCIES:
+  - HPReorderTableView (from `https://github.com/hpique/HPReorderTableView`)
   - Intercom
   - MagicalRecord/Shorthand
+  - Mantle
+  - MTMigration
   - NSDate+TimeAgo
-  - RSDayFlow
+  - ObjectiveSugar (from `https://github.com/supermarin/ObjectiveSugar`)
+  - ReactiveCocoa
+  - SAMTextField
+
+EXTERNAL SOURCES:
+  HPReorderTableView:
+    :git: https://github.com/hpique/HPReorderTableView
+  ObjectiveSugar:
+    :git: https://github.com/supermarin/ObjectiveSugar
+
+CHECKOUT OPTIONS:
+  HPReorderTableView:
+    :commit: 2590155d07b1274c13f054a35e260779ffa83871
+    :git: https://github.com/hpique/HPReorderTableView
+  ObjectiveSugar:
+    :commit: df75d38bf2f5d07ec23b600c9dc562031a6093a8
+    :git: https://github.com/supermarin/ObjectiveSugar
 
 SPEC CHECKSUMS:
-  Intercom: e3da0bc01c5aa31a01c215baebba6c3bb7705af5
-  MagicalRecord: 2b471584fc9e3137f3d0a56967917baa4979e224
-  NSDate+TimeAgo: f3533e0198fab05b716368b19f8c2185d53d6f3b
-  RSDayFlow: 06e3efb0115c1409c455e548570c5ec76d9c575b
+  HPReorderTableView: d526b1e3531dd3198d8c0d27403ee45d369efa86
+  Intercom: 89731ba24eaac36ce6bcebc152d1606a394e272c
+  MagicalRecord: f8a56bb87ab6552f20c4bb8681a1958a197ea3cd
+  Mantle: 17de73ef929db2234d76fde2aacfb89ab11c61e8
+  MTMigration: 725315e6469c8fd7d13966887f59e65eb8aecb2e
+  NSDate+TimeAgo: 416f55d2696d3744c313091c5a9280d47f8238fe
+  ObjectiveSugar: 2d76e8cd7965aa8c638c337186e59cedc6f697ca
+  ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
+  SAMTextField: a0f4eb5b48b45aef56453c265262b45154bc3e2a
 
 COCOAPODS: 0.35.0

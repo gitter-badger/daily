@@ -11,15 +11,6 @@
 
 @interface TodoEventViewModel ()
 
-@property (nonatomic, strong) NSString *titleText;
-@property (nonatomic, strong) NSString *locationText;
-@property (nonatomic, strong) NSString *timeText;
-@property (nonatomic, strong) NSString *notesText;
-@property (nonatomic, strong) NSString *urlText;
-@property (nonatomic, strong) NSString *dateTextFull;
-@property (nonatomic, strong) NSString *dateText;
-@property (nonatomic) BOOL completed;
-
 @end
 
 @implementation TodoEventViewModel
@@ -47,18 +38,28 @@
     return formatter;
 }
 
++ (NSCalendar *)calendar
+{
+    static NSCalendar *calendar;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+    });
+    return calendar;
+}
+
 - (instancetype)initWithTodoEvent:(TodoEvent *)todoEvent
 {
     self = [super init];
     if (self) {
-        self.titleText = todoEvent.title.length ? todoEvent.title : @"";
-        self.locationText = todoEvent.location.length ? todoEvent.location : @"";
-        self.notesText = todoEvent.notes.length ? todoEvent.notes : @"";
-        self.urlText = todoEvent.url ? todoEvent.url : @"";
-        self.completed = todoEvent.completed;
-        self.timeText = [self startEndTimeTextFrom:todoEvent];
-        self.dateTextFull = [self dateTextFullFromTodoEvent:todoEvent];
-        self.dateText = [self dateTextFromTodoEvent:todoEvent];
+        _titleText = todoEvent.title.length ? todoEvent.title : @"";
+        _locationText = todoEvent.location.length ? todoEvent.location : @"";
+        _notesText = todoEvent.notes.length ? todoEvent.notes : @"";
+        _urlText = todoEvent.url ? todoEvent.url : @"";
+        _completed = todoEvent.completed;
+        _timeText = [self startEndTimeTextFrom:todoEvent];
+        _dateTextFull = [self dateTextFullFromTodoEvent:todoEvent];
+        _dateText = [self dateTextFromTodoEvent:todoEvent];
     }
     return self;
 }
@@ -68,8 +69,7 @@
     NSString *startDate = [[TodoEventViewModel fullDateFormatter] stringFromDate:todoEvent.startDate];
     NSString *endDate = [[TodoEventViewModel fullDateFormatter] stringFromDate:todoEvent.endDate];
     
-    NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
-    if ([calendar isDate:todoEvent.startDate inSameDayAsDate:todoEvent.endDate]) {
+    if ([[TodoEventViewModel calendar] isDate:todoEvent.startDate inSameDayAsDate:todoEvent.endDate]) {
         return [NSString stringWithFormat:@"%@", startDate];
     } else {
         return [NSString stringWithFormat:@"%@ - %@", startDate, endDate];
@@ -84,16 +84,15 @@
     NSString *startTime = [self startTimeTextFromTodoEvent:todoEvent];
     NSString *endTime = [self endTimeTextFromTodoEvent:todoEvent];
     
-    NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     if (todoEvent.allDay) {
-        if ([calendar isDate:todoEvent.startDate inSameDayAsDate:todoEvent.endDate]) {
+        if ([[TodoEventViewModel calendar] isDate:todoEvent.startDate inSameDayAsDate:todoEvent.endDate]) {
             return [NSString stringWithFormat:@"%@", startDate];
         } else {
             return [NSString stringWithFormat:@"%@ - %@", startDate, endDate];
         }
     }
     else {
-        if ([calendar isDate:todoEvent.startDate inSameDayAsDate:todoEvent.endDate]) {
+        if ([[TodoEventViewModel calendar] isDate:todoEvent.startDate inSameDayAsDate:todoEvent.endDate]) {
             return [NSString stringWithFormat:@"%@\n%@ - %@", startDate, startTime, endTime];
         } else {
             return [NSString stringWithFormat:@"%@ at %@ - %@ at %@", startDate, startTime, endDate, endTime];
@@ -121,13 +120,11 @@
 {
     if (todoEvent.allDay)
         return @"";
-        
-    NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     
-    if ([calendar isDate:todoEvent.startDate inSameDayAsDate:todoEvent.date]) {
+    if ([[TodoEventViewModel calendar] isDate:todoEvent.startDate inSameDayAsDate:todoEvent.date]) {
         return [self startTimeTextFromTodoEvent:todoEvent];
     }
-    else if ([calendar isDate:todoEvent.endDate inSameDayAsDate:todoEvent.date]) {
+    else if ([[TodoEventViewModel calendar] isDate:todoEvent.endDate inSameDayAsDate:todoEvent.date]) {
         return [NSString stringWithFormat:@"Ends at %@", [self endTimeTextFromTodoEvent:todoEvent]];
     }
     else {

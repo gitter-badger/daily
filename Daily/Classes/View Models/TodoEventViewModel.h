@@ -12,13 +12,13 @@
 
 @interface TodoEventViewModel : NSObject
 
-@property (nonatomic, strong, readonly) NSString *titleText;
-@property (nonatomic, strong, readonly) NSString *locationText;
-@property (nonatomic, strong, readonly) NSString *timeText;
-@property (nonatomic, strong, readonly) NSString *notesText;
-@property (nonatomic, strong, readonly) NSString *urlText;
-@property (nonatomic, strong ,readonly) NSString *dateTextFull;
-@property (nonatomic, strong ,readonly) NSString *dateText;
+@property (nonatomic, copy, readonly) NSString *titleText;
+@property (nonatomic, copy, readonly) NSString *locationText;
+@property (nonatomic, copy, readonly) NSString *timeText;
+@property (nonatomic, copy, readonly) NSString *notesText;
+@property (nonatomic, copy, readonly) NSString *urlText;
+@property (nonatomic, copy ,readonly) NSString *dateTextFull;
+@property (nonatomic, copy ,readonly) NSString *dateText;
 @property (nonatomic, readonly) BOOL completed;
 
 - (instancetype)initWithTodoEvent:(TodoEvent *)todoEvent;
