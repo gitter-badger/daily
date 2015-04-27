@@ -18,88 +18,96 @@
 
 @implementation TodoEventTableViewCell
 
+#pragma mark - Properties
+
+- (CGFloat)estimatedHeight
+{
+    CGFloat padding = 20.0;
+    return CGRectGetMaxY(self.detailLabel.frame) + padding;
+}
+
+#pragma mark - Life cycle
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self setupViews];
+        self.checkboxButton = [[UIButton alloc] init];
+        [self.checkboxButton addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
+        self.titleLabel = [[UILabel alloc] init];
+        self.detailLabel = [[UILabel alloc] init];
+        
+        [self.contentView setSubviews:@[self.checkboxButton, self.titleLabel, self.detailLabel]];
     }
     return self;
 }
 
-- (void)setupViews
-{
-    self.checkboxButton = [[UIButton alloc] init];
-    [self.checkboxButton addTarget:self action:@selector(checkboxDidReceiveTap:) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.checkboxButton];
-    
-    self.titleLabel = [[UILabel alloc] init];
-    [self.contentView addSubview:self.titleLabel];
-    
-    self.detailLabel = [[UILabel alloc] init];
-    [self.contentView addSubview:self.detailLabel];
-}
+#pragma mark - UIView
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
-    // Make sure the contentView does a layout pass here so that its subviews have their frames set, which we
-    // need to use to set the preferredMaxLayoutWidth below.
-    [self.contentView setNeedsLayout];
-    [self.contentView layoutIfNeeded];
+    CGRect titleFrame = CGRectMake(60.0, 20.0, CGRectGetWidth(self.bounds) - 70.0, CGFLOAT_MAX);
+    CGRect titleFrameCalculated = [self.titleLabel.attributedText boundingRectWithSize:titleFrame.size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+    titleFrame.size = titleFrameCalculated.size;
+    self.titleLabel.frame = titleFrame;
+
+    CGRect detailFrame = CGRectMake(60.0, CGRectGetMaxY(titleFrame), CGRectGetWidth(self.bounds) - 70.0, CGFLOAT_MAX);
+    if (self.detailLabel.attributedText.string.length) {
+        detailFrame.origin.y += 5.0;
+        CGRect detailFrameCalculated = [self.detailLabel.attributedText boundingRectWithSize:detailFrame.size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading context:nil];
+        detailFrame.size = detailFrameCalculated.size;
+    } else {
+        detailFrame.size = CGSizeMake(0, 0);
+    }
+    self.detailLabel.frame = detailFrame;
     
-    // Set the preferredMaxLayoutWidth of the mutli-line bodyLabel based on the evaluated width of the label's frame,
-    // as this will allow the text to wrap correctly, and as a result allow the label to take on the correct height.
-    self.titleLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.titleLabel.frame);
-    self.detailLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.detailLabel.frame);
+    self.checkboxButton.frame = CGRectMake(0, CGRectGetMidY(self.bounds) - 23.0, 46.0, 46.0);
 }
 
-- (void)checkboxDidReceiveTap:(id)sender
+#pragma mark - Configure
+
+- (void)configureWithViewModel:(TodoEventViewModel *)viewModel delegate:(id<TodoEventTableViewCellDelegate>)delegate
 {
-    [self.delegate todoEventTableViewCellDidToggleCheckbox:self];
+    [self configureWithTitle:viewModel.titleText time:viewModel.timeText completed:viewModel.completed delegate:delegate];
 }
 
-- (void)configureWithTitle:(NSString *)title time:(NSString *)time completed:(BOOL)completed
+- (void)configureWithTitle:(NSString *)title time:(NSString *)time completed:(BOOL)completed delegate:(id<TodoEventTableViewCellDelegate>)delegate
 {
+    self.delegate = delegate;
+    
     NSDictionary *styles = [self styles];
     
     NSDictionary *titleStyles = completed ? styles[@"titleCompleted"] : styles[@"title"];
     NSDictionary *detailStyles = completed ? styles[@"detailCompleted"] : styles[@"detail"];
     NSDictionary *checkboxStyles = completed ? styles[@"checkboxCompleted"] : styles[@"checkbox"];
     
-    self.checkboxButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.detailLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    NSDictionary *views = @{@"titleLabel": self.titleLabel, @"detailLabel": self.detailLabel, @"checkboxButton": self.checkboxButton};
-    
-    NSNumber *titleDetailSpacing = time.length ? @5 : @0;
-    
-    // Remove contraints
-    [self.contentView removeConstraints:self.contentView.constraints];
-    
-    // Setup contraints
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[titleLabel]-spacing-[detailLabel]-20-|" options:0 metrics:@{@"spacing": titleDetailSpacing} views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[checkboxButton]-|" options:0 metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[checkboxButton(==46)]" options:0 metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-61-[titleLabel]-20-|" options:0 metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-61-[detailLabel]-20-|" options:0 metrics:nil views:views]];
-    
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.numberOfLines = 0;
-    self.titleLabel.font = titleStyles[@"font"];
     self.titleLabel.textColor = titleStyles[@"textColor"];
-    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:@{NSStrikethroughStyleAttributeName: titleStyles[@"strikethroughStyle"]}];
+    self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:
+                                      @{NSStrikethroughStyleAttributeName: titleStyles[@"strikethroughStyle"],
+                                        NSFontAttributeName: titleStyles[@"font"]}];
     
     self.detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.detailLabel.numberOfLines = 0;
-    self.detailLabel.font = detailStyles[@"font"];
     self.detailLabel.textColor = detailStyles[@"textColor"];
-    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:time attributes:@{NSStrikethroughStyleAttributeName: detailStyles[@"strikethroughStyle"]}];
+    self.detailLabel.attributedText = [[NSAttributedString alloc] initWithString:time attributes:
+                                       @{NSStrikethroughStyleAttributeName: detailStyles[@"strikethroughStyle"],
+                                         NSFontAttributeName: titleStyles[@"font"]}];
     
     [self.checkboxButton setImage:checkboxStyles[@"image"] forState:UIControlStateNormal];
 }
+
+#pragma mark - Actions
+
+- (void)checkboxDidReceiveTap:(id)sender
+{
+    [self.delegate todoEventTableViewCellDidToggleCheckbox:self];
+}
+
+#pragma mark - Styles
 
 - (NSDictionary *)styles
 {
@@ -121,11 +129,31 @@
                                    @"textColor": [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1],
                                    @"strikethroughStyle": [NSNumber numberWithInt:NSUnderlineStyleSingle]};
     
-    styles[@"checkbox"] = @{@"image": [UIImage imageNamed:@"checkbox-off"]};
+    styles[@"checkbox"] = @{@"image": [TodoEventTableViewCell checkboxOffImage]};
     
-    styles[@"checkboxCompleted"] = @{@"image": [UIImage imageNamed:@"checkbox-on"]};
+    styles[@"checkboxCompleted"] = @{@"image": [TodoEventTableViewCell checkboxOnImage]};
     
     return styles;
+}
+
++ (UIImage *)checkboxOffImage
+{
+    static UIImage *image;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        image = [UIImage imageNamed:@"checkbox-off"];
+    });
+    return image;
+}
+
++ (UIImage *)checkboxOnImage
+{
+    static UIImage *image;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        image = [UIImage imageNamed:@"checkbox-on"];
+    });
+    return image;
 }
 
 @end

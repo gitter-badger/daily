@@ -1,5 +1,5 @@
 //
-//  TodoEventStore.h
+//  TodoEventAPI.h
 //  Daily
 //
 //  Created by Viktor Fröberg on 25/03/15.
@@ -20,7 +20,7 @@ extern NSString *const TodoEventAPIDidChangeNotification;
 
 + (instancetype)sharedInstance;
 
-- (void)createTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
+- (void)createTodoEventWithTitle:(NSString *)title startDate:(NSDate *)startDate endDate:(NSDate *)endDate allDay:(BOOL)allDay completion:(TodoEventClientItemBlock)completion;
 
 - (void)fetchTodoEventWithTodoEventIdentifier:(NSString *)todoEventIdentifier completion:(TodoEventClientItemBlock)completion;
 - (void)fetchTodoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate completion:(TodoEventClientCollectionBlock)completion;
@@ -33,5 +33,12 @@ extern NSString *const TodoEventAPIDidChangeNotification;
 
 - (void)deleteThisTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
 - (void)deleteFutureTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion;
+
+@end
+
+@interface TodoEventAPI (RAC)
+
+- (RACSignal *)rac_todoEventAPIDidChangeNotification;
+- (RACSignal *)rac_fetchTodoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 
 @end

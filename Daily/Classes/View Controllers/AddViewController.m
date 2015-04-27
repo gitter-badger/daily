@@ -9,7 +9,7 @@
 #import "AddViewController.h"
 #import "TextFieldTableViewCell.h"
 
-#import "TodoEventActions.h"
+#import "TodoEventAPI.h"
 #import "TodoEvent.h"
 
 @interface AddViewController () <UITextFieldDelegate>
@@ -159,23 +159,18 @@
     NSDate *startDate = [self startDateFromString:titleString];
     NSDate *endDate = [self endDateFromString:titleString];
     
-    NSNumber *allDay = @NO;
+    BOOL allDay = NO;
     if (!startDate) {
-        allDay = @YES;
+        allDay = YES;
         startDate = self.date;
     }
     if (!endDate) {
         endDate = [startDate dateByAddingTimeInterval:60*60];
     }
 
-    TodoEvent *todoEvent = [[TodoEvent alloc] init];
-    todoEvent.title = title;
-    todoEvent.startDate = startDate;
-    todoEvent.endDate = endDate;
-    todoEvent.allDay = allDay.boolValue;
-    
-    [[TodoEventActions sharedActions] createTodoEvent:todoEvent];
-    
+    [[TodoEventAPI sharedInstance] createTodoEventWithTitle:title startDate:startDate endDate:endDate allDay:allDay completion:^(NSError *error, TodoEvent *todoEvent) {
+        if (error) NSLog(@"Error: %@", error);
+    }];
     [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 

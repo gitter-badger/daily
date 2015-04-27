@@ -10,6 +10,8 @@
 
 @interface NSDate (VIKKit)
 
++ (NSArray *)datesBetweenStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
+
 + (NSDate *)dateYesterday;
 + (NSDate *)dateTomorrow;
 

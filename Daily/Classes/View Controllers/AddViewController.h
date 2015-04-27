@@ -10,6 +10,6 @@
 
 @interface AddViewController : UITableViewController
 
-@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, copy) NSDate *date;
 
 @end

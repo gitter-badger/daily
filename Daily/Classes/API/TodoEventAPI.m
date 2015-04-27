@@ -1,5 +1,5 @@
 //
-//  TodoEventStore.m
+//  TodoEventAPI.m
 //  Daily
 //
 //  Created by Viktor Fröberg on 25/03/15.
@@ -13,6 +13,7 @@
 #import "EKCalendar+VFDaily.h"
 #import "Todo+Extended.h"
 
+#define R_Either(left, right) left ? left : right
 
 NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotification";
 
@@ -45,10 +46,19 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreDidChange:) name:EKEventStoreChangedNotification object:self.eventStore];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoStoreDidChange:) name:NSManagedObjectContextDidSaveNotification object:[NSManagedObjectContext defaultContext]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(todoStoreDidChange:) name:NSManagedObjectContextDidSaveNotification object:nil];
     }
     return self;
 }
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:EKEventStoreChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:nil];
+}
+
+
+#pragma mark - Observer callbacks
 
 - (void)eventStoreDidChange:(NSNotification *)notification
 {
@@ -60,110 +70,87 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
     [[NSNotificationCenter defaultCenter] postNotificationName:TodoEventAPIDidChangeNotification object:self];
 }
 
--(void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:EKEventStoreChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:nil];
-}
-
 
 #pragma mark - Public methods
 
-- (void)createTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
+- (void)createTodoEventWithTitle:(NSString *)title startDate:(NSDate *)startDate endDate:(NSDate *)endDate allDay:(BOOL)allDay completion:(TodoEventClientItemBlock)completion
 {
     EKEvent *event = [EKEvent eventWithEventStore:self.eventStore];
     event.calendar = [self.eventStore defaultCalendarForNewEvents];
-    event.title = todoEvent.title;
-    event.location = todoEvent.location;
-    event.startDate = todoEvent.startDate;
-    event.endDate = todoEvent.endDate;
-    event.allDay = todoEvent.allDay;
+    event.title = title;
+    event.startDate = startDate;
+    event.endDate = endDate;
+    event.allDay = allDay;
     
     NSError *error;
     [self.eventStore saveEvent:event span:EKSpanThisEvent error:&error];
     
-    if (completion) completion(error);
+    TodoEvent *todoEvent = [[TodoEvent alloc] initWithDictionary:@{@"title": event.title,
+                                                                   @"startDate": event.startDate,
+                                                                   @"endDate": event.endDate,
+                                                                   @"allDay": @(allDay),
+                                                                   @"completed": @(NO),
+                                                                   @"date": [event.startDate startOfDay]} error:nil];
+    
+    if (completion) completion(error, todoEvent);
 }
 
 - (void)fetchTodoEventWithTodoEventIdentifier:(NSString *)todoEventIdentifier completion:(TodoEventClientItemBlock)completion
 {
     NSDate *date = [TodoEvent dateFromTodoEventIdentifier:todoEventIdentifier];
     [self fetchTodoEventsWithStartDate:[date startOfDay] endDate:[date endOfDay] completion:^(NSError *error, NSArray *todoEvents) {
-        for (TodoEvent *todoEvent in todoEvents) {
-            if ([todoEvent.todoEventIdentifier isEqual:todoEventIdentifier]) {
-                return completion(error, todoEvent);
-            }
-        }
-        if (completion) completion(error, nil);
+        TodoEvent *todoEvent = [todoEvents find:^BOOL(TodoEvent *todoEvent) {
+            return [todoEvent.todoEventIdentifier isEqual:todoEventIdentifier];
+        }];
+        if (completion) completion(error, todoEvent);
     }];
 }
 
 - (void)fetchTodoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate completion:(TodoEventClientCollectionBlock)completion
 {
+    __block NSArray *todoEvents = @[];
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         
-        if (!granted) return completion(error, nil);
+        if (!granted || error) return completion(error, nil);
         
-        NSArray *events = [self eventsWithStartDate:startDate endDate:endDate];
-        NSInteger fetchRangeDays = [startDate daysBeforeDate:endDate];
-        
-        [MagicalRecord saveWithBlock:^(NSManagedObjectContext *context) {
+        [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
             
-            [events enumerateObjectsUsingBlock:^(EKEvent *event, NSUInteger index, BOOL *stop) {
-                
-                NSInteger eventRangeDays = [event.startDate daysBeforeDate:event.endDate];
-                NSInteger days = fetchRangeDays < eventRangeDays ? fetchRangeDays : eventRangeDays;
-                
-                for (int i = 0; i <= days; i++) {
-                    
-                    NSDate *date = [[event.startDate dateByAddingDays:i] startOfDay];
-                    NSString *todoIdentifier = [Todo todoIdentifierFromEventIdentifier:event.eventIdentifier date:date];
-                    
-                    Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoIdentifier inContext:context];
-                    if (!todo) {
-                        todo = [Todo todoFromEvent:event forDate:date inContext:context];
-                    }
-                    
-                }
+            NSArray *events = [self eventsWithStartDate:startDate endDate:endDate];
+            todoEvents = [events flatArrayByMapping:^NSArray *(EKEvent *event) {
+                NSArray *endDates = @[event.endDate, endDate];
+                NSDate *minEndDate = [endDates valueForKeyPath:@"@min.self"];
+                NSArray *dates = [NSDate datesBetweenStartDate:event.startDate endDate:minEndDate];
+                NSArray *todos = [dates arrayByMapping:^Todo *(NSDate *date) {
+                    return [Todo findOrCreateWithEvent:event date:date inContext:localContext];
+                }];
+                return [todos arrayByMapping:^TodoEvent *(Todo *todo) {
+                    return [[TodoEvent alloc] initWithDictionary:@{@"title": event.title,
+                                                                   @"startDate": event.startDate,
+                                                                   @"endDate": event.endDate,
+                                                                   @"allDay": @(event.allDay),
+                                                                   @"location": R_Either(event.location, @""),
+                                                                   @"notes": R_Either(event.notes, @""),
+                                                                   @"url": R_Either(event.URL.absoluteString, @""),
+                                                                   @"date": [todo.date startOfDay],
+                                                                   @"completed": [todo.completed copy],
+                                                                   @"position": [todo.position copy],
+                                                                   @"todoEventIdentifier": [todo.todoIdentifier copy]} error:nil];
+                }];
             }];
             
         } completion:^(BOOL success, NSError *error) {
-            
-            NSMutableArray *todoEvents = [[NSMutableArray alloc] init];
-            [events enumerateObjectsUsingBlock:^(EKEvent *event, NSUInteger index, BOOL *stop) {
-                
-                NSInteger eventRangeDays = [event.startDate daysBeforeDate:event.endDate];
-                NSInteger days = fetchRangeDays < eventRangeDays ? fetchRangeDays : eventRangeDays;
-                
-                for (int i = 0; i <= days; i++) {
-                    
-                    NSDate *date = [[event.startDate dateByAddingDays:i] startOfDay];
-                    NSString *todoIdentifier = [Todo todoIdentifierFromEventIdentifier:event.eventIdentifier date:date];
-                    
-                    TodoEvent *todoEvent;
-                    
-                    Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoIdentifier];
-                    if (todo) {
-                        todoEvent = [TodoEvent todoEventFromTodo:todo event:event];
-                        [todoEvents addObject:todoEvent];
-                    }
-                    
-                }
-            }];
-            
-            if (completion) completion(error, todoEvents);
+            completion(error, todoEvents);
         }];
         
     }];
+    
 }
 
 - (void)updateTodoEvents:(NSArray *)todoEvents completion:(TodoEventClientNoneBlock)completion
 {
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
         [todoEvents enumerateObjectsUsingBlock:^(TodoEvent *todoEvent, NSUInteger index, BOOL *stop) {
-            Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier"
-                                          withValue:todoEvent.todoEventIdentifier
-                                          inContext:localContext];
+            Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoEvent.todoEventIdentifier inContext:localContext];
             todo.position = [NSNumber numberWithInteger:todoEvent.position];
             todo.completed = [NSNumber numberWithBool:todoEvent.completed];
         }];
@@ -175,9 +162,7 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
 - (void)updateTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
-        Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier"
-                                      withValue:todoEvent.todoEventIdentifier
-                                      inContext:localContext];
+        Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoEvent.todoEventIdentifier inContext:localContext];
         todo.position = [NSNumber numberWithInteger:todoEvent.position];
         todo.completed = [NSNumber numberWithBool:todoEvent.completed];
     } completion:^(BOOL success, NSError *error) {
@@ -188,12 +173,9 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
 
 - (void)uncompleteTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
-    todoEvent.completed = NO;
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
-        Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier"
-                                      withValue:todoEvent.todoEventIdentifier
-                                      inContext:localContext];
-        todo.completed = [NSNumber numberWithBool:todoEvent.completed];
+        Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoEvent.todoEventIdentifier inContext:localContext];
+        todo.completed = [NSNumber numberWithBool:!todoEvent.completed];
     } completion:^(BOOL success, NSError *error) {
         if (completion) completion(error);
     }];
@@ -201,12 +183,9 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
 
 - (void)completeTodoEvent:(TodoEvent *)todoEvent completion:(TodoEventClientNoneBlock)completion
 {
-    todoEvent.completed = YES;
     [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
-        Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier"
-                                      withValue:todoEvent.todoEventIdentifier
-                                      inContext:localContext];
-        todo.completed = [NSNumber numberWithBool:todoEvent.completed];
+        Todo *todo = [Todo findFirstByAttribute:@"todoIdentifier" withValue:todoEvent.todoEventIdentifier inContext:localContext];
+        todo.completed = [NSNumber numberWithBool:!todoEvent.completed];
     } completion:^(BOOL success, NSError *error) {
         if (completion) completion(error);
     }];
@@ -244,22 +223,11 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
 
 - (EKEvent *)eventFromTodoEvent:(TodoEvent *)todoEvent
 {
-    return [self eventFromTodoEventIdentifier:todoEvent.todoEventIdentifier];
-}
-
-- (EKEvent *)eventFromTodoEventIdentifier:(NSString *)todoEventIdentifier
-{
-    NSString *eventIdentifier = [TodoEvent eventIdentifierFromTodoEventIdentifier:todoEventIdentifier];
-    NSDate *date = [TodoEvent dateFromTodoEventIdentifier:todoEventIdentifier];
+    NSArray *events = [self eventsWithStartDate:[todoEvent.date startOfDay] endDate:[todoEvent.date endOfDay]];
     
-    NSArray *events = [self eventsWithStartDate:[date startOfDay] endDate:[date endOfDay]];
-    for (EKEvent *localEvent in events) {
-        if ([localEvent.eventIdentifier isEqual:eventIdentifier]) {
-            return localEvent;
-        }
-    }
-    
-    return nil;
+    return [events find:^BOOL(EKEvent *event) {
+        return [event.eventIdentifier isEqual:todoEvent.eventIdentifier];
+    }];
 }
 
 - (void)updateEventWithTodoEvent:(TodoEvent *)todoEvent
@@ -276,5 +244,30 @@ NSString *const TodoEventAPIDidChangeNotification = @"TodoEventAPIDidChangeNotif
     NSLog(@"Error: %@", error);
 }
 
+@end
+
+@implementation TodoEventAPI (RAC)
+
+- (RACSignal *)rac_todoEventAPIDidChangeNotification
+{
+    return [RACSignal merge:@[[RACSignal return:nil], [[NSNotificationCenter defaultCenter] rac_addObserverForName:TodoEventAPIDidChangeNotification object:self]]];
+}
+
+- (RACSignal *)rac_fetchTodoEventsWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
+{
+    return [[self rac_todoEventAPIDidChangeNotification] flattenMap:^RACStream *(id value) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            [self fetchTodoEventsWithStartDate:startDate endDate:endDate completion:^(NSError *error, NSArray *todoEvents) {
+                if (error) {
+                    [subscriber sendError:error];
+                } else {
+                    [subscriber sendNext:todoEvents];
+                    [subscriber sendCompleted];
+                }
+            }];
+            return nil;
+        }];
+    }];
+}
 
 @end

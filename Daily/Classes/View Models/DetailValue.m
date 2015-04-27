@@ -8,6 +8,15 @@
 
 #import "DetailValue.h"
 
+@interface DetailValue ()
+
+@property (nonatomic, copy) UIImage *icon;
+@property (nonatomic, copy) NSString *key;
+@property (nonatomic, copy) NSString *placeholder;
+@property (nonatomic, copy) NSString *value;
+
+@end
+
 @implementation DetailValue
 
 - (instancetype)initWithKey:(NSString *)key value:(NSString *)value placeholder:(NSString *)placeholder icon:(UIImage *)icon

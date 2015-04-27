@@ -6,7 +6,4 @@
 //  Copyright (c) 2014 Viktor Fröberg. All rights reserved.
 //
 
-#import "UIImageView+VIKKit.h"
-#import "UIView+VIKKit.h"
-#import "UITableViewController+VIKKit.h"
-#import "UIViewController+VIKKit.h"
+#import "MTLModel+VIKKit.h"

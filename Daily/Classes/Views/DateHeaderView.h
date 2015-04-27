@@ -10,6 +10,6 @@
 
 @interface DateHeaderView : UIView
 
-- (void)configureWithDate:(NSDate *)date;
+@property (nonatomic, copy) NSDate *date;
 
 @end
