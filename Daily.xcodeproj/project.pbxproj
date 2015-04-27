@@ -60,10 +60,6 @@
 		0232F03F1AA75E4D00E0B92E /* LSWeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF501AA5E6F500E0B92E /* LSWeekView.m */; };
 		0232F0401AA75E4D00E0B92E /* VIKTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF521AA5E6F500E0B92E /* VIKTextFieldCell.m */; };
 		0232F0411AA75E4D00E0B92E /* VIKTodoEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF541AA5E6F500E0B92E /* VIKTodoEventCell.m */; };
-		0232F0431AA75E4D00E0B92E /* HPReorderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF581AA5E6F500E0B92E /* HPReorderTableView.m */; };
-		0232F0441AA75E4D00E0B92E /* MCSwipeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF5B1AA5E6F500E0B92E /* MCSwipeTableViewCell.m */; };
-		0232F0451AA75E4D00E0B92E /* MTMigration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF5E1AA5E6F500E0B92E /* MTMigration.m */; };
-		0232F0461AA75E4D00E0B92E /* SAMTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF611AA5E6F500E0B92E /* SAMTextField.m */; };
 		0232F0471AA75E4D00E0B92E /* NSArray+VIKFunctional.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF641AA5E6F500E0B92E /* NSArray+VIKFunctional.m */; };
 		0232F0481AA75E4D00E0B92E /* NSDate+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF661AA5E6F500E0B92E /* NSDate+VIKKit.m */; };
 		0232F0491AA75E4D00E0B92E /* NSManagedObject+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF681AA5E6F500E0B92E /* NSManagedObject+VIKKit.m */; };
@@ -72,9 +68,6 @@
 		0232F04C1AA75E4D00E0B92E /* UIImageView+VIKAdditionals.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF6E1AA5E6F500E0B92E /* UIImageView+VIKAdditionals.m */; };
 		0232F04D1AA75E4D00E0B92E /* UIView+Frame.m in Sources */ = {isa = PBXBuildFile; fileRef = 0232EF701AA5E6F500E0B92E /* UIView+Frame.m */; };
 		0265EC331A3074C800334388 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0265EC321A3074C800334388 /* Crashlytics.framework */; };
-		0299DCF61AADA52500C5A4BA /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0299DCEE1AADA52500C5A4BA /* ALView+PureLayout.m */; };
-		0299DCF71AADA52500C5A4BA /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0299DCF01AADA52500C5A4BA /* NSArray+PureLayout.m */; };
-		0299DCF81AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0299DCF21AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.m */; };
 		0299DCFB1AADE28800C5A4BA /* TodoEventTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0299DCFA1AADE28800C5A4BA /* TodoEventTableViewCell.m */; };
 		0299DD021AAF234500C5A4BA /* TodoEventFetchedResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0299DD011AAF234500C5A4BA /* TodoEventFetchedResultsController.m */; };
 		029B22E819A4E0F100CC5EDC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 029B22E719A4E0F100CC5EDC /* CoreData.framework */; };
@@ -171,14 +164,6 @@
 		0232EF521AA5E6F500E0B92E /* VIKTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIKTextFieldCell.m; sourceTree = "<group>"; };
 		0232EF531AA5E6F500E0B92E /* VIKTodoEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIKTodoEventCell.h; sourceTree = "<group>"; };
 		0232EF541AA5E6F500E0B92E /* VIKTodoEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIKTodoEventCell.m; sourceTree = "<group>"; };
-		0232EF571AA5E6F500E0B92E /* HPReorderTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPReorderTableView.h; sourceTree = "<group>"; };
-		0232EF581AA5E6F500E0B92E /* HPReorderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPReorderTableView.m; sourceTree = "<group>"; };
-		0232EF5A1AA5E6F500E0B92E /* MCSwipeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MCSwipeTableViewCell.h; sourceTree = "<group>"; };
-		0232EF5B1AA5E6F500E0B92E /* MCSwipeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MCSwipeTableViewCell.m; sourceTree = "<group>"; };
-		0232EF5D1AA5E6F500E0B92E /* MTMigration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTMigration.h; sourceTree = "<group>"; };
-		0232EF5E1AA5E6F500E0B92E /* MTMigration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTMigration.m; sourceTree = "<group>"; };
-		0232EF601AA5E6F500E0B92E /* SAMTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMTextField.h; sourceTree = "<group>"; };
-		0232EF611AA5E6F500E0B92E /* SAMTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextField.m; sourceTree = "<group>"; };
 		0232EF631AA5E6F500E0B92E /* NSArray+VIKFunctional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+VIKFunctional.h"; sourceTree = "<group>"; };
 		0232EF641AA5E6F500E0B92E /* NSArray+VIKFunctional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+VIKFunctional.m"; sourceTree = "<group>"; };
 		0232EF651AA5E6F500E0B92E /* NSDate+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+VIKKit.h"; sourceTree = "<group>"; };
@@ -214,15 +199,6 @@
 		0232EFC61AA7479700E0B92E /* OLESwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLESwizzling.m; sourceTree = "<group>"; };
 		02560F581A138BDE00310F76 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0265EC321A3074C800334388 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		0299DCED1AADA52500C5A4BA /* ALView+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALView+PureLayout.h"; sourceTree = "<group>"; };
-		0299DCEE1AADA52500C5A4BA /* ALView+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALView+PureLayout.m"; sourceTree = "<group>"; };
-		0299DCEF1AADA52500C5A4BA /* NSArray+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+PureLayout.h"; sourceTree = "<group>"; };
-		0299DCF01AADA52500C5A4BA /* NSArray+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+PureLayout.m"; sourceTree = "<group>"; };
-		0299DCF11AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLayoutConstraint+PureLayout.h"; sourceTree = "<group>"; };
-		0299DCF21AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLayoutConstraint+PureLayout.m"; sourceTree = "<group>"; };
-		0299DCF31AADA52500C5A4BA /* PureLayout+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PureLayout+Internal.h"; sourceTree = "<group>"; };
-		0299DCF41AADA52500C5A4BA /* PureLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PureLayout.h; sourceTree = "<group>"; };
-		0299DCF51AADA52500C5A4BA /* PureLayoutDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PureLayoutDefines.h; sourceTree = "<group>"; };
 		0299DCF91AADE28800C5A4BA /* TodoEventTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventTableViewCell.h; sourceTree = "<group>"; };
 		0299DCFA1AADE28800C5A4BA /* TodoEventTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventTableViewCell.m; sourceTree = "<group>"; };
 		0299DD001AAF234500C5A4BA /* TodoEventFetchedResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventFetchedResultsController.h; sourceTree = "<group>"; };
@@ -464,50 +440,9 @@
 		0232EF551AA5E6F500E0B92E /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				0299DCEC1AADA52500C5A4BA /* PureLayout */,
-				0232EF561AA5E6F500E0B92E /* HPReorderTableView */,
-				0232EF591AA5E6F500E0B92E /* MCSwipeTableViewCell */,
-				0232EF5C1AA5E6F500E0B92E /* MTMigration */,
-				0232EF5F1AA5E6F500E0B92E /* SAMTextField */,
 				0232EF621AA5E6F500E0B92E /* VIKKit */,
 			);
 			path = Libs;
-			sourceTree = "<group>";
-		};
-		0232EF561AA5E6F500E0B92E /* HPReorderTableView */ = {
-			isa = PBXGroup;
-			children = (
-				0232EF571AA5E6F500E0B92E /* HPReorderTableView.h */,
-				0232EF581AA5E6F500E0B92E /* HPReorderTableView.m */,
-			);
-			path = HPReorderTableView;
-			sourceTree = "<group>";
-		};
-		0232EF591AA5E6F500E0B92E /* MCSwipeTableViewCell */ = {
-			isa = PBXGroup;
-			children = (
-				0232EF5A1AA5E6F500E0B92E /* MCSwipeTableViewCell.h */,
-				0232EF5B1AA5E6F500E0B92E /* MCSwipeTableViewCell.m */,
-			);
-			path = MCSwipeTableViewCell;
-			sourceTree = "<group>";
-		};
-		0232EF5C1AA5E6F500E0B92E /* MTMigration */ = {
-			isa = PBXGroup;
-			children = (
-				0232EF5D1AA5E6F500E0B92E /* MTMigration.h */,
-				0232EF5E1AA5E6F500E0B92E /* MTMigration.m */,
-			);
-			path = MTMigration;
-			sourceTree = "<group>";
-		};
-		0232EF5F1AA5E6F500E0B92E /* SAMTextField */ = {
-			isa = PBXGroup;
-			children = (
-				0232EF601AA5E6F500E0B92E /* SAMTextField.h */,
-				0232EF611AA5E6F500E0B92E /* SAMTextField.m */,
-			);
-			path = SAMTextField;
 			sourceTree = "<group>";
 		};
 		0232EF621AA5E6F500E0B92E /* VIKKit */ = {
@@ -570,22 +505,6 @@
 				0232EFC61AA7479700E0B92E /* OLESwizzling.m */,
 			);
 			path = OLEContainerScrollView;
-			sourceTree = "<group>";
-		};
-		0299DCEC1AADA52500C5A4BA /* PureLayout */ = {
-			isa = PBXGroup;
-			children = (
-				0299DCED1AADA52500C5A4BA /* ALView+PureLayout.h */,
-				0299DCEE1AADA52500C5A4BA /* ALView+PureLayout.m */,
-				0299DCEF1AADA52500C5A4BA /* NSArray+PureLayout.h */,
-				0299DCF01AADA52500C5A4BA /* NSArray+PureLayout.m */,
-				0299DCF11AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.h */,
-				0299DCF21AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.m */,
-				0299DCF31AADA52500C5A4BA /* PureLayout+Internal.h */,
-				0299DCF41AADA52500C5A4BA /* PureLayout.h */,
-				0299DCF51AADA52500C5A4BA /* PureLayoutDefines.h */,
-			);
-			path = PureLayout;
 			sourceTree = "<group>";
 		};
 		0299DCFC1AADE9E700C5A4BA /* View Models */ = {
@@ -770,12 +689,7 @@
 				0232F03F1AA75E4D00E0B92E /* LSWeekView.m in Sources */,
 				0232F0401AA75E4D00E0B92E /* VIKTextFieldCell.m in Sources */,
 				0232F0411AA75E4D00E0B92E /* VIKTodoEventCell.m in Sources */,
-				0232F0431AA75E4D00E0B92E /* HPReorderTableView.m in Sources */,
-				0232F0441AA75E4D00E0B92E /* MCSwipeTableViewCell.m in Sources */,
-				0232F0451AA75E4D00E0B92E /* MTMigration.m in Sources */,
-				0232F0461AA75E4D00E0B92E /* SAMTextField.m in Sources */,
 				0299DCFB1AADE28800C5A4BA /* TodoEventTableViewCell.m in Sources */,
-				0299DCF81AADA52500C5A4BA /* NSLayoutConstraint+PureLayout.m in Sources */,
 				0232F0471AA75E4D00E0B92E /* NSArray+VIKFunctional.m in Sources */,
 				0232F0481AA75E4D00E0B92E /* NSDate+VIKKit.m in Sources */,
 				0232F0491AA75E4D00E0B92E /* NSManagedObject+VIKKit.m in Sources */,
@@ -813,12 +727,10 @@
 				0232F02F1AA75E2400E0B92E /* MasterViewController.m in Sources */,
 				0232F0301AA75E2400E0B92E /* MissedEventsViewController.m in Sources */,
 				0232F0311AA75E2400E0B92E /* SettingsViewController.m in Sources */,
-				0299DCF71AADA52500C5A4BA /* NSArray+PureLayout.m in Sources */,
 				0232F0321AA75E2400E0B92E /* SignupViewController.m in Sources */,
 				0232F0331AA75E2400E0B92E /* DatePickerCollectionView.m in Sources */,
 				0232F0341AA75E2400E0B92E /* DatePickerDayCell.m in Sources */,
 				0232F0351AA75E2400E0B92E /* DatePickerDaysOfWeekView.m in Sources */,
-				0299DCF61AADA52500C5A4BA /* ALView+PureLayout.m in Sources */,
 				0232F0361AA75E2400E0B92E /* DatePickerMonthHeader.m in Sources */,
 				0232F0371AA75E2400E0B92E /* DatePickerView.m in Sources */,
 				0232F0381AA75E2400E0B92E /* OLEContainerScrollView+Swizzling.m in Sources */,

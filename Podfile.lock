@@ -1,19 +1,43 @@
 PODS:
+  - HPReorderTableView (0.2)
   - Intercom (2.0.6)
   - MagicalRecord/Shorthand (2.2)
+  - MCSwipeTableViewCell (2.1.2)
+  - MTMigration (0.0.5)
   - NSDate+TimeAgo (1.0.3)
+  - ObjectiveSugar (1.1.0)
   - RSDayFlow (0.7.3)
+  - SAMTextField (0.1.2)
 
 DEPENDENCIES:
+  - HPReorderTableView (from `https://github.com/hpique/HPReorderTableView`)
   - Intercom
   - MagicalRecord/Shorthand
+  - MCSwipeTableViewCell
+  - MTMigration
   - NSDate+TimeAgo
+  - ObjectiveSugar
   - RSDayFlow
+  - SAMTextField
+
+EXTERNAL SOURCES:
+  HPReorderTableView:
+    :git: https://github.com/hpique/HPReorderTableView
+
+CHECKOUT OPTIONS:
+  HPReorderTableView:
+    :commit: 2590155d07b1274c13f054a35e260779ffa83871
+    :git: https://github.com/hpique/HPReorderTableView
 
 SPEC CHECKSUMS:
-  Intercom: e3da0bc01c5aa31a01c215baebba6c3bb7705af5
-  MagicalRecord: 2b471584fc9e3137f3d0a56967917baa4979e224
-  NSDate+TimeAgo: f3533e0198fab05b716368b19f8c2185d53d6f3b
-  RSDayFlow: 06e3efb0115c1409c455e548570c5ec76d9c575b
+  HPReorderTableView: d526b1e3531dd3198d8c0d27403ee45d369efa86
+  Intercom: 89731ba24eaac36ce6bcebc152d1606a394e272c
+  MagicalRecord: f8a56bb87ab6552f20c4bb8681a1958a197ea3cd
+  MCSwipeTableViewCell: 0fc22bd3635b9b5f4ce08675218b0a7278b6440f
+  MTMigration: 725315e6469c8fd7d13966887f59e65eb8aecb2e
+  NSDate+TimeAgo: 416f55d2696d3744c313091c5a9280d47f8238fe
+  ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c
+  RSDayFlow: ea725e2a5f22835ea275e3ed6405f78009183495
+  SAMTextField: a0f4eb5b48b45aef56453c265262b45154bc3e2a
 
 COCOAPODS: 0.35.0

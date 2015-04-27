@@ -18,5 +18,4 @@
     #import "VIKKit.h"
     #import "VIKKit+MagicalRecord.h"
     #import "Analytics.h"
-    #import "PureLayout.h"
 #endif
