@@ -442,6 +442,8 @@
 				020E5AD21AD6A95B00C6342D /* store.xcdatamodeld */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
 		021903C61AE076B1007B3E0E /* LSWeekView */ = {
 			isa = PBXGroup;
 			children = (
