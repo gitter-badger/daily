@@ -36,7 +36,6 @@
 		020E5AF61AD6A95B00C6342D /* LSWeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A9C1AD6A95B00C6342D /* LSWeekView.m */; };
 		020E5AF71AD6A95B00C6342D /* TextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5A9E1AD6A95B00C6342D /* TextFieldTableViewCell.m */; };
 		020E5AF81AD6A95B00C6342D /* TodoEventTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AA01AD6A95B00C6342D /* TodoEventTableViewCell.m */; };
-		020E5AF91AD6A95B00C6342D /* CLAFluxDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AA41AD6A95B00C6342D /* CLAFluxDispatcher.m */; };
 		020E5AFE1AD6A95B00C6342D /* NSArray+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AB41AD6A95B00C6342D /* NSArray+VIKKit.m */; };
 		020E5AFF1AD6A95B00C6342D /* NSDate+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AB61AD6A95B00C6342D /* NSDate+VIKKit.m */; };
 		020E5B001AD6A95B00C6342D /* NSString+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 020E5AB81AD6A95B00C6342D /* NSString+VIKKit.m */; };
@@ -68,9 +67,7 @@
 		02C47C651AE51DE800D8A330 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 02C47C5E1AE51DE800D8A330 /* .gitkeep */; };
 		02C47C661AE51DE800D8A330 /* ArrayChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C47C601AE51DE800D8A330 /* ArrayChange.m */; };
 		02C47C671AE51DE800D8A330 /* NSArray+Changes.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C47C621AE51DE800D8A330 /* NSArray+Changes.m */; };
-		02C47C681AE51DE800D8A330 /* VIKArrayDiffController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C47C641AE51DE800D8A330 /* VIKArrayDiffController.m */; };
 		02C47C751AE5935100D8A330 /* UIViewController+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C47C741AE5935100D8A330 /* UIViewController+VIKKit.m */; };
-		02C47C7B1AE660EE00D8A330 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C47C7A1AE660EE00D8A330 /* TableViewController.m */; };
 		02C47C7E1AE714B100D8A330 /* NSNumber+VIKKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 02C47C7D1AE714B100D8A330 /* NSNumber+VIKKit.m */; };
 		5570820603D4AC8CDEC33ED5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5B66A7B5565A6B90E230991 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -120,8 +117,8 @@
 		020E5A8C1AD6A95B00C6342D /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		020E5A8D1AD6A95B00C6342D /* SignupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupViewController.h; sourceTree = "<group>"; };
 		020E5A8E1AD6A95B00C6342D /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
-		020E5A921AD6A95B00C6342D /* TodoEventViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventViewModel.h; sourceTree = "<group>"; };
-		020E5A931AD6A95B00C6342D /* TodoEventViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventViewModel.m; sourceTree = "<group>"; };
+		020E5A921AD6A95B00C6342D /* TodoEventViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TodoEventViewModel.h; path = "View Models/TodoEventViewModel.h"; sourceTree = "<group>"; };
+		020E5A931AD6A95B00C6342D /* TodoEventViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TodoEventViewModel.m; path = "View Models/TodoEventViewModel.m"; sourceTree = "<group>"; };
 		020E5A951AD6A95B00C6342D /* DateHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateHeaderView.h; sourceTree = "<group>"; };
 		020E5A961AD6A95B00C6342D /* DateHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateHeaderView.m; sourceTree = "<group>"; };
 		020E5A971AD6A95B00C6342D /* DetailTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailTableViewCell.h; sourceTree = "<group>"; };
@@ -134,8 +131,6 @@
 		020E5A9E1AD6A95B00C6342D /* TextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFieldTableViewCell.m; sourceTree = "<group>"; };
 		020E5A9F1AD6A95B00C6342D /* TodoEventTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoEventTableViewCell.h; sourceTree = "<group>"; };
 		020E5AA01AD6A95B00C6342D /* TodoEventTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoEventTableViewCell.m; sourceTree = "<group>"; };
-		020E5AA31AD6A95B00C6342D /* CLAFluxDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAFluxDispatcher.h; sourceTree = "<group>"; };
-		020E5AA41AD6A95B00C6342D /* CLAFluxDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAFluxDispatcher.m; sourceTree = "<group>"; };
 		020E5AB31AD6A95B00C6342D /* NSArray+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+VIKKit.h"; sourceTree = "<group>"; };
 		020E5AB41AD6A95B00C6342D /* NSArray+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+VIKKit.m"; sourceTree = "<group>"; };
 		020E5AB51AD6A95B00C6342D /* NSDate+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+VIKKit.h"; sourceTree = "<group>"; };
@@ -194,12 +189,8 @@
 		02C47C601AE51DE800D8A330 /* ArrayChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArrayChange.m; sourceTree = "<group>"; };
 		02C47C611AE51DE800D8A330 /* NSArray+Changes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Changes.h"; sourceTree = "<group>"; };
 		02C47C621AE51DE800D8A330 /* NSArray+Changes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Changes.m"; sourceTree = "<group>"; };
-		02C47C631AE51DE800D8A330 /* VIKArrayDiffController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIKArrayDiffController.h; sourceTree = "<group>"; };
-		02C47C641AE51DE800D8A330 /* VIKArrayDiffController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIKArrayDiffController.m; sourceTree = "<group>"; };
 		02C47C731AE5935100D8A330 /* UIViewController+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+VIKKit.h"; sourceTree = "<group>"; };
 		02C47C741AE5935100D8A330 /* UIViewController+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+VIKKit.m"; sourceTree = "<group>"; };
-		02C47C791AE660EE00D8A330 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
-		02C47C7A1AE660EE00D8A330 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
 		02C47C7C1AE714B100D8A330 /* NSNumber+VIKKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+VIKKit.h"; sourceTree = "<group>"; };
 		02C47C7D1AE714B100D8A330 /* NSNumber+VIKKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+VIKKit.m"; sourceTree = "<group>"; };
 		C5B66A7B5565A6B90E230991 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -314,8 +305,6 @@
 				020E5A841AD6A95B00C6342D /* ApplicationViewController.m */,
 				020E5A891AD6A95B00C6342D /* MainViewController.h */,
 				020E5A8A1AD6A95B00C6342D /* MainViewController.m */,
-				02C47C791AE660EE00D8A330 /* TableViewController.h */,
-				02C47C7A1AE660EE00D8A330 /* TableViewController.m */,
 				02C47C571AE441C400D8A330 /* ListViewController.h */,
 				02C47C581AE441C400D8A330 /* ListViewController.m */,
 				021CBD101ADD04B500B00F21 /* EditableTextViewController.h */,
@@ -341,8 +330,6 @@
 				02C47C7F1AE9069700D8A330 /* CoreData */,
 				020E5A721AD6A95B00C6342D /* TodoEvent.h */,
 				020E5A731AD6A95B00C6342D /* TodoEvent.m */,
-				020E5A921AD6A95B00C6342D /* TodoEventViewModel.h */,
-				020E5A931AD6A95B00C6342D /* TodoEventViewModel.m */,
 				021903C71AE10BB5007B3E0E /* DetailValue.h */,
 				021903C81AE10BB5007B3E0E /* DetailValue.m */,
 			);
@@ -371,20 +358,10 @@
 			isa = PBXGroup;
 			children = (
 				02C47C5D1AE51DE800D8A330 /* VIKDiffController */,
-				020E5AA21AD6A95B00C6342D /* CLAFluxDispatcher */,
 				021903C61AE076B1007B3E0E /* LSWeekView */,
 				020E5AB11AD6A95B00C6342D /* VIKKit */,
 			);
 			path = Libs;
-			sourceTree = "<group>";
-		};
-		020E5AA21AD6A95B00C6342D /* CLAFluxDispatcher */ = {
-			isa = PBXGroup;
-			children = (
-				020E5AA31AD6A95B00C6342D /* CLAFluxDispatcher.h */,
-				020E5AA41AD6A95B00C6342D /* CLAFluxDispatcher.m */,
-			);
-			path = CLAFluxDispatcher;
 			sourceTree = "<group>";
 		};
 		020E5AB11AD6A95B00C6342D /* VIKKit */ = {
@@ -478,6 +455,8 @@
 		0229C5F81AEE5F4700861F66 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				020E5A921AD6A95B00C6342D /* TodoEventViewModel.h */,
+				020E5A931AD6A95B00C6342D /* TodoEventViewModel.m */,
 			);
 			name = "View Models";
 			sourceTree = "<group>";
@@ -534,8 +513,6 @@
 				02C47C601AE51DE800D8A330 /* ArrayChange.m */,
 				02C47C611AE51DE800D8A330 /* NSArray+Changes.h */,
 				02C47C621AE51DE800D8A330 /* NSArray+Changes.m */,
-				02C47C631AE51DE800D8A330 /* VIKArrayDiffController.h */,
-				02C47C641AE51DE800D8A330 /* VIKArrayDiffController.m */,
 			);
 			name = VIKDiffController;
 			path = ../../../../../Code/Pods/VIKDiffController/Pod/Classes;
@@ -724,7 +701,6 @@
 				020E5AF81AD6A95B00C6342D /* TodoEventTableViewCell.m in Sources */,
 				020E5AD91AD6A95B00C6342D /* EKCalendar+VFDaily.m in Sources */,
 				020E5AE01AD6A95B00C6342D /* NSUserDefaults+DLY.m in Sources */,
-				020E5AF91AD6A95B00C6342D /* CLAFluxDispatcher.m in Sources */,
 				0229C5F71AEE44C500861F66 /* NSDictionary+VIKKit.m in Sources */,
 				020E5B011AD6A95B00C6342D /* UIColor+VIKKit.m in Sources */,
 				020E5ADC1AD6A95B00C6342D /* Todo.m in Sources */,
@@ -748,12 +724,10 @@
 				020E5AF71AD6A95B00C6342D /* TextFieldTableViewCell.m in Sources */,
 				020E5ADF1AD6A95B00C6342D /* NSDateFormatter+Extended.m in Sources */,
 				020E5AEA1AD6A95B00C6342D /* AddViewController.m in Sources */,
-				02C47C7B1AE660EE00D8A330 /* TableViewController.m in Sources */,
 				020E5ADB1AD6A95B00C6342D /* Todo+Extended.m in Sources */,
 				020E5B041AD6A95B00C6342D /* UITableViewController+VIKKit.m in Sources */,
 				020E5ADE1AD6A95B00C6342D /* AppDelegate.m in Sources */,
 				020E5B031AD6A95B00C6342D /* UIImageView+VIKKit.m in Sources */,
-				02C47C681AE51DE800D8A330 /* VIKArrayDiffController.m in Sources */,
 				02C47C7E1AE714B100D8A330 /* NSNumber+VIKKit.m in Sources */,
 				020E5AF01AD6A95B00C6342D /* SignupViewController.m in Sources */,
 				02C47C751AE5935100D8A330 /* UIViewController+VIKKit.m in Sources */,
