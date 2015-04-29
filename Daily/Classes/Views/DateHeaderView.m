@@ -13,7 +13,6 @@
 
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *detailLabel;
-
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *cornerBackground;
 @property (nonatomic, strong) UIView *backgroundView;
