@@ -10,6 +10,21 @@
 
 @implementation NSArray (VIKKit)
 
+- (id)objectPreviousToObject:(id)object
+{
+    NSInteger index = [self indexOfObject:object];
+    NSInteger newIndex = MAX(index - 1, 0); // Use the biggest
+    return [self objectAtIndex:newIndex];
+}
+
+- (id)objectNextToObject:(id)object
+{
+    NSInteger index = [self indexOfObject:object];
+    NSInteger max = self.count - 1;
+    NSInteger newIndex = MIN(index + 1, max); // Use the lowest
+    return [self objectAtIndex:newIndex];
+}
+
 - (id)firstBySelecting:(BOOL (^)(id obj))block
 {
     return [self find:block];

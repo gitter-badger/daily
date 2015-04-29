@@ -10,6 +10,10 @@
 
 @interface NSArray (VIKKit)
 
+- (id)objectPreviousToObject:(id)object;
+
+- (id)objectNextToObject:(id)object;
+
 - (id)firstBySelecting:(BOOL (^)(id obj))block;
 
 - (NSArray *)arrayBySelecting:(BOOL (^)(id obj))block;
