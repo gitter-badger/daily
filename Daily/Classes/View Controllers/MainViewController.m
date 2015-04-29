@@ -172,8 +172,7 @@
 
 - (void)addButtonPressed:(id)sender
 {
-    AddViewController *avc = [[AddViewController alloc] init];
-    avc.date = self.currentDate;
+    AddViewController *avc = [[AddViewController alloc] initWithDate:self.currentDate];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:avc];
     [self presentViewController:nc animated:YES completion:nil];
 }

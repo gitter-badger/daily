@@ -16,6 +16,7 @@ PODS:
   - ReactiveCocoa/UI (2.5):
     - ReactiveCocoa/Core
   - SAMTextField (0.1.2)
+  - SZTextView (1.2.1)
 
 DEPENDENCIES:
   - HPReorderTableView (from `https://github.com/hpique/HPReorderTableView`)
@@ -27,6 +28,7 @@ DEPENDENCIES:
   - ObjectiveSugar (from `https://github.com/supermarin/ObjectiveSugar`)
   - ReactiveCocoa
   - SAMTextField
+  - SZTextView
 
 EXTERNAL SOURCES:
   HPReorderTableView:
@@ -52,5 +54,6 @@ SPEC CHECKSUMS:
   ObjectiveSugar: 2d76e8cd7965aa8c638c337186e59cedc6f697ca
   ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
   SAMTextField: a0f4eb5b48b45aef56453c265262b45154bc3e2a
+  SZTextView: 906df45afd3c1b24fc5252088d5ef8061513c238
 
 COCOAPODS: 0.35.0

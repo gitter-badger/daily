@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AddViewController : UITableViewController
+@interface AddViewController : UIViewController
 
-@property (nonatomic, copy) NSDate *date;
+- (instancetype)initWithDate:(NSDate *)date;
 
 @end

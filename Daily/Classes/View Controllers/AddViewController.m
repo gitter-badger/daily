@@ -8,53 +8,111 @@
 
 #import "AddViewController.h"
 #import "TextFieldTableViewCell.h"
+#import "SZTextView.h"
 
 #import "TodoEventAPI.h"
 #import "TodoEvent.h"
 
-@interface AddViewController () <UITextFieldDelegate>
+@interface AddViewController () <UITextViewDelegate>
 
-@property (nonatomic) UIEdgeInsets tableViewEdgeInsets;
+@property (nonatomic, copy, readonly) NSDate *date;
+
+@property (nonatomic, strong) SZTextView *textView;
 
 @end
 
 @implementation AddViewController
 
+#pragma mark - Lifecycle
+
+- (instancetype)initWithDate:(NSDate *)date
+{
+    self = [super init];
+    if (self) {
+        _date = date;
+    }
+    return self;
+}
+
+#pragma mark - UIViewController
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     self.title = @"Add item";
+    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonPressed:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleDone target:self action:@selector(saveButtonPressed:)];
-    [self.tableView registerClass:[TextFieldTableViewCell class] forCellReuseIdentifier:@"Cell"];
     
-    self.tableViewEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
-    self.tableView.separatorColor = [UIColor clearColor];
-    self.tableView.backgroundColor = [UIColor whiteColor];
-    self.tableView.layer.cornerRadius = 5;
-    self.tableView.rowHeight = 46;
+    self.textView = [[SZTextView alloc] init];
+    self.textView.placeholder = @"Buy groceries 10:00";
+    self.textView.returnKeyType = UIReturnKeyDone;
+    self.textView.delegate = self;
+    self.textView.editable = YES;
+    self.textView.font = [UIFont systemFontOfSize:18];
+
+    [self.view setSubviews:@[ self.textView ]];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    self.textView.frame = self.view.bounds;
+    self.textView.textContainerInset = UIEdgeInsetsMake(20, 10, 20, 10);
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    CGRect frame = self.tableView.tableHeaderView.frame;
-    frame.size.height = 1;
-    UIView *headerView = [[UIView alloc] initWithFrame:frame];
-    [self.tableView setTableHeaderView:headerView];
     
-    TextFieldTableViewCell *titleCell = (TextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    [titleCell.textField becomeFirstResponder];
+    [self.textView becomeFirstResponder];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self.textView resignFirstResponder];
+    
     [super viewWillDisappear:animated];
-    [self.view endEditing:YES];
+}
+
+#pragma mark - UITextViewDelegate
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    if ([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+    return YES;
 }
 
 - (void)cancelButtonPressed:(id)sender
 {
+    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)saveButtonPressed:(id)sender
+{
+    NSString *titleString = self.textView.text;
+    
+    NSString *title = [self titleFromString:titleString];
+    NSDate *startDate = [self startDateFromString:titleString];
+    NSDate *endDate = [self endDateFromString:titleString];
+    
+    BOOL allDay = NO;
+    if (!startDate) {
+        allDay = YES;
+        startDate = self.date;
+    }
+    if (!endDate) {
+        endDate = [startDate dateByAddingTimeInterval:60*60];
+    }
+    
+    [[TodoEventAPI sharedInstance] createTodoEventWithTitle:title startDate:startDate endDate:endDate allDay:allDay completion:^(NSError *error, TodoEvent *todoEvent) {
+        if (error) NSLog(@"Error: %@", error);
+    }];
     [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -148,66 +206,6 @@
     }
     
     return title;
-}
-
-- (void)saveButtonPressed:(id)sender
-{
-    TextFieldTableViewCell *titleCell = (TextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    NSString *titleString = titleCell.textField.text;
-    
-    NSString *title = [self titleFromString:titleString];
-    NSDate *startDate = [self startDateFromString:titleString];
-    NSDate *endDate = [self endDateFromString:titleString];
-    
-    BOOL allDay = NO;
-    if (!startDate) {
-        allDay = YES;
-        startDate = self.date;
-    }
-    if (!endDate) {
-        endDate = [startDate dateByAddingTimeInterval:60*60];
-    }
-
-    [[TodoEventAPI sharedInstance] createTodoEventWithTitle:title startDate:startDate endDate:endDate allDay:allDay completion:^(NSError *error, TodoEvent *todoEvent) {
-        if (error) NSLog(@"Error: %@", error);
-    }];
-    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    TextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    switch (indexPath.row) {
-        case 0:
-            cell.textField.placeholder = @"Buy groceries 10:00";
-            break;
-    }
-    
-    cell.textField.delegate = self;
-    cell.textField.returnKeyType = UIReturnKeyDone;
-    return cell;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return NO;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 0;
 }
 
 @end
