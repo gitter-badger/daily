@@ -53,6 +53,10 @@
     self.textView.delegate = self;
     self.textView.editable = YES;
     self.textView.font = [UIFont systemFontOfSize:18];
+    
+    RAC(self.navigationItem.rightBarButtonItem, enabled) =  [self.textView.rac_textSignal map:^id(NSString *text) {
+        return @(text.length > 0);
+    }];
 
     [self.view setSubviews:@[ self.textView ]];
 }
